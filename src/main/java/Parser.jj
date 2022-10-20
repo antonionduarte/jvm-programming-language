@@ -2,12 +2,15 @@ PARSER_BEGIN(Parser)
 
 
 /** ID lister. */
+import ast.*;
+
 public class Parser {
 
 }
 
 
 PARSER_END(Parser)
+
 
 SKIP:
 {
