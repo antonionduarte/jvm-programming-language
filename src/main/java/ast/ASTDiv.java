@@ -14,7 +14,9 @@ public class ASTDiv implements ASTNode {
 
 	@Override
 	public void compile(CodeBlock codeBlock) {
-
+		lhs.compile(codeBlock);
+		rhs.compile(codeBlock);
+		codeBlock.emit(JVMOps.DIV);
 	}
 
 	public ASTDiv(ASTNode l, ASTNode r) {

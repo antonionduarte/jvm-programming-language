@@ -1,10 +1,11 @@
 import ast.ASTNode;
+import parser.Parser;
 
 public class Interpreter {
 	/**
 	 * Main entry point.
 	 */
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		ASTNode exp;
 
 		while (true) {

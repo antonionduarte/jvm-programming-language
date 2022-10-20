@@ -2,6 +2,8 @@ PARSER_BEGIN(Parser)
 
 
 /** ID lister. */
+package parser;
+
 import ast.*;
 
 public class Parser {
@@ -22,22 +24,19 @@ SKIP:
 TOKEN:
 {
 	< Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
-	|
-	< Num: (["0"-"9"]) + >
-	|
-	< PLUS : "+" >
-	|
-	< MINUS : "-">
-	|
-	< TIMES : "*">
-	|
-	< DIV : "/">
-	|
-	< LPAR : "(" >
-	|
-	< RPAR : ")" >
-	|
-	< EL: "\n" >
+	| < Num: (["0"-"9"]) + >
+	| < PLUS : "+" >
+	| < MINUS : "-">
+	| < TIMES : "*">
+	| < DIV : "/">
+	| < LPAR : "(" >
+	| < RPAR : ")" >
+	| < EL: "\n" >
+	| < LCURLY : "{" >
+	| < RCURLY : "}" >
+	| < LET : "let" >
+	| < EQUALS : "=" >
+	| < ; : ";" >
 }
 
 ASTNode Start():
@@ -97,13 +96,26 @@ ASTNode Fact():
         t = new ASTNeg(t);
         return t;
     }
-	| n = <Num>
-		{
-			t = new ASTNum(Integer.parseInt(n.image));
-			return t;
-		}
-	| <LPAR> t = Exp() <RPAR>
-		{
-			return t;
-		}
+	|   n = <Num>
+        {
+            t = new ASTNum(Integer.parseInt(n.image));
+            return t;
+        }
+	|   <LPAR> t = Exp() <RPAR>
+        {
+            return t;
+        }
+    |   <LCURLY>
+        { var list = new LinkedList() }
+        (
+            (<LET> <id> <EQUALS> Exp() <;>)
+            {
+                list.add()
+            }
+        ) + Exp()
+        <RCURLY>
+        {
+            return new ASTDef(list,)
+        }
+
 }

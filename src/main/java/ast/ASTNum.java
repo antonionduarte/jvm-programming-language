@@ -12,7 +12,7 @@ public class ASTNum implements ASTNode {
 
 	@Override
 	public void compile(CodeBlock codeBlock) {
-
+    codeBlock.emit(JVMOps.PUSH + " " + val);
 	}
 
 	public ASTNum(int n) {

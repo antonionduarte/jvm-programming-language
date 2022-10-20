@@ -13,5 +13,4 @@ public class CodeBlock {
 	public void dump(PrintStream printStream) {
 		// dumps code to PrintStream
 	}
-
 }

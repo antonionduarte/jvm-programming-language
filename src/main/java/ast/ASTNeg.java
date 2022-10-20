@@ -13,7 +13,6 @@ public class ASTNeg implements ASTNode {
 	@Override
 	public void compile(CodeBlock codeBlock) {
 		exp.compile(codeBlock);
-		// codeBlock.emit();
 	}
 
 	public ASTNeg(ASTNode exp) {
