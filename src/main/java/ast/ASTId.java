@@ -2,9 +2,9 @@ package ast;
 
 import codeblock.CodeBlock;
 
-public class ASDId implements ASTNode {
+public class ASTId implements ASTNode {
 
-	public ASDId() {
+	public ASTId() {
 
 	}
 

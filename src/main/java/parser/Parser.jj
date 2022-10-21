@@ -23,7 +23,8 @@ SKIP:
 
 TOKEN:
 {
-	< Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
+    < LET : "let" >
+	| < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
 	| < Num: (["0"-"9"]) + >
 	| < PLUS : "+" >
 	| < MINUS : "-">
@@ -34,9 +35,8 @@ TOKEN:
 	| < EL: "\n" >
 	| < LCURLY : "{" >
 	| < RCURLY : "}" >
-	| < LET : "let" >
 	| < EQUALS : "=" >
-	| < ; : ";" >
+	| < DOTCOMMA : ";" >
 }
 
 ASTNode Start():
@@ -105,17 +105,4 @@ ASTNode Fact():
         {
             return t;
         }
-    |   <LCURLY>
-        { var list = new LinkedList() }
-        (
-            (<LET> <id> <EQUALS> Exp() <;>)
-            {
-                list.add()
-            }
-        ) + Exp()
-        <RCURLY>
-        {
-            return new ASTDef(list,)
-        }
-
 }

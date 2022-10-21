@@ -7,6 +7,7 @@ public class Interpreter {
 	 */
 	public static void main(String[] args) {
 		ASTNode exp;
+		new Parser(System.in);
 
 		while (true) {
 			try {

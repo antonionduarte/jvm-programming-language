@@ -14,7 +14,9 @@ public class ASTTimes implements ASTNode {
 
 	@Override
 	public void compile(CodeBlock codeBlock) {
-
+		lhs.compile(codeBlock);
+		rhs.compile(codeBlock);
+		codeBlock.emit(JVMOps.MUL);
 	}
 
 	public ASTTimes(ASTNode l, ASTNode r) {

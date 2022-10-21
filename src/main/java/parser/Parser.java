@@ -101,7 +101,7 @@ t = new ASTNeg(t);
     case Num:{
       n = jj_consume_token(Num);
 t = new ASTNum(Integer.parseInt(n.image));
-                        {if ("" != null) return t;}
+            {if ("" != null) return t;}
       break;
       }
     case LPAR:{
@@ -135,7 +135,7 @@ t = new ASTNum(Integer.parseInt(n.image));
 	   jj_la1_init_0();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0xc0,0xc0,0x300,0x300,0x4a0,};
+	   jj_la1_0 = new int[] {0x180,0x180,0x600,0x600,0x940,};
 	}
 
   /** Constructor with InputStream. */
@@ -281,7 +281,7 @@ t = new ASTNum(Integer.parseInt(n.image));
   /** Generate ParseException. */
   static public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[13];
+	 boolean[] la1tokens = new boolean[18];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -295,7 +295,7 @@ t = new ASTNum(Integer.parseInt(n.image));
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 13; i++) {
+	 for (int i = 0; i < 18; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;
