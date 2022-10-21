@@ -1,0 +1,122 @@
+PARSER_BEGIN(Parser)
+public class Parser{
+  
+}
+PARSER_END(Parser)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\r"
+}
+
+TOKEN :
+{
+  < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
+  |
+  < Num: (["0"-"9"]) + >
+  |
+  < PLUS : "+" >
+  |
+  < MINUS : "-">
+  |
+  < TIMES : "*">
+  |
+  < DIV : "/">
+  |
+  < LPAR : "(" >
+  |
+  < RPAR : ")" >
+  |
+  < LBRA : "{" >
+  |
+  < RBRA : "}" >
+  |
+  < LET : "let" >
+  |
+  < EL: "\n" >
+  |
+  < EQ : "=" >
+  | 
+  < EOI : ";;" >
+  | 
+  < EOD : ";" >
+}
+
+ASTNode Start():
+{
+  ASTNode t;
+}
+{
+  (
+    t = Exp() <EL>
+  )
+  {
+    return t;
+  }
+}
+
+ASTNode Exp() :
+{
+  Token op;
+  ASTNode t1, t2;
+}
+{
+  t1=Term() 
+  ( 
+    ( op=<PLUS> | op=<MINUS> ) t2=Term() 
+      {
+        if (op.kind == PLUS) 
+          t1 = new ASTPlus(t1,t2);
+        else  t1 = new ASTSub(t1,t2);
+      } 
+  ) *
+  {
+    return t1;
+  }
+}
+
+ASTNode Term() :
+{
+  Token op;
+  ASTNode t1, t2;
+}
+{
+  t1 = Fact() 
+  ( 
+    ( op=<TIMES> | op=<DIV> ) t2 = Term() 
+    {
+      if (op.kind == TIMES) 
+        t1 = new ASTTimes(t1, t2);
+      else t1 = new ASTDiv(t1, t2);
+    }
+  )?
+  {
+    return t1;
+  }
+}
+
+
+ASTNode Fact(Environment e) :
+{
+  Token n; 
+  ASTNode t;
+  boolean neg = false;
+}
+{
+  (
+    n=<Num> {
+        t = new ASTNum(Integer.parseInt(n.image));
+    }
+    | <LPAR> t=Exp(e) <RPAR>
+    | <MINUS> t=Fact(e) {
+      t = new ASTNeg(t);
+    }
+    | <LBRA> 
+    (<LET> id = <Id> <EQ> )* <RBRA>
+  )
+  {
+    return t;
+  }
+}
