@@ -1,13 +1,14 @@
 package ast;
 
 import codeblock.CodeBlock;
+import environment.Environment;
 
 public class ASTNeg implements ASTNode {
 
 	ASTNode exp;
 
-	public int eval() {
-		return -exp.eval();
+	public int eval(Environment environment) {
+		return -exp.eval(environment);
 	}
 
 	@Override

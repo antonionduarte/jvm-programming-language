@@ -10,16 +10,21 @@ public class Environment {
 	private Map<String, ASTNode> associations;
 	private Environment upperEnvironment;
 
-	private Environment() {
+	public Environment() {
 		this.upperEnvironment = null;
 		this.associations = new HashMap<>();
 	}
 
-	public Environment beginScope() { // TODO;
-		return new Environment();
+	public Environment(Environment upperEnvironment) {
+		this.upperEnvironment = upperEnvironment;
+		this.associations = new HashMap<>();
 	}
 
-	public Environment endScope() { // TODO;
+	public Environment beginScope() {
+		return new Environment(this);
+	}
+
+	public Environment endScope() {
 		return upperEnvironment;
 	}
 

@@ -1,4 +1,5 @@
 import ast.ASTNode;
+import environment.Environment;
 import parser.Parser;
 
 public class Interpreter {
@@ -12,7 +13,7 @@ public class Interpreter {
 		while (true) {
 			try {
 				exp = Parser.Start();
-				System.out.println(exp.eval());
+				System.out.println(exp.eval(new Environment()));
 			} catch (Exception e) {
 				System.out.println("Syntax Error!");
 				Parser.ReInit(System.in);

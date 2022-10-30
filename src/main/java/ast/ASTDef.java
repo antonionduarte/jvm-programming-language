@@ -1,6 +1,7 @@
 package ast;
 
 import codeblock.CodeBlock;
+import environment.Environment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +16,15 @@ public class ASTDef implements ASTNode {
 	}
 
 	@Override
-	public int eval() {
-		return 0;
+	public int eval(Environment environment) {
+		environment.beginScope();
+		for (var definition : definitionList.entrySet()) {
+			environment.associate(definition.getKey(), definition.getValue());
+		}
+		var value = body.eval(environment);
+		environment.endScope();
+
+		return value;
 	}
 
 	@Override

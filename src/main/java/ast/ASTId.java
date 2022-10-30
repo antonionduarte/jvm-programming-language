@@ -1,16 +1,19 @@
 package ast;
 
 import codeblock.CodeBlock;
+import environment.Environment;
 
 public class ASTId implements ASTNode {
 
-	public ASTId() {
+	private String id;
 
+	public ASTId(String id) {
+		this.id = id;
 	}
 
 	@Override
-	public int eval() {
-		return 0;
+	public int eval(Environment environment) {
+		return environment.find(this.id).eval(environment);
 	}
 
 	@Override

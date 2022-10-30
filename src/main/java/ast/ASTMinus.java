@@ -1,14 +1,15 @@
 package ast;
 
 import codeblock.CodeBlock;
+import environment.Environment;
 
 public class ASTMinus implements ASTNode {
 
 	ASTNode lhs, rhs;
 
-	public int eval() {
-		int v1 = lhs.eval();
-		int v2 = rhs.eval();
+	public int eval(Environment environment) {
+		int v1 = lhs.eval(environment);
+		int v2 = rhs.eval(environment);
 		return v1 - v2;
 	}
 

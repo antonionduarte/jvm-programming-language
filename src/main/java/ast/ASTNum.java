@@ -1,12 +1,13 @@
 package ast;
 
 import codeblock.CodeBlock;
+import environment.Environment;
 
 public class ASTNum implements ASTNode {
 
 	int val;
 
-	public int eval() {
+	public int eval(Environment environment) {
 		return val;
 	}
 
