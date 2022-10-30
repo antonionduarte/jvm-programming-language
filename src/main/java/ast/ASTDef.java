@@ -8,20 +8,21 @@ import java.util.Map;
 
 public class ASTDef implements ASTNode {
 
-	private Map<String, ASTNode> definitionList;
-	private ASTNode body;
+	private final Map<String, ASTNode> definitions;
+	private final ASTNode body;
 
-	public ASTDef() {
-		this.definitionList = new HashMap<>();
+	public ASTDef(ASTNode body, HashMap<String, ASTNode> definitions) {
+		this.definitions = definitions;
+		this.body = body;
 	}
 
 	@Override
 	public int eval(Environment environment) {
-		environment.beginScope();
-		for (var definition : definitionList.entrySet()) {
-			environment.associate(definition.getKey(), definition.getValue());
+		var inner = environment.beginScope();
+		for (var definition : definitions.entrySet()) {
+			inner.associate(definition.getKey(), definition.getValue().eval(inner));
 		}
-		var value = body.eval(environment);
+		var value = body.eval(inner);
 		environment.endScope();
 
 		return value;

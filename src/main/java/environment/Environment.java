@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class Environment {
 
-	private Map<String, ASTNode> associations;
-	private Environment upperEnvironment;
+	private final Map<String, Integer> associations;
+	private final Environment upperEnvironment;
 
 	public Environment() {
 		this.upperEnvironment = null;
@@ -28,11 +28,11 @@ public class Environment {
 		return upperEnvironment;
 	}
 
-	public void associate(String id, ASTNode val) {
+	public void associate(String id, int val) {
 		this.associations.put(id, val);
 	}
 
-	public ASTNode find(String id) {
+	public int find(String id) {
 		var value = associations.get(id);
 		if (value != null) {
 			return value;

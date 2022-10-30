@@ -7,15 +7,15 @@ public class Interpreter {
 	 * Main entry point.
 	 */
 	public static void main(String[] args) {
-		ASTNode exp;
 		new Parser(System.in);
 
 		while (true) {
 			try {
-				exp = Parser.Start();
+				var exp = Parser.Start();
 				System.out.println(exp.eval(new Environment()));
 			} catch (Exception e) {
 				System.out.println("Syntax Error!");
+				System.out.println(e.getMessage());
 				Parser.ReInit(System.in);
 			}
 		}

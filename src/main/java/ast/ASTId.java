@@ -13,11 +13,10 @@ public class ASTId implements ASTNode {
 
 	@Override
 	public int eval(Environment environment) {
-		return environment.find(this.id).eval(environment);
+		return environment.find(this.id);
 	}
 
 	@Override
 	public void compile(CodeBlock codeBlock) {
-
 	}
 }

@@ -5,6 +5,7 @@ PARSER_BEGIN(Parser)
 package parser;
 
 import ast.*;
+import java.util.*;
 
 public class Parser {
 
@@ -24,7 +25,6 @@ SKIP:
 TOKEN:
 {
     < LET : "let" >
-	| < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
 	| < Num: (["0"-"9"]) + >
 	| < PLUS : "+" >
 	| < MINUS : "-">
@@ -37,6 +37,7 @@ TOKEN:
 	| < RCURLY : "}" >
 	| < EQUALS : "=" >
 	| < DOTCOMMA : ";" >
+	| < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
 }
 
 ASTNode Start():
@@ -50,59 +51,80 @@ ASTNode Start():
 
 ASTNode Exp():
 { 
-	Token op;
-	ASTNode t1, t2;
+  Token op;
+  ASTNode t1, t2;
 }
 {
-	t1 = Term() (( op = <PLUS> | op = <MINUS> ) t2 = Term() 
-		{
-			if (op.kind == PLUS) {
-				t1 = new ASTPlus(t1, t2);
-			}
-			else t1 = new ASTMinus(t1, t2);
-		}
-	) *
-
-	{ return t1; }
+  t1 = Term() (( op = <PLUS> | op = <MINUS> ) t2 = Term() 
+    {
+      if (op.kind == PLUS) {
+        t1 = new ASTPlus(t1, t2);
+      }
+      else t1 = new ASTMinus(t1, t2);
+    }
+  ) *
+  { return t1; }
 }
 
 ASTNode Term():
 {
-	Token op;
-	ASTNode t1, t2;
+  Token op;
+  ASTNode t1, t2;
 }
 {
-	t1 = Fact() (( op = <TIMES> | op = <DIV> ) t2 = Term() 
-	 	{
-	 		if (op.kind == TIMES) {
-	 			t1 = new ASTTimes(t1, t2);
-	 		}
-	 		else t1 = new ASTDiv(t1, t2);
-	 	}
-	) ?
-
-	{ return t1; }
+  t1 = Fact() (( op = <TIMES> | op = <DIV> ) t2 = Term() 
+  {
+    if (op.kind == TIMES) {
+      t1 = new ASTTimes(t1, t2);
+    }
+    else t1 = new ASTDiv(t1, t2);
+  }) ?
+  { return t1; }
 }
 
 
 ASTNode Fact():
 { 
-	Token n;
-	ASTNode t;
+  Token n;
+  ASTNode t;
+  Token id;
 }
 {
-	<MINUS> t = Fact()
+  <MINUS> t = Fact()
+  {
+    t = new ASTNeg(t);
+    return t;
+  }
+| n = <Num>
+  {
+    t = new ASTNum(Integer.parseInt(n.image));
+    return t;
+  }
+| <LPAR> t = Exp() <RPAR>
+  {
+    return t;
+  }
+| id = <Id>
+ {
+   return new ASTId(id.image);
+ }
+| <LCURLY>
+  { 
+    HashMap<String, ASTNode> l = new HashMap<>();
+    ASTNode b;
+  }
+
+  (
+    <LET> (id = <Id>) <EQUALS> (t = Exp()) <DOTCOMMA>
     {
-        t = new ASTNeg(t);
-        return t;
+      l.put(id.image, t);
     }
-	|   n = <Num>
-        {
-            t = new ASTNum(Integer.parseInt(n.image));
-            return t;
-        }
-	|   <LPAR> t = Exp() <RPAR>
-        {
-            return t;
-        }
+  ) *
+
+  ( b = Exp() )
+  <RCURLY>
+
+  {
+    return new ASTDef(b, l);
+  }
 }

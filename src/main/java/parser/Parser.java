@@ -4,6 +4,7 @@
 package parser;
 
 import ast.*;
+import java.util.*;
 
 public class Parser implements ParserConstants {
 
@@ -15,7 +16,7 @@ public class Parser implements ParserConstants {
 }
 
   static final public ASTNode Exp() throws ParseException {Token op;
-        ASTNode t1, t2;
+  ASTNode t1, t2;
     t1 = Term();
     label_1:
     while (true) {
@@ -45,16 +46,16 @@ public class Parser implements ParserConstants {
       }
       t2 = Term();
 if (op.kind == PLUS) {
-                                t1 = new ASTPlus(t1, t2);
-                        }
-                        else t1 = new ASTMinus(t1, t2);
+        t1 = new ASTPlus(t1, t2);
+      }
+      else t1 = new ASTMinus(t1, t2);
     }
 {if ("" != null) return t1;}
     throw new Error("Missing return statement in function");
 }
 
   static final public ASTNode Term() throws ParseException {Token op;
-        ASTNode t1, t2;
+  ASTNode t1, t2;
     t1 = Fact();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case TIMES:
@@ -75,9 +76,9 @@ if (op.kind == PLUS) {
       }
       t2 = Term();
 if (op.kind == TIMES) {
-                                t1 = new ASTTimes(t1, t2);
-                        }
-                        else t1 = new ASTDiv(t1, t2);
+      t1 = new ASTTimes(t1, t2);
+    }
+    else t1 = new ASTDiv(t1, t2);
       break;
       }
     default:
@@ -89,19 +90,20 @@ if (op.kind == TIMES) {
 }
 
   static final public ASTNode Fact() throws ParseException {Token n;
-        ASTNode t;
+  ASTNode t;
+  Token id;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case MINUS:{
       jj_consume_token(MINUS);
       t = Fact();
 t = new ASTNeg(t);
-        {if ("" != null) return t;}
+    {if ("" != null) return t;}
       break;
       }
     case Num:{
       n = jj_consume_token(Num);
 t = new ASTNum(Integer.parseInt(n.image));
-            {if ("" != null) return t;}
+    {if ("" != null) return t;}
       break;
       }
     case LPAR:{
@@ -111,8 +113,40 @@ t = new ASTNum(Integer.parseInt(n.image));
 {if ("" != null) return t;}
       break;
       }
+    case Id:{
+      id = jj_consume_token(Id);
+{if ("" != null) return new ASTId(id.image);}
+      break;
+      }
+    case LCURLY:{
+      jj_consume_token(LCURLY);
+HashMap<String, ASTNode> l = new HashMap<>();
+    ASTNode b;
+      label_2:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case LET:{
+          ;
+          break;
+          }
+        default:
+          jj_la1[4] = jj_gen;
+          break label_2;
+        }
+        jj_consume_token(LET);
+        id = jj_consume_token(Id);
+        jj_consume_token(EQUALS);
+        t = Exp();
+        jj_consume_token(DOTCOMMA);
+l.put(id.image, t);
+      }
+      b = Exp();
+      jj_consume_token(RCURLY);
+{if ("" != null) return new ASTDef(b, l);}
+      break;
+      }
     default:
-      jj_la1[4] = jj_gen;
+      jj_la1[5] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -129,13 +163,13 @@ t = new ASTNum(Integer.parseInt(n.image));
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[5];
+  static final private int[] jj_la1 = new int[6];
   static private int[] jj_la1_0;
   static {
 	   jj_la1_init_0();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x180,0x180,0x600,0x600,0x940,};
+	   jj_la1_0 = new int[] {0xc0,0xc0,0x300,0x300,0x10,0x224a0,};
 	}
 
   /** Constructor with InputStream. */
@@ -156,7 +190,7 @@ t = new ASTNum(Integer.parseInt(n.image));
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -170,7 +204,7 @@ t = new ASTNum(Integer.parseInt(n.image));
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -187,7 +221,7 @@ t = new ASTNum(Integer.parseInt(n.image));
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -205,7 +239,7 @@ t = new ASTNum(Integer.parseInt(n.image));
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -221,7 +255,7 @@ t = new ASTNum(Integer.parseInt(n.image));
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -230,7 +264,7 @@ t = new ASTNum(Integer.parseInt(n.image));
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -286,7 +320,7 @@ t = new ASTNum(Integer.parseInt(n.image));
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
 	 }
-	 for (int i = 0; i < 5; i++) {
+	 for (int i = 0; i < 6; i++) {
 	   if (jj_la1[i] == jj_gen) {
 		 for (int j = 0; j < 32; j++) {
 		   if ((jj_la1_0[i] & (1<<j)) != 0) {

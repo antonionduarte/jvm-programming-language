@@ -3,6 +3,7 @@
 /** ID lister. */
 package parser;
 import ast.*;
+import java.util.*;
 
 /** Token Manager. */
 @SuppressWarnings ("unused")
@@ -18,16 +19,16 @@ private static final int jjStopStringLiteralDfa_0(int pos, long active0){
       case 0:
          if ((active0 & 0x10L) != 0L)
          {
-            jjmatchedKind = 5;
-            return 1;
+            jjmatchedKind = 17;
+            return 2;
          }
          return -1;
       case 1:
          if ((active0 & 0x10L) != 0L)
          {
-            jjmatchedKind = 5;
+            jjmatchedKind = 17;
             jjmatchedPos = 1;
-            return 1;
+            return 2;
          }
          return -1;
       default :
@@ -47,31 +48,31 @@ static private int jjMoveStringLiteralDfa0_0(){
    switch(curChar)
    {
       case 10:
-         return jjStopAtPos(0, 13);
-      case 40:
-         return jjStopAtPos(0, 11);
-      case 41:
          return jjStopAtPos(0, 12);
-      case 42:
-         return jjStopAtPos(0, 9);
-      case 43:
-         return jjStopAtPos(0, 7);
-      case 45:
-         return jjStopAtPos(0, 8);
-      case 47:
+      case 40:
          return jjStopAtPos(0, 10);
+      case 41:
+         return jjStopAtPos(0, 11);
+      case 42:
+         return jjStopAtPos(0, 8);
+      case 43:
+         return jjStopAtPos(0, 6);
+      case 45:
+         return jjStopAtPos(0, 7);
+      case 47:
+         return jjStopAtPos(0, 9);
       case 59:
-         return jjStopAtPos(0, 17);
-      case 61:
          return jjStopAtPos(0, 16);
+      case 61:
+         return jjStopAtPos(0, 15);
       case 108:
          return jjMoveStringLiteralDfa1_0(0x10L);
       case 123:
-         return jjStopAtPos(0, 14);
+         return jjStopAtPos(0, 13);
       case 125:
-         return jjStopAtPos(0, 15);
+         return jjStopAtPos(0, 14);
       default :
-         return jjMoveNfa_0(0, 0);
+         return jjMoveNfa_0(1, 0);
    }
 }
 static private int jjMoveStringLiteralDfa1_0(long active0){
@@ -101,7 +102,7 @@ static private int jjMoveStringLiteralDfa2_0(long old0, long active0){
    {
       case 116:
          if ((active0 & 0x10L) != 0L)
-            return jjStartNfaWithStates_0(2, 4, 1);
+            return jjStartNfaWithStates_0(2, 4, 2);
          break;
       default :
          break;
@@ -134,20 +135,20 @@ static private int jjMoveNfa_0(int startState, int curPos)
          {
             switch(jjstateSet[--i])
             {
-               case 0:
-               case 2:
-                  if ((0x3ff000000000000L & l) == 0L)
-                     break;
-                  if (kind > 6)
-                     kind = 6;
-                  { jjCheckNAdd(2); }
-                  break;
                case 1:
+               case 0:
                   if ((0x3ff000000000000L & l) == 0L)
                      break;
                   if (kind > 5)
                      kind = 5;
-                  jjstateSet[jjnewStateCnt++] = 1;
+                  { jjCheckNAdd(0); }
+                  break;
+               case 2:
+                  if ((0x3ff000000000000L & l) == 0L)
+                     break;
+                  if (kind > 17)
+                     kind = 17;
+                  jjstateSet[jjnewStateCnt++] = 2;
                   break;
                default : break;
             }
@@ -160,13 +161,13 @@ static private int jjMoveNfa_0(int startState, int curPos)
          {
             switch(jjstateSet[--i])
             {
-               case 0:
                case 1:
+               case 2:
                   if ((0x7fffffe07fffffeL & l) == 0L)
                      break;
-                  if (kind > 5)
-                     kind = 5;
-                  { jjCheckNAdd(1); }
+                  if (kind > 17)
+                     kind = 17;
+                  { jjCheckNAdd(2); }
                   break;
                default : break;
             }
@@ -200,8 +201,8 @@ static private int jjMoveNfa_0(int startState, int curPos)
 
 /** Token literal values. */
 public static final String[] jjstrLiteralImages = {
-"", null, null, null, "\154\145\164", null, null, "\53", "\55", "\52", "\57", 
-"\50", "\51", "\12", "\173", "\175", "\75", "\73", };
+"", null, null, null, "\154\145\164", null, "\53", "\55", "\52", "\57", "\50", 
+"\51", "\12", "\173", "\175", "\75", "\73", null, };
 static protected Token jjFillToken()
 {
    final Token t;
