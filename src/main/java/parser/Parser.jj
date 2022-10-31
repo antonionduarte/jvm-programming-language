@@ -109,19 +109,19 @@ ASTNode Fact():
    return new ASTId(id.image);
  }
 | <LCURLY>
-  { 
-    HashMap<String, ASTNode> l = new HashMap<>();
-    ASTNode b;
-  }
+		{ 
+			HashMap<String, ASTNode> l = new HashMap<>();
+			ASTNode b;
+		}
 
-  (
-    <LET> (id = <Id>) <EQUALS> (t = Exp()) <DOTCOMMA>
-    {
-      l.put(id.image, t);
-    }
-  ) *
+		(
+			<LET> (id = <Id>) <EQUALS> (t = Exp()) <DOTCOMMA>
+			{
+				l.put(id.image, t);
+			}
+		) *
 
-  ( b = Exp() )
+		( b = Exp() )
   <RCURLY>
 
   {

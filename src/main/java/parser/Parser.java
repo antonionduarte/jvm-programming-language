@@ -121,7 +121,7 @@ t = new ASTNum(Integer.parseInt(n.image));
     case LCURLY:{
       jj_consume_token(LCURLY);
 HashMap<String, ASTNode> l = new HashMap<>();
-    ASTNode b;
+                        ASTNode b;
       label_2:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
