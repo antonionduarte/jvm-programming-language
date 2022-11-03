@@ -15,13 +15,6 @@ public class Parser {
 PARSER_END(Parser)
 
 
-SKIP:
-{
-		" "
-	| "\t"
-	| "\r"
-}
-
 TOKEN:
 {
     < LET : "let" >
@@ -32,7 +25,6 @@ TOKEN:
 	| < DIV : "/">
 	| < LPAR : "(" >
 	| < RPAR : ")" >
-	| < EL: "\n" >
 	| < LCURLY : "{" >
 	| < RCURLY : "}" >
 	| < EQUALS : "=" >
@@ -40,12 +32,22 @@ TOKEN:
 	| < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
 }
 
+
+SKIP:
+{
+      " "
+	| "\t"
+	| "\n"
+	| "\r"
+}
+
+
 ASTNode Start():
 {
 	ASTNode t; 
 }
 {
-	t = Exp() <EL>
+	t = Exp() <DOTCOMMA>
 	{ return t; }
 }
 

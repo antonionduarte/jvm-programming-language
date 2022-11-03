@@ -2,14 +2,27 @@ import ast.ASTNode;
 import environment.Environment;
 import parser.Parser;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 public class Interpreter {
 	/**
 	 * Main entry point.
 	 */
-	public static void main(String[] args) {
-		new Parser(System.in);
+	public static void main(String[] args) throws IOException {
+		String path = null;
 
-		while (true) {
+		if (args.length == 1) {
+			path = args[0];
+		}
+
+		InputStream in = path == null ? System.in : new FileInputStream(path);
+
+		new Parser(in);
+
+		while (path == null || in.available() > 0) {
 			try {
 				var exp = Parser.Start();
 				System.out.println(exp.eval(new Environment()));
