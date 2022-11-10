@@ -1,9 +1,7 @@
-import ast.ASTNode;
 import environment.Environment;
 import parser.Parser;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -25,7 +23,7 @@ public class Interpreter {
 		while (path == null || in.available() > 0) {
 			try {
 				var exp = Parser.Start();
-				System.out.println(exp.eval(new Environment()));
+				System.out.println(exp.eval(new Environment<Integer>()));
 			} catch (Exception e) {
 				System.out.println("Syntax Error!");
 				System.out.println(e.getMessage());

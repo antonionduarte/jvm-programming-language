@@ -7,7 +7,7 @@ public class ASTNum implements ASTNode {
 
 	int val;
 
-	public int eval(Environment environment) {
+	public int eval(Environment<Integer> environment) {
 		return val;
 	}
 

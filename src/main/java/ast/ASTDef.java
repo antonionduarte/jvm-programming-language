@@ -17,7 +17,7 @@ public class ASTDef implements ASTNode {
 	}
 
 	@Override
-	public int eval(Environment environment) {
+	public int eval(Environment<Integer> environment) {
 		var inner = environment.beginScope();
 		for (var definition : definitions.entrySet()) {
 			inner.associate(definition.getKey(), definition.getValue().eval(inner));

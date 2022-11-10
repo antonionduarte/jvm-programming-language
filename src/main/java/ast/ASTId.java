@@ -12,7 +12,7 @@ public class ASTId implements ASTNode {
 	}
 
 	@Override
-	public int eval(Environment environment) {
+	public int eval(Environment<Integer> environment) {
 		return environment.find(this.id);
 	}
 

@@ -7,7 +7,7 @@ public class ASTDiv implements ASTNode {
 
 	ASTNode lhs, rhs;
 
-	public int eval(Environment environment) {
+	public int eval(Environment<Integer> environment) {
 		int v1 = lhs.eval(environment);
 		int v2 = rhs.eval(environment);
 		return v1 / v2;

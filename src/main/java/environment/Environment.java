@@ -1,38 +1,36 @@
 package environment;
 
-import ast.ASTNode;
-
 import java.util.HashMap;
 import java.util.Map;
 
-public class Environment {
+public class Environment<T> {
 
-	private final Map<String, Integer> associations;
-	private final Environment upperEnvironment;
+	private final Map<String, T> associations;
+	private final Environment<T> upperEnvironment;
 
 	public Environment() {
 		this.upperEnvironment = null;
 		this.associations = new HashMap<>();
 	}
 
-	public Environment(Environment upperEnvironment) {
+	public Environment(Environment<T> upperEnvironment) {
 		this.upperEnvironment = upperEnvironment;
 		this.associations = new HashMap<>();
 	}
 
-	public Environment beginScope() {
-		return new Environment(this);
+	public Environment<T> beginScope() {
+		return new Environment<T>(this);
 	}
 
-	public Environment endScope() {
+	public Environment<T> endScope() {
 		return upperEnvironment;
 	}
 
-	public void associate(String id, int val) {
+	public void associate(String id, T val) {
 		this.associations.put(id, val);
 	}
 
-	public int find(String id) {
+	public T find(String id) {
 		var value = associations.get(id);
 		if (value != null) {
 			return value;

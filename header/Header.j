@@ -8,8 +8,6 @@ return
 .method public static main([Ljava/lang/String;)V
 .limit locals  1
 .limit stack 256
-setup local variables:
-the PrintStream object held in java.lang.System.out
 getstatic java/lang/System/out Ljava/io/PrintStream;
 ; START
 sipush 4

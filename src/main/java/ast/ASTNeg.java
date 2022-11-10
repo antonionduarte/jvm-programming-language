@@ -7,7 +7,7 @@ public class ASTNeg implements ASTNode {
 
 	ASTNode exp;
 
-	public int eval(Environment environment) {
+	public int eval(Environment<Integer> environment) {
 		return -exp.eval(environment);
 	}
 
