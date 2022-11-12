@@ -2,6 +2,7 @@ package ast;
 
 import codeblock.CodeBlock;
 import environment.Environment;
+import environment.FrameManager;
 
 public class ASTNeg implements ASTNode {
 
@@ -12,7 +13,7 @@ public class ASTNeg implements ASTNode {
 	}
 
 	@Override
-	public void compile(CodeBlock codeBlock) {
+	public void compile(FrameManager frameManager, CodeBlock codeBlock) {
 		codeBlock.emit(JVMOps.NEG);
 	}
 

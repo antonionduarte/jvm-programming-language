@@ -2,6 +2,7 @@ package ast;
 
 import codeblock.CodeBlock;
 import environment.Environment;
+import environment.FrameManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +30,11 @@ public class ASTDef implements ASTNode {
 	}
 
 	@Override
-	public void compile(CodeBlock codeBlock) {
-
+	public void compile(FrameManager frameManager, CodeBlock codeBlock) {
+		frameManager.beginScope(codeBlock);
+		for (var definition : definitions.entrySet()) {
+			frameManager.emitAssign(codeBlock, definition.getKey(), definition.getValue());
+		}
+		frameManager.endScope(codeBlock);
 	}
 }

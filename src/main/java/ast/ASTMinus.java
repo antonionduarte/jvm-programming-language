@@ -2,6 +2,7 @@ package ast;
 
 import codeblock.CodeBlock;
 import environment.Environment;
+import environment.FrameManager;
 
 public class ASTMinus implements ASTNode {
 
@@ -14,9 +15,9 @@ public class ASTMinus implements ASTNode {
 	}
 
 	@Override
-	public void compile(CodeBlock codeBlock) {
-		lhs.compile(codeBlock);
-		rhs.compile(codeBlock);
+	public void compile(FrameManager frameManager, CodeBlock codeBlock) {
+		lhs.compile(frameManager, codeBlock);
+		rhs.compile(frameManager, codeBlock);
 		codeBlock.emit(JVMOps.MINUS);
 	}
 

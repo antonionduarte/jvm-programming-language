@@ -1,5 +1,6 @@
 import ast.ASTNode;
 import codeblock.CodeBlock;
+import environment.FrameManager;
 import parser.ParseException;
 import parser.Parser;
 
@@ -35,7 +36,7 @@ public class Compiler {
 		try (var outputFile = new PrintStream(ASSEMBLY_OUT)) {
 			ASTNode exp = Parser.Start();
 			outputFile.write(initialHeaders.toString().getBytes());
-			exp.compile(codeBlock);
+			exp.compile(new FrameManager(), codeBlock);
 			codeBlock.dump(outputFile);
 			outputFile.write(finalHeaders.toString().getBytes());
 		} catch (ParseException e) {

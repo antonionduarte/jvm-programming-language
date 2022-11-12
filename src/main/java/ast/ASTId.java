@@ -2,6 +2,7 @@ package ast;
 
 import codeblock.CodeBlock;
 import environment.Environment;
+import environment.FrameManager;
 
 public class ASTId implements ASTNode {
 
@@ -17,6 +18,7 @@ public class ASTId implements ASTNode {
 	}
 
 	@Override
-	public void compile(CodeBlock codeBlock) {
+	public void compile(FrameManager frameManager, CodeBlock codeBlock) {
+		frameManager.emitGetValue(codeBlock, id);
 	}
 }

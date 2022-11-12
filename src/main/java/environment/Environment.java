@@ -38,7 +38,7 @@ public class Environment<T> {
 			if (upperEnvironment != null) {
 				return upperEnvironment.find(id);
 			} else {
-				throw new RuntimeException("Error: Association not found.");
+				throw new InvalidIdentifierException(id);
 			}
 		}
 	}
