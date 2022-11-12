@@ -11,7 +11,9 @@ public class Compiler {
 	private static final String HEADER_FILE = "header/Header.j";
 	private static final String ASSEMBLY_START = "; START";
 	private static final String ASSEMBLY_END = "; END";
-	private static final String ASSEMBLY_OUT = "compiled/out";
+
+	private static final String OUT_DIR = "compiled";
+	private static final String ASSEMBLY_OUT = OUT_DIR + "/out.j";
 
 	public static void main(String[] args) throws IOException {
 		if (args.length < 1) {
@@ -36,8 +38,10 @@ public class Compiler {
 		try (var outputFile = new PrintStream(ASSEMBLY_OUT)) {
 			ASTNode exp = Parser.Start();
 			outputFile.write(initialHeaders.toString().getBytes());
-			exp.compile(new FrameManager(), codeBlock);
+			FrameManager frameManager = new FrameManager();
+			exp.compile(frameManager, codeBlock);
 			codeBlock.dump(outputFile);
+			frameManager.dumpAll(OUT_DIR);
 			outputFile.write(finalHeaders.toString().getBytes());
 		} catch (ParseException e) {
 			System.out.println("Syntax Error!");

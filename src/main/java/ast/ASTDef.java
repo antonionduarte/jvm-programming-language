@@ -35,6 +35,7 @@ public class ASTDef implements ASTNode {
 		for (var definition : definitions.entrySet()) {
 			frameManager.emitAssign(codeBlock, definition.getKey(), definition.getValue());
 		}
+		body.compile(frameManager, codeBlock);
 		frameManager.endScope(codeBlock);
 	}
 }

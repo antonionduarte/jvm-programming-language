@@ -15,8 +15,8 @@ public class FrameManager {
                     .class public %s
                     .super java/lang/Object
                     """;
-    private static final String NULL_TYPE = "Ljava/lang/Object;";
-    private static final String SL_FIELD = ".field public sl L%sd;";
+    private static final String NULL_TYPE = "java/lang/Object";
+    private static final String SL_FIELD = ".field public sl L%s;";
     private static final String VAR_FIELD = ".field public v%d I";
 
     private static final String INIT =
@@ -34,7 +34,7 @@ public class FrameManager {
                     invokespecial %s/<init>()V
                     dup
                     aload_3
-                    putfield %s/sl Ljava/lang/Object;
+                    putfield %s/sl L%s;
                     astore_3""";
 
     private static final String LOAD = "aload_3";
@@ -73,9 +73,11 @@ public class FrameManager {
     }
 
     public void beginScope(CodeBlock block){
+        String parent = current == null ? NULL_TYPE : current.getName();
         current = new Frame(frames.size(), current);
+        frames.add(current);
         String name = current.getName();
-        block.emit(String.format(SCOPE_INIT, name, name, name));
+        block.emit(String.format(SCOPE_INIT, name, name, name, parent));
     }
 
     public void endScope(CodeBlock block){
@@ -88,13 +90,14 @@ public class FrameManager {
         block.emit(LOAD);
         block.emit(String.format(GET_PARENT, name, parent));
         block.emit(STORE);
+        current = current.getParentFrame();
     }
 
     public void emitAssign(CodeBlock block, String varName, ASTNode expression){
         String name = current.getName();
         block.emit(LOAD);
-        int varNumber = current.addDeclaration(varName);
         expression.compile(this, block);
+        int varNumber = current.addDeclaration(varName);
         block.emit(String.format(END_ASSIGN, name, varNumber));
     }
 

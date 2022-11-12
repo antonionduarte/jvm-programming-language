@@ -6,9 +6,11 @@ invokenonvirtual java/lang/Object/<init>()V
 return
 .end method
 .method public static main([Ljava/lang/String;)V
-.limit locals  1
+.limit locals  4
 .limit stack 256
 getstatic java/lang/System/out Ljava/io/PrintStream;
+aconst_null
+astore_3
 ; START
 sipush 4
 sipush 5
