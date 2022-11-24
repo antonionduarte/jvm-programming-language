@@ -1,5 +1,7 @@
-package ast;
+package ast.int_nodes;
 
+import ast.ASTNode;
+import ast.JVMOps;
 import ast.types.IValue;
 import ast.types.IntValue;
 import ast.types.ValueType;
@@ -8,18 +10,21 @@ import environment.Environment;
 import environment.InterpretationEnvironment;
 import environment.FrameManager;
 
-public class ASTNeg implements ASTNode {
+public class ASTPlus implements ASTNode {
 
-	ASTNode exp;
+	ASTNode lhs, rhs;
 
 	public IValue eval(InterpretationEnvironment environment) {
-		int value = IntValue.asInt(exp.eval(environment));
-		return new IntValue(-value);
+		int v1 = IntValue.asInt(lhs.eval(environment));
+		int v2 = IntValue.asInt(rhs.eval(environment));
+		return new IntValue(v1 + v2);
 	}
 
 	@Override
 	public void compile(FrameManager frameManager, CodeBlock codeBlock) {
-		codeBlock.emit(JVMOps.NEG);
+		lhs.compile(frameManager, codeBlock);
+		rhs.compile(frameManager, codeBlock);
+		codeBlock.emit(JVMOps.ADD);
 	}
 
 	@Override
@@ -27,8 +32,9 @@ public class ASTNeg implements ASTNode {
 		return ValueType.Int;
 	}
 
-	public ASTNeg(ASTNode exp) {
-		this.exp = exp;
+	public ASTPlus(ASTNode l, ASTNode r) {
+		lhs = l;
+		rhs = r;
 	}
 }
 

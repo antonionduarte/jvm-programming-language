@@ -5,6 +5,8 @@ PARSER_BEGIN(Parser)
 package parser;
 
 import ast.*;
+import ast.int_nodes.*;
+import ast.bool_nodes.*;
 import java.util.*;
 
 public class Parser {
@@ -23,6 +25,15 @@ TOKEN:
 	| < MINUS : "-">
 	| < TIMES : "*">
 	| < DIV : "/">
+	| < OR : "||">
+	| < AND : "&&">
+	| < NOT : "!">
+	| < LTE : "<=" >
+	| < LT : "<" >
+	| < GTE : ">=" >
+	| < GT : ">" >
+	| < EQ : "==">
+	| < DIFF : "!=">
 	| < LPAR : "(" >
 	| < RPAR : ")" >
 	| < LCURLY : "{" >
@@ -51,7 +62,60 @@ ASTNode Start():
 	{ return t; }
 }
 
-ASTNode Exp():
+ASTNode Exp() :
+{
+    ASTNode t1, t2;
+}
+{
+    t1 = OrChain() (
+       <AND> t2 = Exp()
+       {
+
+       }
+   )?
+   {
+       return t1;
+   }
+}
+
+ASTNode OrChain():
+{
+    ASTNode t1, t2;
+}
+{
+    t1 = Compare() (
+        <OR> t2 = OrChain()
+        {
+
+        }
+    )?
+    {
+        return t1;
+    }
+}
+
+ASTNode Compare():
+{
+    Token op;
+    ASTNode t1, t2;
+}
+{
+    t1 = NumExp()
+    (
+       (op = <LT>
+       | op = <LTE>
+       | op = <GT>
+       | op = <GTE>
+       | op = <EQ>
+       | op = <DIFF>)
+    t2 = NumExp()
+    )?
+    {
+        return t1;
+    }
+}
+
+ASTNode NumExp():
 { 
   Token op;
   ASTNode t1, t2;
@@ -59,11 +123,11 @@ ASTNode Exp():
 {
   t1 = Term() (( op = <PLUS> | op = <MINUS> ) t2 = Term() 
     {
-      if (op.kind == PLUS) {
-        t1 = new ASTPlus(t1, t2);
-      }
-      else t1 = new ASTMinus(t1, t2);
-    }
+  if (op.kind == PLUS) {
+    t1 = new ASTPlus(t1, t2);
+  }
+  else t1 = new ASTMinus(t1, t2);
+}
   ) *
   { return t1; }
 }
@@ -76,11 +140,11 @@ ASTNode Term():
 {
   t1 = Fact() (( op = <TIMES> | op = <DIV> ) t2 = Term() 
   {
-    if (op.kind == TIMES) {
-      t1 = new ASTTimes(t1, t2);
-    }
-    else t1 = new ASTDiv(t1, t2);
-  }) ?
+  if (op.kind == TIMES) {
+    t1 = new ASTTimes(t1, t2);
+  }
+  else t1 = new ASTDiv(t1, t2);
+}) ?
   { return t1; }
 }
 
@@ -111,7 +175,7 @@ ASTNode Fact():
    return new ASTId(id.image);
  }
 | <LCURLY>
-		{ 
+		{
 			HashMap<String, ASTNode> l = new HashMap<>();
 			ASTNode b;
 		}
