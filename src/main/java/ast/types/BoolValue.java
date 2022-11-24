@@ -1,8 +1,8 @@
 package ast.types;
 
 public class BoolValue implements IValue {
-    public final BoolValue TRUE = new BoolValue(true);
-    public final BoolValue FALSE = new BoolValue(false);
+    public static final BoolValue TRUE = new BoolValue(true);
+    public static final BoolValue FALSE = new BoolValue(false);
     private final boolean value;
 
     public static boolean asBoolean(IValue value){
@@ -29,5 +29,10 @@ public class BoolValue implements IValue {
     @Override
     public ValueType getType() {
         return ValueType.Int;
+    }
+
+    @Override
+    public boolean equals(Object other){
+        return other instanceof BoolValue && ((BoolValue) other).getValue() == this.getValue();
     }
 }

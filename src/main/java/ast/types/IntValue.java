@@ -28,4 +28,9 @@ public class IntValue implements IValue {
     public ValueType getType() {
         return ValueType.Int;
     }
+
+    @Override
+    public boolean equals(Object other){
+        return other instanceof IntValue && ((IntValue) other).getValue() == this.getValue();
+    }
 }

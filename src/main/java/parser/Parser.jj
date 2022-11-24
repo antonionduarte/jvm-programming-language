@@ -20,6 +20,8 @@ PARSER_END(Parser)
 TOKEN:
 {
     < LET : "let" >
+    | <TRUE : "true">
+    | <FALSE: "false">
 	| < Num: (["0"-"9"]) + >
 	| < PLUS : "+" >
 	| < MINUS : "-">
@@ -70,7 +72,7 @@ ASTNode Exp() :
     t1 = OrChain() (
        <AND> t2 = Exp()
        {
-
+            t1 = new ASTAnd(t1, t2);
        }
    )?
    {
@@ -83,10 +85,10 @@ ASTNode OrChain():
     ASTNode t1, t2;
 }
 {
-    t1 = Compare() (
+    t1 = BoolTerm() (
         <OR> t2 = OrChain()
         {
-
+            t1 = new ASTOr(t1, t2);
         }
     )?
     {
@@ -94,13 +96,17 @@ ASTNode OrChain():
     }
 }
 
-ASTNode Compare():
+ASTNode BoolTerm():
 {
     Token op;
     ASTNode t1, t2;
 }
 {
-    t1 = NumExp()
+    <NOT> t1 = NumExp()
+    {
+        t1 = new ASTNot(t1);
+    }
+    | t1 = NumExp()
     (
        (op = <LT>
        | op = <LTE>
@@ -109,6 +115,30 @@ ASTNode Compare():
        | op = <EQ>
        | op = <DIFF>)
     t2 = NumExp()
+        {
+            switch(op.kind){
+                case LT:
+                    t1 = new ASTLowerThan(t1, t2);
+                    break;
+                case LTE:
+                    t1 = new ASTLowerOrEqual(t1, t2);
+                    break;
+                case GT:
+                    t1 = new ASTGreaterThan(t1, t2);
+                    break;
+                case GTE:
+                    t1 = new ASTGreaterOrEqual(t1, t2);
+                    break;
+                case EQ:
+                    t1 = new ASTEqual(t1, t2);
+                    break;
+                case DIFF:
+                    t1 = new ASTNotEqual(t1, t2);
+                    break;
+                default:
+                    throw new RuntimeException("Unexpected token");
+            }
+        }
     )?
     {
         return t1;
@@ -156,7 +186,9 @@ ASTNode Fact():
   Token id;
 }
 {
-  <MINUS> t = Fact()
+    <TRUE> { return new ASTBool(true); }
+    | <FALSE> { return new ASTBool(false);}
+  | <MINUS> t = Fact()
   {
     t = new ASTNeg(t);
     return t;
