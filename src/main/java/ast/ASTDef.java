@@ -1,7 +1,10 @@
 package ast;
 
+import ast.types.IValue;
+import ast.types.ValueType;
 import codeblock.CodeBlock;
 import environment.Environment;
+import environment.InterpretationEnvironment;
 import environment.FrameManager;
 
 import java.util.HashMap;
@@ -18,7 +21,7 @@ public class ASTDef implements ASTNode {
 	}
 
 	@Override
-	public int eval(Environment<Integer> environment) {
+	public IValue eval(InterpretationEnvironment environment) {
 		var inner = environment.beginScope();
 		for (var definition : definitions.entrySet()) {
 			inner.associate(definition.getKey(), definition.getValue().eval(inner));
@@ -37,5 +40,10 @@ public class ASTDef implements ASTNode {
 		}
 		body.compile(frameManager, codeBlock);
 		frameManager.endScope(codeBlock);
+	}
+
+	@Override
+	public ValueType getReturnType(Environment environment) {
+		return body.getReturnType(environment);
 	}
 }

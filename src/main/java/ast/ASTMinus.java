@@ -1,17 +1,21 @@
 package ast;
 
+import ast.types.IValue;
+import ast.types.IntValue;
+import ast.types.ValueType;
 import codeblock.CodeBlock;
 import environment.Environment;
+import environment.InterpretationEnvironment;
 import environment.FrameManager;
 
 public class ASTMinus implements ASTNode {
 
 	ASTNode lhs, rhs;
 
-	public int eval(Environment<Integer> environment) {
-		int v1 = lhs.eval(environment);
-		int v2 = rhs.eval(environment);
-		return v1 - v2;
+	public IValue eval(InterpretationEnvironment environment) {
+		int v1 = IntValue.asInt(lhs.eval(environment));
+		int v2 = IntValue.asInt(rhs.eval(environment));
+		return new IntValue(v1 - v2);
 	}
 
 	@Override
@@ -19,6 +23,11 @@ public class ASTMinus implements ASTNode {
 		lhs.compile(frameManager, codeBlock);
 		rhs.compile(frameManager, codeBlock);
 		codeBlock.emit(JVMOps.MINUS);
+	}
+
+	@Override
+	public ValueType getReturnType(Environment environment) {
+		return ValueType.Int;
 	}
 
 	public ASTMinus(ASTNode l, ASTNode r) {

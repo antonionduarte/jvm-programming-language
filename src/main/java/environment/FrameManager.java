@@ -1,6 +1,7 @@
 package environment;
 
 import ast.ASTNode;
+import ast.types.ValueType;
 import codeblock.CodeBlock;
 
 import java.io.File;
@@ -9,7 +10,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FrameManager {
+public class FrameManager implements Environment{
     private static final String HEADER =
             """
                     .class public %s
@@ -118,5 +119,10 @@ public class FrameManager {
         }
         String name = frame.getName();
         block.emit(String.format(GET_VAR, name, variable.getId()));
+    }
+
+    @Override
+    public ValueType getAssociatedType(String id) {
+        return current.find(id).getType();
     }
 }

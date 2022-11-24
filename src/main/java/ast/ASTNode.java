@@ -1,13 +1,18 @@
 package ast;
 
+import ast.types.IValue;
+import ast.types.ValueType;
 import codeblock.CodeBlock;
 import environment.Environment;
+import environment.InterpretationEnvironment;
 import environment.FrameManager;
 
 public interface ASTNode {
 
-	int eval(Environment<Integer> environment);
+	IValue eval(InterpretationEnvironment environment);
 
 	void compile(FrameManager frameManager, CodeBlock codeBlock);
+
+	ValueType getReturnType(Environment environment);
 
 }

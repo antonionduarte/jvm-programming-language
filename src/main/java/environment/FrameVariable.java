@@ -1,8 +1,11 @@
 package environment;
 
+import ast.types.ValueType;
+
 public class FrameVariable {
     private Frame frame;
     private int id;
+    private ValueType type;
 
     public FrameVariable(Frame frame, int id) {
         this.frame = frame;
@@ -15,5 +18,9 @@ public class FrameVariable {
 
     public int getId() {
         return id;
+    }
+
+    public ValueType getType() {
+        return type;
     }
 }
