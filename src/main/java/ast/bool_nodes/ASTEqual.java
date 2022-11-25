@@ -4,10 +4,10 @@ import ast.ASTNode;
 import ast.types.BoolValue;
 import ast.types.IValue;
 import ast.types.ValueType;
-import codeblock.CodeBlock;
+import com.sun.jdi.Value;
+import compilation.CodeBlock;
 import environment.Environment;
-import environment.FrameManager;
-import environment.InterpretationEnvironment;
+import environment.Frame;
 
 public class ASTEqual implements ASTNode {
     private ASTNode lhs, rhs;
@@ -18,19 +18,19 @@ public class ASTEqual implements ASTNode {
     }
 
     @Override
-    public IValue eval(InterpretationEnvironment environment) {
+    public IValue eval(Environment<IValue> environment) {
         IValue v1 = lhs.eval(environment);
         IValue v2 = rhs.eval(environment);
         return new BoolValue(v1.equals(v2));
     }
 
     @Override
-    public void compile(FrameManager frameManager, CodeBlock codeBlock) {
+    public ValueType compile(Frame frame, CodeBlock codeBlock) {
         throw new RuntimeException("Not implemented"); //TODO implement
     }
 
     @Override
-    public ValueType getReturnType(Environment environment) {
+    public ValueType typeCheck(Environment<ValueType> environment) {
         return ValueType.Bool;
     }
 }

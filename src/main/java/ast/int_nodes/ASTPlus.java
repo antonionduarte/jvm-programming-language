@@ -1,34 +1,34 @@
 package ast.int_nodes;
 
 import ast.ASTNode;
-import ast.JVMOps;
+import compilation.CompilerUtils;
 import ast.types.IValue;
 import ast.types.IntValue;
 import ast.types.ValueType;
-import codeblock.CodeBlock;
+import compilation.CodeBlock;
 import environment.Environment;
-import environment.InterpretationEnvironment;
-import environment.FrameManager;
+import environment.Frame;
 
 public class ASTPlus implements ASTNode {
 
 	ASTNode lhs, rhs;
 
-	public IValue eval(InterpretationEnvironment environment) {
+	public IValue eval(Environment<IValue> environment) {
 		int v1 = IntValue.asInt(lhs.eval(environment));
 		int v2 = IntValue.asInt(rhs.eval(environment));
 		return new IntValue(v1 + v2);
 	}
 
 	@Override
-	public void compile(FrameManager frameManager, CodeBlock codeBlock) {
-		lhs.compile(frameManager, codeBlock);
-		rhs.compile(frameManager, codeBlock);
-		codeBlock.emit(JVMOps.ADD);
+	public ValueType compile(Frame frame, CodeBlock codeBlock) {
+		lhs.compile(frame, codeBlock).expect(ValueType.Int);
+		rhs.compile(frame, codeBlock).expect(ValueType.Int);
+		codeBlock.emit(CompilerUtils.ADD);
+		return ValueType.Int;
 	}
 
 	@Override
-	public ValueType getReturnType(Environment environment) {
+	public ValueType typeCheck(Environment<ValueType> environment) {
 		return ValueType.Int;
 	}
 

@@ -13,4 +13,10 @@ public enum ValueType {
     public String getJvmId() {
         return jvmId;
     }
+
+    public void expect(ValueType expected){
+        if(expected != this){
+            throw new TypeMismatchException(expected, this);
+        }
+    }
 }

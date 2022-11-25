@@ -4,10 +4,9 @@ import ast.ASTNode;
 import ast.types.BoolValue;
 import ast.types.IValue;
 import ast.types.ValueType;
-import codeblock.CodeBlock;
+import compilation.CodeBlock;
 import environment.Environment;
-import environment.FrameManager;
-import environment.InterpretationEnvironment;
+import environment.Frame;
 
 public class ASTAnd implements ASTNode {
     private ASTNode lhs, rhs;
@@ -18,19 +17,19 @@ public class ASTAnd implements ASTNode {
     }
 
     @Override
-    public IValue eval(InterpretationEnvironment environment) {
+    public IValue eval(Environment<IValue> environment) {
         boolean v1 = BoolValue.asBoolean(lhs.eval(environment));
         boolean v2 = BoolValue.asBoolean(rhs.eval(environment));
         return new BoolValue(v1 && v2);
     }
 
     @Override
-    public void compile(FrameManager frameManager, CodeBlock codeBlock) {
+    public ValueType compile(Frame frame, CodeBlock codeBlock) {
         throw new RuntimeException("Not implemented"); //TODO implement
     }
 
     @Override
-    public ValueType getReturnType(Environment environment) {
+    public ValueType typeCheck(Environment<ValueType> environment) {
         return ValueType.Bool;
     }
 }

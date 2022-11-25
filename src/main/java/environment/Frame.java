@@ -1,18 +1,27 @@
 package environment;
 
-import java.util.HashMap;
-import java.util.Map;
+import ast.types.ValueType;
 
-public class Frame {
+import java.util.Collection;
+import java.util.List;
+
+public class Frame extends Environment<FrameVariable> {
     private static final String NAME_FORMAT = "frame_%d";
     private int id;
-    private Map<String, FrameVariable> varMap;
-    private Frame parentFrame;
+
+    private List<Frame> allFrames;
+
+
+    public Frame(int id, List<Frame> allFrames){
+        super();
+        this.id = id;
+        this.allFrames = allFrames;
+    }
 
     public Frame(int id, Frame parentFrame) {
+        super(parentFrame);
         this.id = id;
-        this.varMap = new HashMap<>();
-        this.parentFrame = parentFrame;
+        this.allFrames = parentFrame.allFrames;
     }
 
     public int getId() {
@@ -20,36 +29,22 @@ public class Frame {
     }
 
     public Frame getParentFrame() {
-        return parentFrame;
+        return (Frame)upperEnvironment;
     }
 
     public String getName(){
         return String.format(NAME_FORMAT, id);
     }
 
-    public int getVarsLength(){
-        return varMap.size();
+    @Override
+    public Frame beginScope(){
+        Frame newFrame = new Frame(allFrames.size(), this);
+        allFrames.add(newFrame);
+        return newFrame;
     }
 
-    public int addDeclaration(String varName){
-        if(varMap.containsKey(varName)){
-            throw new RuntimeException("Repeated declaration of " + varName);
-        }
-        int varNumber = varMap.size();
-        varMap.put(varName, new FrameVariable(this, varNumber));
-        return varNumber;
+    public Collection<FrameVariable> getVars(){
+        return associations.values();
     }
 
-    public FrameVariable find(String varName){
-        FrameVariable var = varMap.get(varName);
-        if(var == null) {
-            if(parentFrame != null){
-                return parentFrame.find(varName);
-            } else {
-                return null;
-            }
-        } else {
-            return var;
-        }
-    }
 }

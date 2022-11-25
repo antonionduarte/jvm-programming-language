@@ -1,10 +1,13 @@
 import ast.ASTNode;
-import codeblock.CodeBlock;
-import environment.FrameManager;
+import compilation.CodeBlock;
+import compilation.FrameCompiler;
+import environment.Frame;
 import parser.ParseException;
 import parser.Parser;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Compiler {
@@ -38,10 +41,12 @@ public class Compiler {
 		try (var outputFile = new PrintStream(ASSEMBLY_OUT)) {
 			ASTNode exp = Parser.Start();
 			outputFile.write(initialHeaders.toString().getBytes());
-			FrameManager frameManager = new FrameManager();
-			exp.compile(frameManager, codeBlock);
+			List<Frame> frames = new ArrayList<>();
+			Frame root = new Frame(0, frames);
+			frames.add(root);
+			exp.compile(root, codeBlock);
 			codeBlock.dump(outputFile);
-			frameManager.dumpAll(OUT_DIR);
+			FrameCompiler.dumpAll(OUT_DIR, frames);
 			outputFile.write(finalHeaders.toString().getBytes());
 		} catch (ParseException e) {
 			System.out.println("Syntax Error!");

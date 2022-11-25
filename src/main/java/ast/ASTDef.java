@@ -2,10 +2,11 @@ package ast;
 
 import ast.types.IValue;
 import ast.types.ValueType;
-import codeblock.CodeBlock;
+import compilation.CodeBlock;
+import compilation.FrameCompiler;
 import environment.Environment;
-import environment.InterpretationEnvironment;
-import environment.FrameManager;
+import environment.Frame;
+import environment.FrameVariable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class ASTDef implements ASTNode {
 	}
 
 	@Override
-	public IValue eval(InterpretationEnvironment environment) {
+	public IValue eval(Environment<IValue> environment) {
 		var inner = environment.beginScope();
 		for (var definition : definitions.entrySet()) {
 			inner.associate(definition.getKey(), definition.getValue().eval(inner));
@@ -33,17 +34,22 @@ public class ASTDef implements ASTNode {
 	}
 
 	@Override
-	public void compile(FrameManager frameManager, CodeBlock codeBlock) {
-		frameManager.beginScope(codeBlock);
+	public ValueType compile(Frame frame, CodeBlock codeBlock) {
+		Frame inner = frame.beginScope();
+		FrameCompiler.emitBeginScope(codeBlock, inner);
 		for (var definition : definitions.entrySet()) {
-			frameManager.emitAssign(codeBlock, definition.getKey(), definition.getValue());
+			int varNumber = inner.getVars().size();
+			FrameVariable variable = new FrameVariable(inner, varNumber);
+			FrameCompiler.emitAssign(codeBlock, variable, definition.getValue());
+			inner.associate(definition.getKey(), variable);
 		}
-		body.compile(frameManager, codeBlock);
-		frameManager.endScope(codeBlock);
+		ValueType returnType = body.compile(inner, codeBlock);
+		FrameCompiler.emitEndScope(codeBlock, inner);
+		return returnType;
 	}
 
 	@Override
-	public ValueType getReturnType(Environment environment) {
-		return body.getReturnType(environment);
+	public ValueType typeCheck(Environment<ValueType> environment) {
+		return body.typeCheck(environment);
 	}
 }

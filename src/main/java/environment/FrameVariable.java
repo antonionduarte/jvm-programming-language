@@ -5,7 +5,7 @@ import ast.types.ValueType;
 public class FrameVariable {
     private Frame frame;
     private int id;
-    private ValueType type;
+    private ValueType type = null;
 
     public FrameVariable(Frame frame, int id) {
         this.frame = frame;
@@ -22,5 +22,9 @@ public class FrameVariable {
 
     public ValueType getType() {
         return type;
+    }
+
+    public void setType(ValueType type) {
+        this.type = type;
     }
 }

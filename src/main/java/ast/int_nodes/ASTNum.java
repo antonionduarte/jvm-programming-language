@@ -1,30 +1,30 @@
 package ast.int_nodes;
 
 import ast.ASTNode;
-import ast.JVMOps;
+import compilation.CompilerUtils;
 import ast.types.IValue;
 import ast.types.IntValue;
 import ast.types.ValueType;
-import codeblock.CodeBlock;
+import compilation.CodeBlock;
 import environment.Environment;
-import environment.InterpretationEnvironment;
-import environment.FrameManager;
+import environment.Frame;
 
 public class ASTNum implements ASTNode {
 
 	int val;
 
-	public IValue eval(InterpretationEnvironment environment) {
+	public IValue eval(Environment<IValue> environment) {
 		return new IntValue(val);
 	}
 
 	@Override
-	public void compile(FrameManager frameManager, CodeBlock codeBlock) {
-		codeBlock.emit(JVMOps.PUSH + " " + val);
+	public ValueType compile(Frame frame, CodeBlock codeBlock) {
+		codeBlock.emit(CompilerUtils.PUSH + " " + val);
+		return ValueType.Int;
 	}
 
 	@Override
-	public ValueType getReturnType(Environment environment) {
+	public ValueType typeCheck(Environment<ValueType> environment) {
 		return ValueType.Int;
 	}
 

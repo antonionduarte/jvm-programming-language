@@ -2,10 +2,11 @@ package ast;
 
 import ast.types.IValue;
 import ast.types.ValueType;
-import codeblock.CodeBlock;
+import compilation.CodeBlock;
+import compilation.FrameCompiler;
 import environment.Environment;
-import environment.InterpretationEnvironment;
-import environment.FrameManager;
+import environment.Frame;
+import environment.FrameVariable;
 
 public class ASTId implements ASTNode {
 
@@ -16,18 +17,20 @@ public class ASTId implements ASTNode {
 	}
 
 	@Override
-	public IValue eval(InterpretationEnvironment environment) {
+	public IValue eval(Environment<IValue> environment) {
 		
 		return environment.find(this.id);
 	}
 
 	@Override
-	public void compile(FrameManager frameManager, CodeBlock codeBlock) {
-		frameManager.emitGetValue(codeBlock, id);
+	public ValueType compile(Frame frame, CodeBlock codeBlock) {
+		FrameVariable variable = frame.find(id);
+		FrameCompiler.emitGetValue(codeBlock, variable, frame);
+		return variable.getType();
 	}
 
 	@Override
-	public ValueType getReturnType(Environment environment) {
-		return environment.getAssociatedType(id);
+	public ValueType typeCheck(Environment<ValueType> environment) {
+		return environment.find(id);
 	}
 }

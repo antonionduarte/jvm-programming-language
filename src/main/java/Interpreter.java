@@ -1,4 +1,4 @@
-import environment.InterpretationEnvironment;
+import environment.Environment;
 import parser.Parser;
 
 import java.io.FileInputStream;
@@ -23,7 +23,7 @@ public class Interpreter {
 		while (path == null || in.available() > 0) {
 			try {
 				var exp = Parser.Start();
-				System.out.println(exp.eval(new InterpretationEnvironment()).toString());
+				System.out.println(exp.eval(new Environment<>()).toString());
 			} catch (Exception e) {
 				System.out.println("Syntax Error!");
 				System.out.println(e.getMessage());

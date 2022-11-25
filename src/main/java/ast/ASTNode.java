@@ -2,17 +2,16 @@ package ast;
 
 import ast.types.IValue;
 import ast.types.ValueType;
-import codeblock.CodeBlock;
+import compilation.CodeBlock;
 import environment.Environment;
-import environment.InterpretationEnvironment;
-import environment.FrameManager;
+import environment.Frame;
 
 public interface ASTNode {
 
-	IValue eval(InterpretationEnvironment environment);
+	IValue eval(Environment<IValue> environment);
 
-	void compile(FrameManager frameManager, CodeBlock codeBlock);
+	ValueType compile(Frame frame, CodeBlock codeBlock);
 
-	ValueType getReturnType(Environment environment);
+	ValueType typeCheck(Environment<ValueType> environment);
 
 }
