@@ -11,7 +11,7 @@ So the regular expression to define an environment would be something like:
 <RCURLY>
 ```
 
-```js
+```
 {
   // Environment 1 
   let x = 3; // Env1.DefList[0]
@@ -27,7 +27,7 @@ So the regular expression to define an environment would be something like:
 
 ## test expressions
 
-```js
+```
 {
  let x = 3;
  x + 1
@@ -37,7 +37,7 @@ So the regular expression to define an environment would be something like:
 { let x = 3; x + 1 }
 ```
 
-```js
+```
 { 
  let x = 3;
  let y = {

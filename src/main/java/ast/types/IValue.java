@@ -1,7 +1,7 @@
 package ast.types;
 
 public interface IValue {
-    String toString();
+	String toString();
 
-    ValueType getType();
+	ValueType getType();
 }

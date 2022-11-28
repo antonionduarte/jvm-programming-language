@@ -1,8 +1,5 @@
 package environment;
 
-import ast.types.IValue;
-import ast.types.ValueType;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +27,7 @@ public class Environment<T> {
 	}
 
 	public void associate(String id, T val) {
-		if(this.associations.containsKey(id)){
+		if (this.associations.containsKey(id)) {
 			throw new InvalidIdentifierException(id);
 		}
 		this.associations.put(id, val);
@@ -48,5 +45,4 @@ public class Environment<T> {
 			}
 		}
 	}
-
 }

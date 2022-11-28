@@ -10,7 +10,7 @@ import environment.FrameVariable;
 
 public class ASTId implements ASTNode {
 
-	private String id;
+	private final String id;
 
 	public ASTId(String id) {
 		this.id = id;
@@ -18,7 +18,7 @@ public class ASTId implements ASTNode {
 
 	@Override
 	public IValue eval(Environment<IValue> environment) {
-		
+
 		return environment.find(this.id);
 	}
 

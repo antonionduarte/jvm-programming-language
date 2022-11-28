@@ -13,5 +13,4 @@ public interface ASTNode {
 	ValueType compile(Frame frame, CodeBlock codeBlock);
 
 	ValueType typeCheck(Environment<ValueType> environment);
-
 }

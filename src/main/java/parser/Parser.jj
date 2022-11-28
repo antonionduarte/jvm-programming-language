@@ -74,7 +74,7 @@ ASTNode Exp() :
        {
             t1 = new ASTAnd(t1, t2);
        }
-   )?
+   ) ?
    {
        return t1;
    }
@@ -90,7 +90,7 @@ ASTNode OrChain():
         {
             t1 = new ASTOr(t1, t2);
         }
-    )?
+    ) ?
     {
         return t1;
     }

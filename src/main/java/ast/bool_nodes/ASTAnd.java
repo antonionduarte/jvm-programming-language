@@ -9,27 +9,28 @@ import environment.Environment;
 import environment.Frame;
 
 public class ASTAnd implements ASTNode {
-    private ASTNode lhs, rhs;
+	private final ASTNode lhs;
+    private final ASTNode rhs;
 
-    public ASTAnd(ASTNode lhs, ASTNode rhs){
-        this.lhs = lhs;
-        this.rhs = rhs;
-    }
+	public ASTAnd(ASTNode lhs, ASTNode rhs) {
+		this.lhs = lhs;
+		this.rhs = rhs;
+	}
 
-    @Override
-    public IValue eval(Environment<IValue> environment) {
-        boolean v1 = BoolValue.asBoolean(lhs.eval(environment));
-        boolean v2 = BoolValue.asBoolean(rhs.eval(environment));
-        return new BoolValue(v1 && v2);
-    }
+	@Override
+	public IValue eval(Environment<IValue> environment) {
+		boolean v1 = BoolValue.asBoolean(lhs.eval(environment));
+		boolean v2 = BoolValue.asBoolean(rhs.eval(environment));
+		return new BoolValue(v1 && v2);
+	}
 
-    @Override
-    public ValueType compile(Frame frame, CodeBlock codeBlock) {
-        throw new RuntimeException("Not implemented"); //TODO implement
-    }
+	@Override
+	public ValueType compile(Frame frame, CodeBlock codeBlock) {
+		throw new RuntimeException("Not implemented"); //TODO implement
+	}
 
-    @Override
-    public ValueType typeCheck(Environment<ValueType> environment) {
-        return ValueType.Bool;
-    }
+	@Override
+	public ValueType typeCheck(Environment<ValueType> environment) {
+		return ValueType.Bool;
+	}
 }

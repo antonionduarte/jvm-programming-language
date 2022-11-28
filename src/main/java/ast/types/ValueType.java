@@ -1,22 +1,23 @@
 package ast.types;
 
 public enum ValueType {
-    Int("I"),
-    Bool("B"/*TODO: check if this is right*/),
-    Void("V");
+	Int("I"),
+	Bool("B"/*TODO: check if this is right*/),
+	Void("V");
 
-    private final String jvmId;
-    ValueType(String jvmId){
-        this.jvmId = jvmId;
-    }
+	private final String jvmId;
 
-    public String getJvmId() {
-        return jvmId;
-    }
+	ValueType(String jvmId) {
+		this.jvmId = jvmId;
+	}
 
-    public void expect(ValueType expected){
-        if(expected != this){
-            throw new TypeMismatchException(expected, this);
-        }
-    }
+	public String getJvmId() {
+		return jvmId;
+	}
+
+	public void expect(ValueType expected) {
+		if (expected != this) {
+			throw new TypeMismatchException(expected, this);
+		}
+	}
 }

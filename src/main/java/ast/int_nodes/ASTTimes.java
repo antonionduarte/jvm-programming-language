@@ -1,17 +1,22 @@
 package ast.int_nodes;
 
 import ast.ASTNode;
-import compilation.CompilerUtils;
 import ast.types.IValue;
 import ast.types.IntValue;
 import ast.types.ValueType;
 import compilation.CodeBlock;
+import compilation.CompilerUtils;
 import environment.Environment;
 import environment.Frame;
 
 public class ASTTimes implements ASTNode {
 
 	ASTNode lhs, rhs;
+
+	public ASTTimes(ASTNode l, ASTNode r) {
+		lhs = l;
+		rhs = r;
+	}
 
 	public IValue eval(Environment<IValue> environment) {
 		int v1 = IntValue.asInt(lhs.eval(environment));
@@ -30,11 +35,6 @@ public class ASTTimes implements ASTNode {
 	@Override
 	public ValueType typeCheck(Environment<ValueType> environment) {
 		return ValueType.Int;
-	}
-
-	public ASTTimes(ASTNode l, ASTNode r) {
-		lhs = l;
-		rhs = r;
 	}
 }
 
