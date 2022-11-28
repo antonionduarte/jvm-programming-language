@@ -186,43 +186,64 @@ ASTNode Fact():
   Token id;
 }
 {
-    <TRUE> { return new ASTBool(true); }
-    | <FALSE> { return new ASTBool(false);}
-  | <MINUS> t = Fact()
-  {
-    t = new ASTNeg(t);
-    return t;
-  }
-| n = <Num>
-  {
-    t = new ASTNum(Integer.parseInt(n.image));
-    return t;
-  }
-| <LPAR> t = Exp() <RPAR>
-  {
-    return t;
-  }
-| id = <Id>
- {
-   return new ASTId(id.image);
- }
-| <LCURLY>
+      <TRUE> { return new ASTBool(true); }
+	| <FALSE> { return new ASTBool(false); }
+
+    | <MINUS> t = Fact()
+	{
+		t = new ASTNeg(t);
+		return t;
+	}
+
+	| n = <Num>
+	{
+		t = new ASTNum(Integer.parseInt(n.image));
+		return t;
+	}
+
+	| <LPAR> t = Exp() <RPAR>
+	{
+		return t;
+	}
+
+	| id = <Id>
+	{
+		return new ASTId(id.image);
+	}
+
+	| <LCURLY>
+	{
+		HashMap<String, ASTNode> l = new HashMap<>();
+		ASTNode b;
+	}
+
+	(
+		<LET> (id = <Id>) <EQUALS> (t = Exp()) <DOTCOMMA>
 		{
-			HashMap<String, ASTNode> l = new HashMap<>();
-			ASTNode b;
+			l.put(id.image, t);
 		}
+	) *
 
-		(
-			<LET> (id = <Id>) <EQUALS> (t = Exp()) <DOTCOMMA>
-			{
-				l.put(id.image, t);
-			}
-		) *
+	( b = Exp() )
+	<RCURLY>
+	{
+		return new ASTDef(b, l);
+	}
 
-		( b = Exp() )
-  <RCURLY>
+	| <FUN> <LPAR>
+	{
+		ArrayList<IValue> l = new ArrayList<>();
+		HashMap<String, ASTNode> m = new HashMap<>();
+		ASTNode b;
+	}
+	<RPAR> <LCURLY>
+	(
+		<LET> (id = <Id>) <EQUALS> (t = Exp()) <DOTCOMMA>
+		{
+			m.put(id.image, t);
+		}
+	) *
 
-  {
-    return new ASTDef(b, l);
-  }
+	( b = Exp() )
+	<RCURLY>
 }

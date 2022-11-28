@@ -2,7 +2,7 @@ package ast.types;
 
 public enum ValueType {
 	Int("I"),
-	Bool("B"/*TODO: check if this is right*/),
+	Bool("B" /* TODO: check if this is right */ ),
 	Void("V");
 
 	private final String jvmId;
