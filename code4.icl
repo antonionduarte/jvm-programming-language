@@ -1,4 +1,4 @@
-let f = fun (Int: x, Int: y) {
+let f = fn (Int: x, Int: y) {
   x + 1 + y
   // stuff 
 };

@@ -7,7 +7,7 @@ import environment.Closure;
 import environment.Environment;
 import environment.Frame;
 
-public class ASTFunction implements ASTNode {
+public class ASTFunction implements ASTNode { /* TODO: I think this won't be an ASTNode(?) */
 
 	private Closure<IValue> closure;
 

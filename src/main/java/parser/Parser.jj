@@ -1,4 +1,4 @@
-PARSER_BEGIN(Parser)
+PARSER_BEGIN(Parser
 
 
 /** ID lister. */
@@ -19,9 +19,9 @@ PARSER_END(Parser)
 
 TOKEN:
 {
-    < LET : "let" >
-    | <TRUE : "true">
-    | <FALSE: "false">
+	< LET : "let" >
+	| <TRUE : "true">
+	| <FALSE: "false">
 	| < Num: (["0"-"9"]) + >
 	| < PLUS : "+" >
 	| < MINUS : "-">
@@ -42,13 +42,16 @@ TOKEN:
 	| < RCURLY : "}" >
 	| < EQUALS : "=" >
 	| < DOTCOMMA : ";" >
-	| < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
+	| < COMMA : "," >
+	| < TWODOTS : ":" >
+	| < FUN : "fn" > 
+	| < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >	
 }
 
 
 SKIP:
 {
-      " "
+		" "
 	| "\t"
 	| "\n"
 	| "\r"
@@ -186,7 +189,7 @@ ASTNode Fact():
   Token id;
 }
 {
-      <TRUE> { return new ASTBool(true); }
+		<TRUE> { return new ASTBool(true); }
 	| <FALSE> { return new ASTBool(false); }
 
     | <MINUS> t = Fact()
@@ -230,17 +233,22 @@ ASTNode Fact():
 		return new ASTDef(b, l);
 	}
 
-	| <FUN> <LPAR>
+	| <FUN> <LPAR> 
 	{
-		ArrayList<IValue> l = new ArrayList<>();
-		HashMap<String, ASTNode> m = new HashMap<>();
+		ArrayList<IValue> l = new ArrayList<>(); 
+		HashMap<String, IValue> p = new HashMap<>(); # Parameters
 		ASTNode b;
 	}
+
+	(
+		(id = <Id> { p.pot(id.image, new IValue()) } (<COMMA> id = <Id> {  }) * )
+	) ?
+
 	<RPAR> <LCURLY>
 	(
 		<LET> (id = <Id>) <EQUALS> (t = Exp()) <DOTCOMMA>
 		{
-			m.put(id.image, t);
+			p.put(id.image, t);
 		}
 	) *
 

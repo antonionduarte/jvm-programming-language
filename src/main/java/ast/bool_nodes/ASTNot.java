@@ -3,6 +3,7 @@ package ast.bool_nodes;
 import ast.ASTNode;
 import ast.types.BoolValue;
 import ast.types.IValue;
+import ast.types.Type;
 import ast.types.ValueType;
 import compilation.CodeBlock;
 import environment.Environment;
@@ -28,7 +29,7 @@ public class ASTNot implements ASTNode {
 
 	@Override
 	public ValueType typeCheck(Environment<ValueType> environment) {
-		return ValueType.Bool;
+		return new ValueType(Type.BOOL);
 	}
 }
 

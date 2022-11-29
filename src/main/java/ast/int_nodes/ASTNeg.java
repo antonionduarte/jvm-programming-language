@@ -3,6 +3,7 @@ package ast.int_nodes;
 import ast.ASTNode;
 import ast.types.IValue;
 import ast.types.IntValue;
+import ast.types.Type;
 import ast.types.ValueType;
 import compilation.CodeBlock;
 import compilation.CompilerUtils;
@@ -24,14 +25,14 @@ public class ASTNeg implements ASTNode {
 
 	@Override
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
-		exp.compile(frame, codeBlock).expect(ValueType.Int);
+		exp.compile(frame, codeBlock).expect(new ValueType(Type.INT));
 		codeBlock.emit(CompilerUtils.NEG);
-		return ValueType.Int;
+		return new ValueType(Type.INT);
 	}
 
 	@Override
 	public ValueType typeCheck(Environment<ValueType> environment) {
-		return ValueType.Int;
+		return new ValueType(Type.INT);
 	}
 }
 

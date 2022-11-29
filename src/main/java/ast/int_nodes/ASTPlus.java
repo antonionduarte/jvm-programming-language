@@ -3,6 +3,7 @@ package ast.int_nodes;
 import ast.ASTNode;
 import ast.types.IValue;
 import ast.types.IntValue;
+import ast.types.Type;
 import ast.types.ValueType;
 import compilation.CodeBlock;
 import compilation.CompilerUtils;
@@ -26,15 +27,15 @@ public class ASTPlus implements ASTNode {
 
 	@Override
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
-		lhs.compile(frame, codeBlock).expect(ValueType.Int);
-		rhs.compile(frame, codeBlock).expect(ValueType.Int);
+		lhs.compile(frame, codeBlock).expect(new ValueType(Type.INT));
+		rhs.compile(frame, codeBlock).expect(new ValueType(Type.INT));
 		codeBlock.emit(CompilerUtils.ADD);
-		return ValueType.Int;
+		return new ValueType(Type.INT);
 	}
 
 	@Override
 	public ValueType typeCheck(Environment<ValueType> environment) {
-		return ValueType.Int;
+		return new ValueType(Type.INT);
 	}
 }
 

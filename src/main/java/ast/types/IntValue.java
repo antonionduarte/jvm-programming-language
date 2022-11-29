@@ -11,7 +11,7 @@ public class IntValue implements IValue {
 		if (value instanceof IntValue) {
 			return ((IntValue) value).getValue();
 		} else {
-			throw new TypeMismatchException(ValueType.Int, value.getType());
+			throw new TypeMismatchException(new ValueType(Type.INT), value.getType());
 		}
 	}
 
@@ -26,7 +26,7 @@ public class IntValue implements IValue {
 
 	@Override
 	public ValueType getType() {
-		return ValueType.Int;
+		return new ValueType(Type.INT);
 	}
 
 	@Override

@@ -13,7 +13,7 @@ public class BoolValue implements IValue {
 		if (value instanceof BoolValue) {
 			return ((BoolValue) value).getValue();
 		} else {
-			throw new TypeMismatchException(ValueType.Bool, value.getType());
+			throw new TypeMismatchException(new ValueType(Type.BOOL), value.getType());
 		}
 	}
 
@@ -28,7 +28,7 @@ public class BoolValue implements IValue {
 
 	@Override
 	public ValueType getType() {
-		return ValueType.Int;
+		return new ValueType(Type.BOOL);
 	}
 
 	@Override
