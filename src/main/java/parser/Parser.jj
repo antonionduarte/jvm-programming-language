@@ -1,4 +1,4 @@
-PARSER_BEGIN(Parser
+PARSER_BEGIN(Parser)
 
 
 /** ID lister. */
@@ -8,6 +8,7 @@ import ast.*;
 import ast.int_nodes.*;
 import ast.bool_nodes.*;
 import java.util.*;
+import utils.*;
 
 public class Parser {
 
@@ -20,8 +21,8 @@ PARSER_END(Parser)
 TOKEN:
 {
 	< LET : "let" >
-	| <TRUE : "true">
-	| <FALSE: "false">
+	| < TRUE : "true" >
+	| < FALSE: "false" >
 	| < Num: (["0"-"9"]) + >
 	| < PLUS : "+" >
 	| < MINUS : "-">
@@ -45,6 +46,10 @@ TOKEN:
 	| < COMMA : "," >
 	| < TWODOTS : ":" >
 	| < FUN : "fn" > 
+	| < INT: "Int" >
+	| < STR: "String" >
+	| < BOOL: "Bool" >
+	| < ARROW: "->" >
 	| < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >	
 }
 
@@ -167,8 +172,8 @@ ASTNode NumExp():
 
 ASTNode Term():
 {
-  Token op;
-  ASTNode t1, t2;
+	Token op;
+	ASTNode t1, t2;
 }
 {
   t1 = Fact() (( op = <TIMES> | op = <DIV> ) t2 = Term() 
@@ -192,66 +197,88 @@ ASTNode Fact():
 		<TRUE> { return new ASTBool(true); }
 	| <FALSE> { return new ASTBool(false); }
 
-    | <MINUS> t = Fact()
-	{
-		t = new ASTNeg(t);
-		return t;
-	}
+	| <MINUS> t = Fact()
+		{
+			t = new ASTNeg(t);
+			return t;
+		}
 
 	| n = <Num>
-	{
-		t = new ASTNum(Integer.parseInt(n.image));
-		return t;
-	}
+		{
+			t = new ASTNum(Integer.parseInt(n.image));
+			return t;
+		}
 
 	| <LPAR> t = Exp() <RPAR>
-	{
-		return t;
-	}
+		{
+			return t;
+		}
 
-	| id = <Id>
-	{
-		return new ASTId(id.image);
-	}
+	| LOOKAHEAD(2) id = <Id> <LPAR> 
+		{
+			ArrayList<ASTNode> params = new ArrayList(); 	
+			ASTNode param;
+		}
+
+		( param = Exp() { params.add(param); } ) ?  
+		( <COMMA> param = Exp() { params.add(param); } ) *
+	<RPAR> <DOTCOMMA>
+
+	| id = <Id> 
+		{
+			return new ASTId(id.image);
+		}
 
 	| <LCURLY>
-	{
-		HashMap<String, ASTNode> l = new HashMap<>();
-		ASTNode b;
-	}
-
-	(
-		<LET> (id = <Id>) <EQUALS> (t = Exp()) <DOTCOMMA>
 		{
-			l.put(id.image, t);
+			HashMap<String, ASTNode> l = new HashMap<>();
+			ASTNode b;
 		}
-	) *
 
-	( b = Exp() )
-	<RCURLY>
-	{
-		return new ASTDef(b, l);
-	}
+		(
+			<LET> (id = <Id>) <EQUALS> (t = Exp()) <DOTCOMMA>
+			{
+				l.put(id.image, t);
+			}
+		) *
+
+		(b = Exp())
+		<RCURLY>
+		{
+			return new ASTDef(b, l);
+		}
 
 	| <FUN> <LPAR> 
-	{
-		ArrayList<IValue> l = new ArrayList<>(); 
-		HashMap<String, IValue> p = new HashMap<>(); # Parameters
-		ASTNode b;
-	}
-
-	(
-		(id = <Id> { p.pot(id.image, new IValue()) } (<COMMA> id = <Id> {  }) * )
-	) ?
-
-	<RPAR> <LCURLY>
-	(
-		<LET> (id = <Id>) <EQUALS> (t = Exp()) <DOTCOMMA>
 		{
-			p.put(id.image, t);
+			HashMap<String, ASTNode> d = new HashMap<>(); 
+			ArrayList<Pair<String, String>> p = new ArrayList<>(); 
+			ASTNode b;
+			String type;
+			String retType;
 		}
-	) *
 
-	( b = Exp() )
-	<RCURLY>
+		(
+			(id = <Id> <TWODOTS> type = <Id> { 
+				p.add(new Pair(id.image, type.image));
+			} 
+			
+			(<COMMA> id = <Id> {  
+				p.add(new Pair(id.image, type.image));
+			}) * ) <ARROW> retType = <Id>
+		) ?
+
+		<RPAR> <LCURLY>
+		(
+			<LET> (id = <Id>) <EQUALS> (t = Exp()) <DOTCOMMA>
+			{
+				d.put(id.image, t);
+			}
+		) *
+
+		( b = Exp() )
+
+		{
+			return new ASTFunction(b, p, d, retType);
+		}
+	<RCURLY> <DOTCOMMA>
 }

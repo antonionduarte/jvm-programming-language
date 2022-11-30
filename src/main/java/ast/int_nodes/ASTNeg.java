@@ -25,14 +25,14 @@ public class ASTNeg implements ASTNode {
 
 	@Override
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
-		exp.compile(frame, codeBlock).expect(new ValueType(Type.INT));
+		exp.compile(frame, codeBlock).expect(new ValueType(Type.Int));
 		codeBlock.emit(CompilerUtils.NEG);
-		return new ValueType(Type.INT);
+		return new ValueType(Type.Int);
 	}
 
 	@Override
 	public ValueType typeCheck(Environment<ValueType> environment) {
-		return new ValueType(Type.INT);
+		return new ValueType(Type.Int);
 	}
 }
 

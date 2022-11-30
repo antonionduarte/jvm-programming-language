@@ -5,7 +5,6 @@ import ast.types.IValue;
 import ast.types.IntValue;
 import ast.types.Type;
 import ast.types.ValueType;
-import com.sun.jdi.Value;
 import compilation.CodeBlock;
 import compilation.CompilerUtils;
 import environment.Environment;
@@ -28,15 +27,15 @@ public class ASTDiv implements ASTNode {
 
 	@Override
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
-		lhs.compile(frame, codeBlock).expect(new ValueType(Type.INT));
-		rhs.compile(frame, codeBlock).expect(new ValueType(Type.INT));
+		lhs.compile(frame, codeBlock).expect(new ValueType(Type.Int));
+		rhs.compile(frame, codeBlock).expect(new ValueType(Type.Int));
 		codeBlock.emit(CompilerUtils.DIV);
-		return new ValueType(Type.INT);
+		return new ValueType(Type.Int);
 	}
 
 	@Override
 	public ValueType typeCheck(Environment<ValueType> environment) {
-		return new ValueType(Type.INT);
+		return new ValueType(Type.Int);
 	}
 }
 

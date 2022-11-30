@@ -4,9 +4,8 @@ import java.util.List;
 
 public class ValueType {
 
-	private List<ValueType> parameterTypes;
-
-	private ValueType returnType;
+	private final List<ValueType> parameterTypes;
+	private final ValueType returnType;
 	private final Type type;
 
 	/**

@@ -1,6 +1,11 @@
-let f = fn (Int: x, Int: y) {
-  x + 1 + y
-  // stuff 
+let x = fn (x: Int, y: Int) -> Int {
+	x + y;
 };
 
-f (2, 3);
+x(2, 3);
+
+let inc = fn (x: Int) -> Int { x + 1; };
+
+let comp = fn (f, g) {
+	f(g(x))
+}

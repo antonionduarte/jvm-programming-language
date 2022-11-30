@@ -28,6 +28,6 @@ public class ASTBool implements ASTNode {
 
 	@Override
 	public ValueType typeCheck(Environment environment) {
-		return new ValueType(Type.BOOL);
+		return new ValueType(Type.Bool);
 	}
 }

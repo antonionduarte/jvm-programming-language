@@ -32,7 +32,7 @@ public class ASTEqual implements ASTNode {
 
 	@Override
 	public ValueType typeCheck(Environment<ValueType> environment) {
-		return new ValueType(Type.BOOL);
+		return new ValueType(Type.Bool);
 	}
 }
 

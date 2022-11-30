@@ -1,10 +1,10 @@
 package ast.types;
 
 public enum Type {
-	INT("I"),
-	BOOL("B"), /* TODO: Check if this is right */
-	STRING("S"), /* TODO: check if this is right */
-	FUN("F");
+	Int("I"),
+	Bool("B"), /* TODO: Check if this is right */
+	String("S"), /* TODO: check if this is right */
+	Fun("F");
 
 	private final String jvmId;
 

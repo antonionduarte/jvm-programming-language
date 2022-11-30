@@ -25,11 +25,11 @@ public class ASTNum implements ASTNode {
 	@Override
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
 		codeBlock.emit(CompilerUtils.PUSH + " " + val);
-		return new ValueType(Type.INT);
+		return new ValueType(Type.Int);
 	}
 
 	@Override
 	public ValueType typeCheck(Environment<ValueType> environment) {
-		return new ValueType(Type.INT);
+		return new ValueType(Type.Int);
 	}
 }
