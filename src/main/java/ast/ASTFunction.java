@@ -5,6 +5,7 @@ import compilation.CodeBlock;
 import environment.Closure;
 import environment.Environment;
 import environment.Frame;
+import utils.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,18 +17,20 @@ public class ASTFunction implements ASTNode {
 	private final HashMap<String, ASTNode> definitions;
 	private final ValueType  returnType;
 
-	public ASTFunction(ASTNode body, HashMap<String, String> parameters, HashMap<String, ASTNode> definitions, ValueType returnType) {
+	public ASTFunction(ASTNode body, ArrayList<Pair<String, String>> parameters, HashMap<String, ASTNode> definitions, ValueType returnType) {
 		this.typedParameters = convertParameters(parameters);
 		this.body = body;
 		this.definitions = definitions;
 		this.returnType = returnType;
 	}
 
-	private ArrayList<Parameter> convertParameters(HashMap<String, String> parameters) {
+	private ArrayList<Parameter> convertParameters(ArrayList<Pair<String, String>> parameters) {
 		ArrayList<Parameter> convertedParameters = new ArrayList<>();
-		for (String parameter : parameters.keySet()) {
+		for (Pair<String, String> pair : parameters) {
+			String parameter = pair.a();
+			String type = pair.b();
 			// TODO: Well this won't work for parameters where the type is a function type
-			convertedParameters.add(new Parameter(parameter, new ValueType(Type.valueOf(parameters.get(parameter)))));
+			convertedParameters.add(new Parameter(parameter, new ValueType(Type.valueOf(type))));
 		}
 		return convertedParameters;
 	}

@@ -17,9 +17,9 @@ public class ASTFunctionApplication implements ASTNode {
 	private final String identifier;
 		private final ArrayList<ValueType> arguments;
 
-	public ASTFunctionApplication(String identifier, ArrayList<String> arguments) {
+	public ASTFunctionApplication(String identifier, ArrayList<ASTNode> arguments) {
 		this.identifier = identifier;
-		this.arguments = convertToArguments(arguments);
+		this.arguments = arguments;
 	}
 
 	private ArrayList<ValueType> convertToArguments(ArrayList<String> arguments) {
@@ -44,7 +44,7 @@ public class ASTFunctionApplication implements ASTNode {
 			bodyEnvironment.associate(argument.toString(), argument);
 		} */
 
-		return body.eval(closure.getEnvironment());
+		return body.eval(applicationEnvironment);
 	}
 
 	@Override

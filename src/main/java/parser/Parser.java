@@ -8,6 +8,7 @@ import ast.int_nodes.*;
 import ast.bool_nodes.*;
 import java.util.*;
 import utils.*;
+import ast.types.*;
 
 public class Parser implements ParserConstants {
 
@@ -297,6 +298,7 @@ params.add(param);
         }
         jj_consume_token(RPAR);
         jj_consume_token(DOTCOMMA);
+{if ("" != null) return new ASTFunctionApplication(id.image, params);}
       } else {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case Id:{
@@ -337,8 +339,8 @@ l.put(id.image, t);
 HashMap<String, ASTNode> d = new HashMap<>();
                         ArrayList<Pair<String, String>> p = new ArrayList<>();
                         ASTNode b;
-                        String type;
-                        String retType;
+                        Token type;
+                        Token retType = null;
           switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
           case Id:{
             id = jj_consume_token(Id);
@@ -358,10 +360,10 @@ p.add(new Pair(id.image, type.image));
               }
               jj_consume_token(COMMA);
               id = jj_consume_token(Id);
+              jj_consume_token(TWODOTS);
+              type = jj_consume_token(Id);
 p.add(new Pair(id.image, type.image));
             }
-            jj_consume_token(ARROW);
-            retType = jj_consume_token(Id);
             break;
             }
           default:
@@ -369,6 +371,8 @@ p.add(new Pair(id.image, type.image));
             ;
           }
           jj_consume_token(RPAR);
+          jj_consume_token(ARROW);
+          retType = jj_consume_token(Id);
           jj_consume_token(LCURLY);
           label_5:
           while (true) {
@@ -389,9 +393,8 @@ p.add(new Pair(id.image, type.image));
 d.put(id.image, t);
           }
           b = Exp();
-{if ("" != null) return new ASTFunction(b, p, d, retType);}
           jj_consume_token(RCURLY);
-          jj_consume_token(DOTCOMMA);
+{if ("" != null) return new ASTFunction(b, p, d, retType != null ? new ValueType(Type.valueOf(retType.image)) : null);}
           break;
           }
         default:
@@ -439,7 +442,7 @@ d.put(id.image, t);
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x400,0x200,0x3f000,0x3f000,0x8414085c,0x60,0x60,0x180,0x180,0x8414085c,0x1000000,0x2,0x1000000,0x80000000,0x2,0x4005c,0x84100000,};
+	   jj_la1_0 = new int[] {0x400,0x200,0x3f000,0x3f000,0x4414085c,0x60,0x60,0x180,0x180,0x4414085c,0x1000000,0x2,0x1000000,0x40000000,0x2,0x4005c,0x44100000,};
 	}
 	private static void jj_la1_init_1() {
 	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
@@ -676,7 +679,7 @@ d.put(id.image, t);
   /** Generate ParseException. */
   static public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[36];
+	 boolean[] la1tokens = new boolean[35];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -693,7 +696,7 @@ d.put(id.image, t);
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 36; i++) {
+	 for (int i = 0; i < 35; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;

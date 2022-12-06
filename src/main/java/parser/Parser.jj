@@ -9,6 +9,7 @@ import ast.int_nodes.*;
 import ast.bool_nodes.*;
 import java.util.*;
 import utils.*;
+import ast.types.*;
 
 public class Parser {
 
@@ -45,8 +46,7 @@ TOKEN:
 	| < DOTCOMMA : ";" >
 	| < COMMA : "," >
 	| < TWODOTS : ":" >
-	| < FUN : "fn" > 
-	| < INT: "Int" >
+	| < FUN : "fn" >
 	| < STR: "String" >
 	| < BOOL: "Bool" >
 	| < ARROW: "->" >
@@ -253,8 +253,8 @@ ASTNode Fact():
 			HashMap<String, ASTNode> d = new HashMap<>(); 
 			ArrayList<Pair<String, String>> p = new ArrayList<>(); 
 			ASTNode b;
-			String type;
-			String retType;
+			Token type;
+			Token retType = null;
 		}
 
 		(
@@ -262,12 +262,13 @@ ASTNode Fact():
 				p.add(new Pair(id.image, type.image));
 			} 
 			
-			(<COMMA> id = <Id> {  
+			(<COMMA> id = <Id> <TWODOTS> type = <Id> {
 				p.add(new Pair(id.image, type.image));
-			}) * ) <ARROW> retType = <Id>
+			}) *
 		) ?
 
-		<RPAR> <LCURLY>
+		<RPAR> <ARROW> retType = <Id> <LCURLY>
+
 		(
 			<LET> (id = <Id>) <EQUALS> (t = Exp()) <DOTCOMMA>
 			{
@@ -278,7 +279,7 @@ ASTNode Fact():
 		( b = Exp() )
 
 		{
-			return new ASTFunction(b, p, d, retType);
+			return new ASTFunction(b, p, d, retType != null ? new ValueType(Type.valueOf(retType.image)) : null);
 		}
 	<RCURLY> <DOTCOMMA>
 }
