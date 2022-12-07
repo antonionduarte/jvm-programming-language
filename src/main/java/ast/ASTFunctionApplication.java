@@ -15,34 +15,31 @@ import java.util.ArrayList;
 public class ASTFunctionApplication implements ASTNode {
 
 	private final String identifier;
-		private final ArrayList<ValueType> arguments;
+	private final ArrayList<ASTNode> arguments;
 
 	public ASTFunctionApplication(String identifier, ArrayList<ASTNode> arguments) {
 		this.identifier = identifier;
 		this.arguments = arguments;
 	}
 
-	private ArrayList<ValueType> convertToArguments(ArrayList<String> arguments) {
-		ArrayList<ValueType> convertedArguments = new ArrayList<>();
-		for (String argument : arguments) {
-			convertedArguments.add(new ValueType(Type.valueOf(argument)));
-		}
-		return convertedArguments;
-	}
-
 	@Override
 	public IValue eval(Environment<IValue> environment) {
 		var closure = ClosureValue.asClosure(environment.find(identifier));
 		var body = closure.getBody();
-		var bodyEnvironment = new Environment<IValue>();
+		var applicationEnvironment = new Environment<>(closure.getEnvironment());
+		var parameters = closure.getParameters();
 
-		/* for (var definition : closure.getDefinitions().keySet()) {
-			bodyEnvironment.associate(definition, closure.getDefinitions().get(definition));
-		} TODO: Ignore this for now, it fucks stuff up */
+		for (var i = 0; i < parameters.size(); i++) {
+			var parameterId = parameters.get(i).name();
+			var argumentValue = this.arguments.get(i).eval(environment);
+			applicationEnvironment.associate(parameterId, argumentValue);
+		}
 
-		/* for (var argument : arguments) {
-			bodyEnvironment.associate(argument.toString(), argument);
-		} */
+		for (var definition : closure.getDefinitions().keySet()) {
+			applicationEnvironment.associate(
+					definition, closure.getDefinitions().get(definition).eval(applicationEnvironment)
+			);
+		}
 
 		return body.eval(applicationEnvironment);
 	}

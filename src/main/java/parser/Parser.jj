@@ -222,9 +222,12 @@ ASTNode Fact():
 
 		( param = Exp() { params.add(param); } ) ?  
 		( <COMMA> param = Exp() { params.add(param); } ) *
-	<RPAR> <DOTCOMMA>
 
-	| id = <Id> 
+	    <RPAR> <DOTCOMMA>
+
+	    { return new ASTFunctionApplication(id.image, params); }
+
+	| id = <Id>
 		{
 			return new ASTId(id.image);
 		}
@@ -258,7 +261,7 @@ ASTNode Fact():
 		}
 
 		(
-			(id = <Id> <TWODOTS> type = <Id> { 
+			id = <Id> <TWODOTS> type = <Id> {
 				p.add(new Pair(id.image, type.image));
 			} 
 			
@@ -278,8 +281,10 @@ ASTNode Fact():
 
 		( b = Exp() )
 
+        <RCURLY>
+
 		{
 			return new ASTFunction(b, p, d, retType != null ? new ValueType(Type.valueOf(retType.image)) : null);
 		}
-	<RCURLY> <DOTCOMMA>
+
 }

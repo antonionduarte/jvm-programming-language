@@ -37,7 +37,6 @@ public class ASTFunction implements ASTNode {
 
 	@Override
 	public IValue eval(Environment<IValue> environment) {
-		/* TODO: Typecheck and other funkywunky things probably */
 		return new ClosureValue(environment, typedParameters, definitions, returnType, body);
 	}
 
