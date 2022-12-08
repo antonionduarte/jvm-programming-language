@@ -126,7 +126,7 @@ ASTNode BoolTerm():
 
 	| t1 = NumExp()
 		(
-		 (op = <LT>
+			(op = <LT>
 		 | op = <LTE>
 		 | op = <GT>
 		 | op = <GTE>
@@ -176,9 +176,7 @@ ASTNode NumExp():
 			t1 = new ASTPlus(t1, t2);
 		}
 		else t1 = new ASTMinus(t1, t2);
-	}
-
-  ) *
+	}) *
 
   { return t1; }
 }
@@ -242,7 +240,7 @@ ASTNode Fact():
 
 		{ return new ASTFunctionApplication(id.image, params); }
 
-	| LOOKAHEAD(2) (id = <Id>) <ASSIGN> (t = Exp()) <DOTCOMMA>
+	| LOOKAHEAD(2) id = <Id> <ASSIGN> (t = Exp()) <DOTCOMMA>
 		{
 			return new ASTAssign(new ASTId(id.image), t);
 		}
@@ -276,7 +274,9 @@ ASTNode Fact():
 		) *
 
 		(b = Exp())
+
 		<RCURLY>
+
 		{
 			return new ASTDef(b, l);
 		}
@@ -309,7 +309,7 @@ ASTNode Fact():
 			} <DOTCOMMA>
 		) * 
 
-		( b = Exp() ) 
+		(b = Exp()) 
 
 		<RCURLY> 
 
