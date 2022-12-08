@@ -275,7 +275,7 @@ ASTNode Fact():
 			return new ASTId(id.image);
 		}
 
-	| <DEREFERENCE> t = Exp()
+	| <DEREFERENCE> t = Fact()
 		{
 			return new ASTDereference(t);
 		}

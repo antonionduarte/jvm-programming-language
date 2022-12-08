@@ -19,6 +19,10 @@ public class ValueType {
 		this.returnType = null;
 	}
 
+	public Type getType() {
+		return type;
+	}
+
 	/**
 	 * Constructor meant to be used for Records and Function types.
 	 *

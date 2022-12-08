@@ -388,7 +388,7 @@ params.add(param);
           }
         case DEREFERENCE:{
           jj_consume_token(DEREFERENCE);
-          t = Exp();
+          t = Fact();
 {if ("" != null) return new ASTDereference(t);}
           break;
           }
