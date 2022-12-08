@@ -5,7 +5,8 @@ public enum Type {
 	Bool("B"), /* TODO: Check if this is right */
 	String("S"), /* TODO: Check if this is right */
 	Fun("F"),
-	Ref("R"); /* TODO: Check if this is right */
+	Ref("R"), /* TODO: Check if this is right */
+	Void("V");
 
 	private final String jvmId;
 

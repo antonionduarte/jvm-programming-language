@@ -1,5 +1,6 @@
 package ast.functions;
 
+import ast.ASTBlock;
 import ast.ASTNode;
 import ast.typing.types.Type;
 import ast.typing.types.ValueType;
@@ -18,13 +19,11 @@ public class ASTFunction implements ASTNode {
 
 	private final ArrayList<Parameter> typedParameters;
 	private final ASTNode body;
-	private final HashMap<String, ASTNode> definitions;
 	private final ValueType returnType;
 
-	public ASTFunction(ASTNode body, ArrayList<Pair<String, String>> parameters, HashMap<String, ASTNode> definitions, ValueType returnType) {
+	public ASTFunction(ASTNode body, ArrayList<Pair<String, String>> parameters, ValueType returnType) {
 		this.typedParameters = convertParameters(parameters);
 		this.body = body;
-		this.definitions = definitions;
 		this.returnType = returnType;
 	}
 
@@ -41,7 +40,7 @@ public class ASTFunction implements ASTNode {
 
 	@Override
 	public IValue eval(Environment<IValue> environment) {
-		return new ClosureValue(environment, typedParameters, definitions, returnType, body);
+		return new ClosureValue(environment, typedParameters, returnType, body);
 	}
 
 	@Override

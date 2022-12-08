@@ -13,43 +13,33 @@ import java.util.Map;
 
 public class ASTDef implements ASTNode {
 
-	private final Map<String, ASTNode> definitions;
-	private final ASTNode body;
+	private final String id;
+	private final ASTNode node;
 
-	public ASTDef(ASTNode body, HashMap<String, ASTNode> definitions) {
-		this.definitions = definitions;
-		this.body = body;
+
+	public ASTDef(String id, ASTNode node) {
+		this.id = id;
+		this.node = node;
 	}
 
 	@Override
 	public IValue eval(Environment<IValue> environment) {
-		var inner = environment.beginScope();
-		for (var definition : definitions.entrySet()) {
-			inner.associate(definition.getKey(), definition.getValue().eval(inner));
-		}
-		var value = body.eval(inner);
-		environment.endScope();
-
+		IValue value = node.eval(environment);
+		environment.associate(id, value);
 		return value;
 	}
 
 	@Override
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
-		Frame inner = frame.beginScope();
-		FrameCompiler.emitBeginScope(codeBlock, inner);
-		for (var definition : definitions.entrySet()) {
-			int varNumber = inner.getVars().size();
-			FrameVariable variable = new FrameVariable(inner, varNumber);
-			FrameCompiler.emitAssign(codeBlock, variable, definition.getValue());
-			inner.associate(definition.getKey(), variable);
-		}
-		ValueType returnType = body.compile(inner, codeBlock);
-		FrameCompiler.emitEndScope(codeBlock, inner);
-		return returnType;
+		int varNumber = frame.getVars().size();
+		FrameVariable variable = new FrameVariable(frame, varNumber);
+		FrameCompiler.emitAssign(codeBlock, variable, node);
+		frame.associate(id, variable);
+		return variable.getType();
 	}
 
 	@Override
 	public ValueType typeCheck(Environment<ValueType> environment) {
-		return body.typeCheck(environment);
+		return node.typeCheck(environment);
 	}
 }

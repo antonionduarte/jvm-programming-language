@@ -33,12 +33,6 @@ public class ASTFunctionApplication implements ASTNode {
 			applicationEnvironment.associate(parameterId, argumentValue);
 		}
 
-		for (var definition : closure.getDefinitions().keySet()) {
-			applicationEnvironment.associate(
-					definition, closure.getDefinitions().get(definition).eval(applicationEnvironment)
-			);
-		}
-
 		return body.eval(applicationEnvironment);
 	}
 

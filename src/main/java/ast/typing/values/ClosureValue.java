@@ -13,16 +13,14 @@ import java.util.Map;
 public class ClosureValue implements IValue {
 
 	private final List<Parameter> parameters; /* Parameters of the function */
-	private final Map<String, ASTNode> definitions; /* Definitions within the function */
 	private final Environment<IValue> environment; /* Environment at the time of function decl. */
 	private final ValueType returnType;
 	private final ASTNode body;
 
 	/* TODO: I think this still needs ASTNode as Body */
 
-	public ClosureValue(Environment<IValue> environment, List<Parameter> parameters, Map<String, ASTNode> definitions, ValueType returnType, ASTNode body) {
+	public ClosureValue(Environment<IValue> environment, List<Parameter> parameters, ValueType returnType, ASTNode body) {
 		this.parameters = parameters;
-		this.definitions = definitions;
 		this.environment = environment;
 		this.returnType = returnType;
 		this.body = body;
@@ -40,9 +38,6 @@ public class ClosureValue implements IValue {
 		return environment;
 	}
 
-	public Map<String, ASTNode> getDefinitions() {
-		return definitions;
-	}
 
 	public List<Parameter> getParameters() {
 		return parameters;

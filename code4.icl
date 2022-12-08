@@ -7,5 +7,5 @@
     let z = 1;
     let m = 1;
 
-    f(z, m);
+    f(z, m)
 };

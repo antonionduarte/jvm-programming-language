@@ -1,6 +1,5 @@
 package ast.references;
 
-import ast.ASTId;
 import ast.ASTNode;
 import ast.typing.values.CellValue;
 import ast.typing.values.IValue;
@@ -10,16 +9,16 @@ import environment.Environment;
 import environment.Frame;
 
 public class ASTDereference implements ASTNode {
-	private final ASTId id;
+	private final ASTNode node;
 
-	public ASTDereference(ASTId id) {
-		this.id = id;
+	public ASTDereference(ASTNode node) {
+		this.node = node;
 	}
 
 	/* TODO: Typecheck this */
 	@Override
 	public IValue eval(Environment<IValue> environment) {
-		return ((CellValue) this.id.eval(environment)).getValue();
+		return ((CellValue) this.node.eval(environment)).getValue();
 	}
 
 	@Override

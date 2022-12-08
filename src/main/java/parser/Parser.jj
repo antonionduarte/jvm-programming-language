@@ -74,8 +74,33 @@ ASTNode Start():
 	ASTNode t; 
 }
 {
-	t = Exp()
+	t = Exp() <DOTCOMMA>
 	{ return t; }
+}
+
+ASTNode Block():
+{
+    ASTNode t = null;
+    List<ASTNode> expressions = new ArrayList<>();
+}
+{
+    <LCURLY>
+    (
+        t = Exp()
+        ( <DOTCOMMA>
+            {
+                if(t != null){
+                    expressions.add(t);
+                    t = null;
+                }
+            }
+            (t = Exp())?
+        )*
+    )?
+    <RCURLY>
+    {
+        return new ASTBlock(expressions, t);
+    }
 }
 
 
@@ -233,14 +258,14 @@ ASTNode Fact():
 			ASTNode param;
 		}
 
-		( param = Exp() { params.add(param); } ) ?  
-		( <COMMA> param = Exp() { params.add(param); } ) *
-
+		( param = Exp() { params.add(param); }
+		    ( <COMMA> param = Exp() { params.add(param); } ) *
+        ) ?
 		<RPAR>
 
 		{ return new ASTFunctionApplication(id.image, params); }
 
-	| LOOKAHEAD(2) id = <Id> <ASSIGN> (t = Exp()) <DOTCOMMA>
+	| LOOKAHEAD(2) id = <Id> <ASSIGN> (t = Exp())
 		{
 			return new ASTAssign(new ASTId(id.image), t);
 		}
@@ -250,9 +275,9 @@ ASTNode Fact():
 			return new ASTId(id.image);
 		}
 
-	| <DEREFERENCE> (id = <Id>)
+	| <DEREFERENCE> t = Exp()
 		{
-			return new ASTDereference(new ASTId(id.image));
+			return new ASTDereference(t);
 		}
 
 	| <NEW> t = Exp()
@@ -260,26 +285,13 @@ ASTNode Fact():
 			return new ASTReference(t);
 		}
 
-	| <LCURLY>
+	| <LET> (id = <Id>) <EQUALS> (t = Exp())
 		{
-			HashMap<String, ASTNode> l = new HashMap<>();
-			ASTNode b;
+			return new ASTDef(id.image, t);
 		}
-
-		(
-			<LET> (id = <Id>) <EQUALS> (t = Exp())
-			{
-				l.put(id.image, t);
-			} <DOTCOMMA>  
-		) *
-
-		(b = Exp())
-
-		<RCURLY>
-
-		{
-			return new ASTDef(b, l);
-		}
+	| t = Block(){
+	    return t;
+	}
 
 	| <FUN> <LPAR> 
 		{
@@ -300,21 +312,10 @@ ASTNode Fact():
 			}) *
 		) ?
 
-		<RPAR> <ARROW> retType = <Id> <LCURLY>
-
-		(
-			<LET> (id = <Id>) <EQUALS> (t = Exp())
-			{
-				d.put(id.image, t);
-			} <DOTCOMMA>
-		) * 
-
-		(b = Exp()) 
-
-		<RCURLY> 
+		<RPAR> <ARROW> retType = <Id> b = Block()
 
 		{
-			return new ASTFunction(b, p, d, retType != null ? new ValueType(Type.valueOf(retType.image)) : null);
+			return new ASTFunction(b, p, retType != null ? new ValueType(Type.valueOf(retType.image)) : null);
 		}
 
 }
