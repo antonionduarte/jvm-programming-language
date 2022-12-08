@@ -11,7 +11,10 @@ import java.util.*;
 import ast.functions.*;
 import ast.references.*;
 import utils.*;
-import ast.typing.*;
+import ast.typing.types.*;
+import ast.typing.utils.*;
+import ast.typing.values.*;
+
 
 public class Parser {
 
@@ -33,7 +36,7 @@ TOKEN:
 	| < DIV : "/">
 	| < OR : "||">
 	| < AND : "&&">
-	| < NOT : "!">
+	| < NOT : "not">
 	| < LTE : "<=" >
 	| < LT : "<" >
 	| < GTE : ">=" >
@@ -49,10 +52,10 @@ TOKEN:
 	| < COMMA : "," >
 	| < TWODOTS : ":" >
 	| < FUN : "fn" >
-	| < STR: "String" >
-	| < BOOL: "Bool" >
 	| < ARROW: "->" >
 	| < NEW: "new" >
+	| < ASSIGN: ":=" >
+	| < DEREFERENCE: "!" >
 	| < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >	
 }
 
@@ -238,6 +241,21 @@ ASTNode Fact():
 		<RPAR>
 
 		{ return new ASTFunctionApplication(id.image, params); }
+
+	| LOOKAHEAD(2) (id = <Id>) <ASSIGN> (t = Exp()) <DOTCOMMA>
+		{
+			return new ASTAssign(new ASTId(id.image), t);
+		}
+
+	| <DEREFERENCE> (id = <Id>)
+		{
+			return new ASTDereference(new ASTId(id.image));
+		}
+
+	| <NEW> t = Exp()
+		{
+			return new ASTReference(t);
+		}
 
 	| id = <Id>
 		{

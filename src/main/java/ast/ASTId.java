@@ -18,7 +18,6 @@ public class ASTId implements ASTNode {
 
 	@Override
 	public IValue eval(Environment<IValue> environment) {
-
 		return environment.find(this.id);
 	}
 

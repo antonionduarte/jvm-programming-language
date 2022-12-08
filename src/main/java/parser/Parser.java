@@ -8,9 +8,12 @@ import ast.ints.*;
 import ast.bools.*;
 import java.util.*;
 import ast.functions.*;
-import ast.typing.types.Type;
-import ast.typing.types.ValueType;
+import ast.references.*;
 import utils.*;
+import ast.typing.types.*;
+import ast.typing.utils.*;
+import ast.typing.values.*;
+
 
 public class Parser implements ParserConstants {
 
@@ -70,6 +73,8 @@ t1 = new ASTNot(t1);
     case LPAR:
     case LCURLY:
     case FUN:
+    case NEW:
+    case DEREFERENCE:
     case Id:{
       t1 = NumExp();
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -273,6 +278,8 @@ ArrayList<ASTNode> params = new ArrayList();
         case LPAR:
         case LCURLY:
         case FUN:
+        case NEW:
+        case DEREFERENCE:
         case Id:{
           param = Exp();
 params.add(param);
@@ -299,8 +306,26 @@ params.add(param);
         }
         jj_consume_token(RPAR);
 {if ("" != null) return new ASTFunctionApplication(id.image, params);}
+      } else if (jj_2_2(2)) {
+        id = jj_consume_token(Id);
+        jj_consume_token(ASSIGN);
+        t = Exp();
+        jj_consume_token(DOTCOMMA);
+{if ("" != null) return new ASTAssign(new ASTId(id.image), t);}
       } else {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case DEREFERENCE:{
+          jj_consume_token(DEREFERENCE);
+          id = jj_consume_token(Id);
+{if ("" != null) return new ASTDereference(new ASTId(id.image));}
+          break;
+          }
+        case NEW:{
+          jj_consume_token(NEW);
+          t = Exp();
+{if ("" != null) return new ASTReference(t);}
+          break;
+          }
         case Id:{
           id = jj_consume_token(Id);
 {if ("" != null) return new ASTId(id.image);}
@@ -415,6 +440,21 @@ d.put(id.image, t);
     finally { jj_save(0, xla); }
   }
 
+  static private boolean jj_2_2(int xla)
+ {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return (!jj_3_2()); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(1, xla); }
+  }
+
+  static private boolean jj_3_2()
+ {
+    if (jj_scan_token(Id)) return true;
+    if (jj_scan_token(ASSIGN)) return true;
+    return false;
+  }
+
   static private boolean jj_3_1()
  {
     if (jj_scan_token(Id)) return true;
@@ -442,12 +482,12 @@ d.put(id.image, t);
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x400,0x200,0x3f000,0x3f000,0x8414085c,0x60,0x60,0x180,0x180,0x8414085c,0x1000000,0x2,0x1000000,0x80000000,0x2,0x4005c,0x84100000,};
+	   jj_la1_0 = new int[] {0x400,0x200,0x3f000,0x3f000,0xd414085c,0x60,0x60,0x180,0x180,0xd414085c,0x1000000,0x2,0x1000000,0x80000000,0x2,0x4005c,0xd4100000,};
 	}
 	private static void jj_la1_init_1() {
 	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
 	}
-  static final private JJCalls[] jj_2_rtns = new JJCalls[1];
+  static final private JJCalls[] jj_2_rtns = new JJCalls[2];
   static private boolean jj_rescan = false;
   static private int jj_gc = 0;
 
@@ -730,7 +770,7 @@ d.put(id.image, t);
 
   static private void jj_rescan_token() {
 	 jj_rescan = true;
-	 for (int i = 0; i < 1; i++) {
+	 for (int i = 0; i < 2; i++) {
 	   try {
 		 JJCalls p = jj_2_rtns[i];
 
@@ -739,6 +779,7 @@ d.put(id.image, t);
 			 jj_la = p.arg; jj_lastpos = jj_scanpos = p.first;
 			 switch (i) {
 			   case 0: jj_3_1(); break;
+			   case 1: jj_3_2(); break;
 			 }
 		   }
 		   p = p.next;

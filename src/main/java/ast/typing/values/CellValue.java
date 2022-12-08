@@ -5,7 +5,7 @@ import ast.typing.types.TypeMismatchException;
 import ast.typing.types.ValueType;
 
 public class CellValue implements IValue {
-	private final IValue value;
+	private IValue value;
 
 	public CellValue(IValue value) {
 		this.value = value;
@@ -21,6 +21,10 @@ public class CellValue implements IValue {
 
 	public IValue getValue() {
 		return value;
+	}
+
+	public void setValue(IValue value) {
+		this.value = value;
 	}
 
 	@Override

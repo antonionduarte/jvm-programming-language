@@ -64,13 +64,13 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int FUN = 26;
   /** RegularExpression Id. */
-  int STR = 27;
+  int ARROW = 27;
   /** RegularExpression Id. */
-  int BOOL = 28;
+  int NEW = 28;
   /** RegularExpression Id. */
-  int ARROW = 29;
+  int ASSIGN = 29;
   /** RegularExpression Id. */
-  int NEW = 30;
+  int DEREFERENCE = 30;
   /** RegularExpression Id. */
   int Id = 31;
 
@@ -90,7 +90,7 @@ public interface ParserConstants {
     "\"/\"",
     "\"||\"",
     "\"&&\"",
-    "\"!\"",
+    "\"not\"",
     "\"<=\"",
     "\"<\"",
     "\">=\"",
@@ -106,10 +106,10 @@ public interface ParserConstants {
     "\",\"",
     "\":\"",
     "\"fn\"",
-    "\"String\"",
-    "\"Bool\"",
     "\"->\"",
     "\"new\"",
+    "\":=\"",
+    "\"!\"",
     "<Id>",
     "\" \"",
     "\"\\t\"",
