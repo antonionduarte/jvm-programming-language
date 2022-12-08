@@ -70,7 +70,9 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int ARROW = 29;
   /** RegularExpression Id. */
-  int Id = 30;
+  int NEW = 30;
+  /** RegularExpression Id. */
+  int Id = 31;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -107,6 +109,7 @@ public interface ParserConstants {
     "\"String\"",
     "\"Bool\"",
     "\"->\"",
+    "\"new\"",
     "<Id>",
     "\" \"",
     "\"\\t\"",

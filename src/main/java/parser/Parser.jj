@@ -5,11 +5,13 @@ PARSER_BEGIN(Parser)
 package parser;
 
 import ast.*;
-import ast.int_nodes.*;
-import ast.bool_nodes.*;
+import ast.ints.*;
+import ast.bools.*;
 import java.util.*;
+import ast.functions.*;
+import ast.references.*;
 import utils.*;
-import ast.types.*;
+import ast.typing.*;
 
 public class Parser {
 
@@ -50,6 +52,7 @@ TOKEN:
 	| < STR: "String" >
 	| < BOOL: "Bool" >
 	| < ARROW: "->" >
+	| < NEW: "new" >
 	| < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >	
 }
 
@@ -68,90 +71,95 @@ ASTNode Start():
 	ASTNode t; 
 }
 {
-	t = Exp() <DOTCOMMA>
+	t = Exp()
 	{ return t; }
 }
 
+
 ASTNode Exp() :
 {
-    ASTNode t1, t2;
+	ASTNode t1, t2;
 }
 {
-    t1 = OrChain() (
-       <AND> t2 = Exp()
-       {
-            t1 = new ASTAnd(t1, t2);
-       }
-   ) ?
-   {
-       return t1;
-   }
+	t1 = OrChain() (
+		<AND> t2 = Exp()
+	{
+		t1 = new ASTAnd(t1, t2);
+	}) ?
+
+	{
+		return t1;
+	}
 }
+
 
 ASTNode OrChain():
 {
     ASTNode t1, t2;
 }
 {
-    t1 = BoolTerm() (
-        <OR> t2 = OrChain()
-        {
-            t1 = new ASTOr(t1, t2);
-        }
-    ) ?
-    {
-        return t1;
-    }
+	t1 = BoolTerm() (
+			<OR> t2 = OrChain()
+			{
+				t1 = new ASTOr(t1, t2);
+			}
+	) ?
+	{
+		return t1;
+	}
 }
+
 
 ASTNode BoolTerm():
 {
-    Token op;
-    ASTNode t1, t2;
+	Token op;
+	ASTNode t1, t2;
 }
 {
-    <NOT> t1 = NumExp()
-    {
-        t1 = new ASTNot(t1);
-    }
-    | t1 = NumExp()
-    (
-       (op = <LT>
-       | op = <LTE>
-       | op = <GT>
-       | op = <GTE>
-       | op = <EQ>
-       | op = <DIFF>)
-    t2 = NumExp()
-        {
-            switch(op.kind){
-                case LT:
-                    t1 = new ASTLowerThan(t1, t2);
-                    break;
-                case LTE:
-                    t1 = new ASTLowerOrEqual(t1, t2);
-                    break;
-                case GT:
-                    t1 = new ASTGreaterThan(t1, t2);
-                    break;
-                case GTE:
-                    t1 = new ASTGreaterOrEqual(t1, t2);
-                    break;
-                case EQ:
-                    t1 = new ASTEqual(t1, t2);
-                    break;
-                case DIFF:
-                    t1 = new ASTNotEqual(t1, t2);
-                    break;
-                default:
-                    throw new RuntimeException("Unexpected token");
-            }
-        }
-    )?
-    {
-        return t1;
-    }
+	<NOT> t1 = NumExp()
+	{
+		t1 = new ASTNot(t1);
+	}
+
+	| t1 = NumExp()
+		(
+		 (op = <LT>
+		 | op = <LTE>
+		 | op = <GT>
+		 | op = <GTE>
+		 | op = <EQ>
+		 | op = <DIFF>)
+		t2 = NumExp()
+			{
+			switch(op.kind) {
+					case LT:
+						t1 = new ASTLowerThan(t1, t2);
+						break;
+					case LTE:
+						t1 = new ASTLowerOrEqual(t1, t2);
+						break;
+					case GT:
+						t1 = new ASTGreaterThan(t1, t2);
+						break;
+					case GTE:
+						t1 = new ASTGreaterOrEqual(t1, t2);
+						break;
+					case EQ:
+						t1 = new ASTEqual(t1, t2);
+						break;
+					case DIFF:
+						t1 = new ASTNotEqual(t1, t2);
+						break;
+					default:
+						throw new RuntimeException("Unexpected token");
+				}
+			}
+		) ?
+	{
+		return t1;
+	}
 }
+
 
 ASTNode NumExp():
 { 
@@ -160,15 +168,18 @@ ASTNode NumExp():
 }
 {
   t1 = Term() (( op = <PLUS> | op = <MINUS> ) t2 = Term() 
-    {
-  if (op.kind == PLUS) {
-    t1 = new ASTPlus(t1, t2);
-  }
-  else t1 = new ASTMinus(t1, t2);
-}
+	{
+		if (op.kind == PLUS) {
+			t1 = new ASTPlus(t1, t2);
+		}
+		else t1 = new ASTMinus(t1, t2);
+	}
+
   ) *
+
   { return t1; }
 }
+
 
 ASTNode Term():
 {
@@ -178,10 +189,10 @@ ASTNode Term():
 {
   t1 = Fact() (( op = <TIMES> | op = <DIV> ) t2 = Term() 
   {
-  if (op.kind == TIMES) {
-    t1 = new ASTTimes(t1, t2);
-  }
-  else t1 = new ASTDiv(t1, t2);
+		if (op.kind == TIMES) {
+			t1 = new ASTTimes(t1, t2);
+		}
+		else t1 = new ASTDiv(t1, t2);
 }) ?
   { return t1; }
 }
@@ -195,6 +206,7 @@ ASTNode Fact():
 }
 {
 		<TRUE> { return new ASTBool(true); }
+
 	| <FALSE> { return new ASTBool(false); }
 
 	| <MINUS> t = Fact()
@@ -223,9 +235,9 @@ ASTNode Fact():
 		( param = Exp() { params.add(param); } ) ?  
 		( <COMMA> param = Exp() { params.add(param); } ) *
 
-	    <RPAR> <DOTCOMMA>
+		<RPAR>
 
-	    { return new ASTFunctionApplication(id.image, params); }
+		{ return new ASTFunctionApplication(id.image, params); }
 
 	| id = <Id>
 		{
@@ -239,10 +251,10 @@ ASTNode Fact():
 		}
 
 		(
-			<LET> (id = <Id>) <EQUALS> (t = Exp()) <DOTCOMMA>
+			<LET> (id = <Id>) <EQUALS> (t = Exp())
 			{
 				l.put(id.image, t);
-			}
+			} <DOTCOMMA>  
 		) *
 
 		(b = Exp())
@@ -273,15 +285,15 @@ ASTNode Fact():
 		<RPAR> <ARROW> retType = <Id> <LCURLY>
 
 		(
-			<LET> (id = <Id>) <EQUALS> (t = Exp()) <DOTCOMMA>
+			<LET> (id = <Id>) <EQUALS> (t = Exp())
 			{
 				d.put(id.image, t);
-			}
-		) *
+			} <DOTCOMMA>
+		) * 
 
-		( b = Exp() )
+		( b = Exp() ) 
 
-        <RCURLY>
+		<RCURLY> 
 
 		{
 			return new ASTFunction(b, p, d, retType != null ? new ValueType(Type.valueOf(retType.image)) : null);

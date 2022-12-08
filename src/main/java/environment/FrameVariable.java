@@ -1,6 +1,6 @@
 package environment;
 
-import ast.types.ValueType;
+import ast.typing.types.ValueType;
 
 public class FrameVariable {
 	private final Frame frame;

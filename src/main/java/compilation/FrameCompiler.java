@@ -1,7 +1,7 @@
 package compilation;
 
 import ast.ASTNode;
-import ast.types.ValueType;
+import ast.typing.types.ValueType;
 import environment.Frame;
 import environment.FrameVariable;
 

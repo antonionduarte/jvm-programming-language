@@ -1,7 +1,7 @@
 package ast;
 
-import ast.types.IValue;
-import ast.types.ValueType;
+import ast.typing.values.IValue;
+import ast.typing.types.ValueType;
 import compilation.CodeBlock;
 import environment.Environment;
 import environment.Frame;

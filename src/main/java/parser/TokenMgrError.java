@@ -27,14 +27,12 @@ public class TokenMgrError extends Error {
 	 */
 	public static final int LOOP_DETECTED = 3;
 	/**
-	 * The version identifier for this Serializable class.
-	 * Increment only if the <i>serialized</i> form of the
-	 * class changes.
+	 * The version identifier for this Serializable class. Increment only if the <i>serialized</i> form of the class
+	 * changes.
 	 */
 	private static final long serialVersionUID = 1L;
 	/**
-	 * Indicates the reason why the exception is thrown. It will have
-	 * one of the above 4 values.
+	 * Indicates the reason why the exception is thrown. It will have one of the above 4 values.
 	 */
 	int errorCode;
 
@@ -64,8 +62,7 @@ public class TokenMgrError extends Error {
 	 */
 
 	/**
-	 * Replaces unprintable characters by their escaped (or unicode escaped)
-	 * equivalents in the given string
+	 * Replaces unprintable characters by their escaped (or unicode escaped) equivalents in the given string
 	 */
 	protected static final String addEscapes(String str) {
 		StringBuilder retval = new StringBuilder();
@@ -110,15 +107,10 @@ public class TokenMgrError extends Error {
 	}
 
 	/**
-	 * Returns a detailed message for the Error when it is thrown by the
-	 * token manager to indicate a lexical error.
-	 * Parameters :
-	 * EOFSeen     : indicates if EOF caused the lexical error
-	 * lexState    : lexical state in which this error occurred
-	 * errorLine   : line number when the error occurred
-	 * errorColumn : column number when the error occurred
-	 * errorAfter  : prefix that was seen before this error occurred
-	 * curchar     : the offending character
+	 * Returns a detailed message for the Error when it is thrown by the token manager to indicate a lexical error.
+	 * Parameters : EOFSeen     : indicates if EOF caused the lexical error lexState    : lexical state in which this
+	 * error occurred errorLine   : line number when the error occurred errorColumn : column number when the error
+	 * occurred errorAfter  : prefix that was seen before this error occurred curchar     : the offending character
 	 * Note: You can customize the lexical error message by modifying this method.
 	 */
 	protected static String LexicalErr(boolean EOFSeen, int lexState, int errorLine, int errorColumn, String errorAfter, int curChar) {
@@ -131,9 +123,8 @@ public class TokenMgrError extends Error {
 	}
 
 	/**
-	 * You can also modify the body of this method to customize your error messages.
-	 * For example, cases like LOOP_DETECTED and INVALID_LEXICAL_STATE are not
-	 * of end-users concern, so you can return something like :
+	 * You can also modify the body of this method to customize your error messages. For example, cases like
+	 * LOOP_DETECTED and INVALID_LEXICAL_STATE are not of end-users concern, so you can return something like :
 	 * <p>
 	 * "Internal Error : Please file a bug report .... "
 	 * <p>

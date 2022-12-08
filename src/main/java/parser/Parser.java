@@ -4,17 +4,18 @@
 package parser;
 
 import ast.*;
-import ast.int_nodes.*;
-import ast.bool_nodes.*;
+import ast.ints.*;
+import ast.bools.*;
 import java.util.*;
+import ast.functions.*;
+import ast.typing.types.Type;
+import ast.typing.types.ValueType;
 import utils.*;
-import ast.types.*;
 
 public class Parser implements ParserConstants {
 
   static final public ASTNode Start() throws ParseException {ASTNode t;
     t = Exp();
-    jj_consume_token(DOTCOMMA);
 {if ("" != null) return t;}
     throw new Error("Missing return statement in function");
 }
@@ -54,7 +55,7 @@ t1 = new ASTOr(t1, t2);
 }
 
   static final public ASTNode BoolTerm() throws ParseException {Token op;
-    ASTNode t1, t2;
+        ASTNode t1, t2;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case NOT:{
       jj_consume_token(NOT);
@@ -109,28 +110,28 @@ t1 = new ASTNot(t1);
           throw new ParseException();
         }
         t2 = NumExp();
-switch(op.kind){
-                case LT:
-                    t1 = new ASTLowerThan(t1, t2);
-                    break;
-                case LTE:
-                    t1 = new ASTLowerOrEqual(t1, t2);
-                    break;
-                case GT:
-                    t1 = new ASTGreaterThan(t1, t2);
-                    break;
-                case GTE:
-                    t1 = new ASTGreaterOrEqual(t1, t2);
-                    break;
-                case EQ:
-                    t1 = new ASTEqual(t1, t2);
-                    break;
-                case DIFF:
-                    t1 = new ASTNotEqual(t1, t2);
-                    break;
-                default:
-                    {if (true) throw new RuntimeException("Unexpected token");}
-            }
+switch(op.kind) {
+                                        case LT:
+                                                t1 = new ASTLowerThan(t1, t2);
+                                                break;
+                                        case LTE:
+                                                t1 = new ASTLowerOrEqual(t1, t2);
+                                                break;
+                                        case GT:
+                                                t1 = new ASTGreaterThan(t1, t2);
+                                                break;
+                                        case GTE:
+                                                t1 = new ASTGreaterOrEqual(t1, t2);
+                                                break;
+                                        case EQ:
+                                                t1 = new ASTEqual(t1, t2);
+                                                break;
+                                        case DIFF:
+                                                t1 = new ASTNotEqual(t1, t2);
+                                                break;
+                                        default:
+                                                {if (true) throw new RuntimeException("Unexpected token");}
+                                }
         break;
         }
       default:
@@ -179,9 +180,9 @@ switch(op.kind){
       }
       t2 = Term();
 if (op.kind == PLUS) {
-    t1 = new ASTPlus(t1, t2);
-  }
-  else t1 = new ASTMinus(t1, t2);
+                        t1 = new ASTPlus(t1, t2);
+                }
+                else t1 = new ASTMinus(t1, t2);
     }
 {if ("" != null) return t1;}
     throw new Error("Missing return statement in function");
@@ -209,9 +210,9 @@ if (op.kind == PLUS) {
       }
       t2 = Term();
 if (op.kind == TIMES) {
-    t1 = new ASTTimes(t1, t2);
-  }
-  else t1 = new ASTDiv(t1, t2);
+                        t1 = new ASTTimes(t1, t2);
+                }
+                else t1 = new ASTDiv(t1, t2);
       break;
       }
     default:
@@ -297,7 +298,6 @@ params.add(param);
 params.add(param);
         }
         jj_consume_token(RPAR);
-        jj_consume_token(DOTCOMMA);
 {if ("" != null) return new ASTFunctionApplication(id.image, params);}
       } else {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -325,8 +325,8 @@ HashMap<String, ASTNode> l = new HashMap<>();
             id = jj_consume_token(Id);
             jj_consume_token(EQUALS);
             t = Exp();
-            jj_consume_token(DOTCOMMA);
 l.put(id.image, t);
+            jj_consume_token(DOTCOMMA);
           }
           b = Exp();
           jj_consume_token(RCURLY);
@@ -389,8 +389,8 @@ p.add(new Pair(id.image, type.image));
             id = jj_consume_token(Id);
             jj_consume_token(EQUALS);
             t = Exp();
-            jj_consume_token(DOTCOMMA);
 d.put(id.image, t);
+            jj_consume_token(DOTCOMMA);
           }
           b = Exp();
           jj_consume_token(RCURLY);
@@ -442,7 +442,7 @@ d.put(id.image, t);
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x400,0x200,0x3f000,0x3f000,0x4414085c,0x60,0x60,0x180,0x180,0x4414085c,0x1000000,0x2,0x1000000,0x40000000,0x2,0x4005c,0x44100000,};
+	   jj_la1_0 = new int[] {0x400,0x200,0x3f000,0x3f000,0x8414085c,0x60,0x60,0x180,0x180,0x8414085c,0x1000000,0x2,0x1000000,0x80000000,0x2,0x4005c,0x84100000,};
 	}
 	private static void jj_la1_init_1() {
 	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
@@ -679,7 +679,7 @@ d.put(id.image, t);
   /** Generate ParseException. */
   static public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[35];
+	 boolean[] la1tokens = new boolean[36];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -696,7 +696,7 @@ d.put(id.image, t);
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 35; i++) {
+	 for (int i = 0; i < 36; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;
