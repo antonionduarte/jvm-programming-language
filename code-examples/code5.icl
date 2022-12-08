@@ -3,8 +3,8 @@
 	let b = new 8;
 
 	a := 3;
-
+	
 	let c = !a;
 
-	c + !b
+	!a + !b + c
 };
