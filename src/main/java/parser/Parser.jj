@@ -98,7 +98,7 @@ ASTNode Exp() :
 
 ASTNode OrChain():
 {
-    ASTNode t1, t2;
+	ASTNode t1, t2;
 }
 {
 	t1 = BoolTerm() (
@@ -227,7 +227,7 @@ ASTNode Fact():
 			return t;
 		}
 
-	| LOOKAHEAD(2) id = <Id> <LPAR> 
+	| LOOKAHEAD(2) id = <Id> <LPAR>
 		{
 			ArrayList<ASTNode> params = new ArrayList(); 	
 			ASTNode param;
@@ -245,6 +245,11 @@ ASTNode Fact():
 			return new ASTAssign(new ASTId(id.image), t);
 		}
 
+	| id = <Id>
+		{
+			return new ASTId(id.image);
+		}
+
 	| <DEREFERENCE> (id = <Id>)
 		{
 			return new ASTDereference(new ASTId(id.image));
@@ -253,11 +258,6 @@ ASTNode Fact():
 	| <NEW> t = Exp()
 		{
 			return new ASTReference(t);
-		}
-
-	| id = <Id>
-		{
-			return new ASTId(id.image);
 		}
 
 	| <LCURLY>
