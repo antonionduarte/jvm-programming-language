@@ -1,5 +1,7 @@
-package ast;
+package ast.flow;
 
+import ast.ASTNode;
+import ast.typing.types.Type;
 import ast.typing.types.ValueType;
 import ast.typing.values.IValue;
 import ast.typing.values.VoidValue;
@@ -11,25 +13,18 @@ import environment.FrameVariable;
 
 import java.util.List;
 
-public class ASTBlock implements ASTNode{
+public class ASTBlock implements ASTNode {
     private List<ASTNode> instructions;
-    private ASTNode returnNode;
 
-    public ASTBlock(List<ASTNode> instructions, ASTNode returnNode){
+    public ASTBlock(List<ASTNode> instructions){
         this.instructions = instructions;
-        this.returnNode = returnNode;
     }
     @Override
     public IValue eval(Environment<IValue> environment) {
         var inner = environment.beginScope();
+        IValue returnVal = VoidValue.getInstance();
         for (ASTNode instruction : instructions){
-            instruction.eval(inner);
-        }
-        IValue returnVal;
-        if(returnNode != null) {
-            returnVal = returnNode.eval(inner);
-        } else {
-            returnVal = VoidValue.getInstance();
+            returnVal = instruction.eval(inner);
         }
         inner.endScope();
         return returnVal;
@@ -39,11 +34,11 @@ public class ASTBlock implements ASTNode{
     public ValueType compile(Frame frame, CodeBlock codeBlock) {
         Frame inner = frame.beginScope();
         FrameCompiler.emitBeginScope(codeBlock, inner);
+        ValueType returnType = new ValueType(Type.Void);
         for (var instruction : instructions) {
-            instruction.compile(frame, codeBlock);
+            returnType = instruction.compile(frame, codeBlock);
             //TODO pop value if not void?
         }
-        ValueType returnType = returnNode.compile(inner, codeBlock);
         FrameCompiler.emitEndScope(codeBlock, inner);
         return returnType;
     }

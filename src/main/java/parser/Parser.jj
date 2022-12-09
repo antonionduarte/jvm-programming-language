@@ -5,6 +5,7 @@ PARSER_BEGIN(Parser)
 package parser;
 
 import ast.*;
+import ast.flow.*;
 import ast.ints.*;
 import ast.bools.*;
 import java.util.*;
@@ -12,8 +13,6 @@ import ast.functions.*;
 import ast.references.*;
 import utils.*;
 import ast.typing.types.*;
-import ast.typing.utils.*;
-import ast.typing.values.*;
 
 
 public class Parser {
@@ -27,6 +26,9 @@ PARSER_END(Parser)
 TOKEN:
 {
 	< LET : "let" >
+	| < IF : "if" >
+	| < ELSE : "else">
+	| < WHILE : "while">
 	| < TRUE : "true" >
 	| < FALSE: "false" >
 	| < Num: (["0"-"9"]) + >
@@ -85,21 +87,34 @@ ASTNode Block():
 }
 {
     <LCURLY>
-    (
-        t = Exp()
-        ( <DOTCOMMA>
-            {
-                if(t != null){
-                    expressions.add(t);
-                    t = null;
-                }
-            }
-            (t = Exp())?
-        )*
-    )?
+    ( (t = Flow() | t = Exp() <DOTCOMMA>)
+        {
+            expressions.add(t);
+        }
+    )*
     <RCURLY>
     {
-        return new ASTBlock(expressions, t);
+        return new ASTBlock(expressions);
+    }
+}
+
+ASTNode Flow():
+{
+    ASTNode cond, t, bodyIf, bodyElse = null;
+}
+{
+    (
+        <IF> <LPAR> cond = Exp() <RPAR> bodyIf = Exp() (<ELSE> bodyElse = Exp())?
+        {
+            t =  new ASTIf(cond, bodyIf, bodyElse);
+        }
+        | <WHILE> <LPAR> cond = Exp() <RPAR> t = Block() {
+            t = new ASTWhile(cond, t);
+        }
+        | t = Block()
+    )
+    {
+        return t;
     }
 }
 
@@ -224,6 +239,7 @@ ASTNode Term():
 }
 
 
+
 ASTNode Fact():
 { 
   Token n;
@@ -234,7 +250,6 @@ ASTNode Fact():
 		<TRUE> { return new ASTBool(true); }
 
 	| <FALSE> { return new ASTBool(false); }
-
 	| <MINUS> t = Fact()
 		{
 			t = new ASTNeg(t);
@@ -289,7 +304,7 @@ ASTNode Fact():
 		{
 			return new ASTDef(id.image, t);
 		}
-	| t = Block(){
+	| t = Flow(){
 	    return t;
 	}
 
@@ -317,5 +332,6 @@ ASTNode Fact():
 		{
 			return new ASTFunction(b, p, retType != null ? new ValueType(Type.valueOf(retType.image)) : null);
 		}
+
 
 }

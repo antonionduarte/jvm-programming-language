@@ -1,6 +1,5 @@
 package ast.functions;
 
-import ast.ASTBlock;
 import ast.ASTNode;
 import ast.typing.types.Type;
 import ast.typing.types.ValueType;
@@ -13,7 +12,6 @@ import environment.Frame;
 import utils.Pair;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ASTFunction implements ASTNode {
 
