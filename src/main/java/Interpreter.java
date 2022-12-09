@@ -23,7 +23,8 @@ public class Interpreter {
 		while (path == null || in.available() > 0) {
 			try {
 				var exp = Parser.Start();
-				System.out.println(exp.eval(new Environment<>()).toString());
+				exp.eval(new Environment<>());
+				//System.out.println(exp.eval(new Environment<>()).toString());
 			} catch (Exception e) {
 				System.out.println("Syntax Error!");
 				System.out.println(e.getMessage());

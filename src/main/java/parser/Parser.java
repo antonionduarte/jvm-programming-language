@@ -32,6 +32,7 @@ public class Parser implements ParserConstants {
       case LET:
       case IF:
       case WHILE:
+      case PRINTLN:
       case TRUE:
       case FALSE:
       case Num:
@@ -58,6 +59,7 @@ public class Parser implements ParserConstants {
         break;
         }
       case LET:
+      case PRINTLN:
       case TRUE:
       case FALSE:
       case Num:
@@ -173,6 +175,7 @@ t1 = new ASTNot(t1);
     case LET:
     case IF:
     case WHILE:
+    case PRINTLN:
     case TRUE:
     case FALSE:
     case Num:
@@ -362,6 +365,12 @@ t = new ASTNum(Integer.parseInt(n.image));
                         {if ("" != null) return t;}
       break;
       }
+    case PRINTLN:{
+      jj_consume_token(PRINTLN);
+      t = Fact();
+{if ("" != null) return new ASTPrint(t);}
+      break;
+      }
     case LPAR:{
       jj_consume_token(LPAR);
       t = Exp();
@@ -380,6 +389,7 @@ ArrayList<ASTNode> params = new ArrayList();
         case LET:
         case IF:
         case WHILE:
+        case PRINTLN:
         case TRUE:
         case FALSE:
         case Num:
@@ -559,10 +569,10 @@ p.add(new Pair(id.image, type.image));
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0xa0a042f6,0xa0a042f6,0x8,0x800014,0x2000,0x1000,0x1f8000,0x1f8000,0xa0a042f6,0x300,0x300,0xc00,0xc00,0x8000000,0xa0a042f6,0x8000000,0x0,0x2002e0,0xa0800016,};
+	   jj_la1_0 = new int[] {0x414085f6,0x414085f6,0x8,0x1000014,0x4000,0x2000,0x3f0000,0x3f0000,0x414085f6,0x600,0x600,0x1800,0x1800,0x10000000,0x414085f6,0x10000000,0x0,0x4005e0,0x41000016,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x6,0x6,0x0,0x0,0x0,0x0,0x0,0x0,0x6,0x0,0x0,0x0,0x0,0x0,0x6,0x0,0x4,0x0,0x6,};
+	   jj_la1_1 = new int[] {0xd,0xd,0x0,0x0,0x0,0x0,0x0,0x0,0xd,0x0,0x0,0x0,0x0,0x0,0xd,0x0,0x8,0x0,0xd,};
 	}
   static final private JJCalls[] jj_2_rtns = new JJCalls[2];
   static private boolean jj_rescan = false;
@@ -796,7 +806,7 @@ p.add(new Pair(id.image, type.image));
   /** Generate ParseException. */
   static public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[39];
+	 boolean[] la1tokens = new boolean[40];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -813,7 +823,7 @@ p.add(new Pair(id.image, type.image));
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 39; i++) {
+	 for (int i = 0; i < 40; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;

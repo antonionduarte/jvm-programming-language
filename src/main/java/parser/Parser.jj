@@ -29,6 +29,7 @@ TOKEN:
 	| < IF : "if" >
 	| < ELSE : "else">
 	| < WHILE : "while">
+	| <PRINTLN : "println">
 	| < TRUE : "true" >
 	| < FALSE: "false" >
 	| < Num: (["0"-"9"]) + >
@@ -261,6 +262,10 @@ ASTNode Fact():
 			t = new ASTNum(Integer.parseInt(n.image));
 			return t;
 		}
+	| <PRINTLN> t = Fact()
+        {
+            return new ASTPrint(t);
+        }
 
 	| <LPAR> t = Exp() <RPAR>
 		{
@@ -289,7 +294,6 @@ ASTNode Fact():
 		{
 			return new ASTId(id.image);
 		}
-
 	| <DEREFERENCE> t = Fact()
 		{
 			return new ASTDereference(t);
