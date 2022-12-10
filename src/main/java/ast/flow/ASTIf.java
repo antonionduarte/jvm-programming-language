@@ -22,8 +22,9 @@ public class ASTIf implements ASTNode {
     public IValue eval(Environment<IValue> environment) {
         boolean condVal = BoolValue.asBoolean(condition.eval(environment));
         if(condVal){
+            IValue val = bodyIf.eval(environment);
             if(bodyElse!=null)
-                return bodyIf.eval(environment);
+                return val;
             else return VoidValue.getInstance();
         } else if(bodyElse != null){
             return bodyElse.eval(environment);

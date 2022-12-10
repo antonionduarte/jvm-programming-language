@@ -77,8 +77,17 @@ ASTNode Start():
 	ASTNode t; 
 }
 {
-	t = Exp() <DOTCOMMA>
+	t = Instruction()
 	{ return t; }
+}
+
+ASTNode Instruction():{
+    ASTNode t = null;
+}{
+    (LOOKAHEAD(3) t = Flow() | t = Exp() <DOTCOMMA>)
+    {
+        return t;
+    }
 }
 
 ASTNode Block():
@@ -88,7 +97,8 @@ ASTNode Block():
 }
 {
     <LCURLY>
-    ( (t = Flow() | t = Exp() <DOTCOMMA>)
+    (
+        t = Instruction()
         {
             expressions.add(t);
         }
@@ -99,16 +109,25 @@ ASTNode Block():
     }
 }
 
+ASTNode ElseIfChain():
+{
+    ASTNode cond, bodyIf, bodyElse = null;
+}
+{
+    <IF> <LPAR> cond = Exp() <RPAR> bodyIf = Block()
+        (<ELSE> (bodyElse = ElseIfChain() | bodyElse = Block()) )?
+            {
+                return new ASTIf(cond, bodyIf, bodyElse);
+            }
+}
+
 ASTNode Flow():
 {
-    ASTNode cond, t, bodyIf, bodyElse = null;
+    ASTNode cond, t;
 }
 {
     (
-        <IF> <LPAR> cond = Exp() <RPAR> bodyIf = Exp() (<ELSE> bodyElse = Exp())?
-        {
-            t =  new ASTIf(cond, bodyIf, bodyElse);
-        }
+        t = ElseIfChain()
         | <WHILE> <LPAR> cond = Exp() <RPAR> t = Block() {
             t = new ASTWhile(cond, t);
         }
@@ -160,9 +179,9 @@ ASTNode BoolTerm():
 	ASTNode t1, t2;
 }
 {
-	<NOT> t1 = NumExp()
+	<NOT> t1 = BoolTerm()
 	{
-		t1 = new ASTNot(t1);
+		return new ASTNot(t1);
 	}
 
 	| t1 = NumExp()
@@ -198,7 +217,7 @@ ASTNode BoolTerm():
 						throw new RuntimeException("Unexpected token");
 				}
 			}
-		) ?
+		)?
 	{
 		return t1;
 	}
@@ -244,12 +263,11 @@ ASTNode Term():
 ASTNode Fact():
 { 
   Token n;
-  ASTNode t;
+  ASTNode t, bodyIf, bodyElse;
   Token id;
 }
 {
-		<TRUE> { return new ASTBool(true); }
-
+	<TRUE> { return new ASTBool(true); }
 	| <FALSE> { return new ASTBool(false); }
 	| <MINUS> t = Fact()
 		{
@@ -262,7 +280,7 @@ ASTNode Fact():
 			t = new ASTNum(Integer.parseInt(n.image));
 			return t;
 		}
-	| <PRINTLN> t = Fact()
+	| <PRINTLN> t = Exp()
         {
             return new ASTPrint(t);
         }
@@ -270,29 +288,6 @@ ASTNode Fact():
 	| <LPAR> t = Exp() <RPAR>
 		{
 			return t;
-		}
-
-	| LOOKAHEAD(2) id = <Id> <LPAR>
-		{
-			ArrayList<ASTNode> params = new ArrayList(); 	
-			ASTNode param;
-		}
-
-		( param = Exp() { params.add(param); }
-		    ( <COMMA> param = Exp() { params.add(param); } ) *
-        ) ?
-		<RPAR>
-
-		{ return new ASTFunctionApplication(id.image, params); }
-
-	| LOOKAHEAD(2) id = <Id> <ASSIGN> (t = Exp())
-		{
-			return new ASTAssign(new ASTId(id.image), t);
-		}
-
-	| id = <Id>
-		{
-			return new ASTId(id.image);
 		}
 	| <DEREFERENCE> t = Fact()
 		{
@@ -308,10 +303,6 @@ ASTNode Fact():
 		{
 			return new ASTDef(id.image, t);
 		}
-	| t = Flow(){
-	    return t;
-	}
-
 	| <FUN> <LPAR> 
 		{
 			HashMap<String, ASTNode> d = new HashMap<>(); 
@@ -336,6 +327,42 @@ ASTNode Fact():
 		{
 			return new ASTFunction(b, p, retType != null ? new ValueType(Type.valueOf(retType.image)) : null);
 		}
-
-
+		| t = Block(){
+            return t;
+        }
+        | <IF> <LPAR> t = Exp() <RPAR> bodyIf = Exp() <ELSE> bodyElse = Exp() {
+            return new ASTIf(t, bodyIf, bodyElse);
+        }
+		| t = IdNode(){
+            return t;
+        }
 }
+
+ASTNode IdNode():{
+   ASTNode t;
+   Token id;
+ }
+ {
+    id = <Id>(
+        <ASSIGN> t = Exp()
+            {
+                return new ASTAssign(new ASTId(id.image), t);
+            }
+        |
+        <LPAR>
+        		{
+        			ArrayList<ASTNode> params = new ArrayList();
+        			ASTNode param;
+        		}
+
+        		( param = Exp() { params.add(param); }
+        		    ( <COMMA> param = Exp() { params.add(param); } ) *
+                ) ?
+        <RPAR>
+            { return new ASTFunctionApplication(id.image, params); }
+    )?
+    {
+        return new ASTId(id.image);
+    }
+ }
+

@@ -1,3 +1,4 @@
+import ast.typing.values.IValue;
 import environment.Environment;
 import parser.Parser;
 
@@ -19,11 +20,11 @@ public class Interpreter {
 		InputStream in = path == null ? System.in : new FileInputStream(path);
 
 		new Parser(in);
-
+		Environment<IValue> top = new Environment<>();
 		while (path == null || in.available() > 0) {
 			try {
 				var exp = Parser.Start();
-				exp.eval(new Environment<>());
+				exp.eval(top);
 				//System.out.println(exp.eval(new Environment<>()).toString());
 			} catch (Exception e) {
 				System.out.println("Syntax Error!");
