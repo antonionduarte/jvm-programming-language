@@ -6,6 +6,7 @@ import ast.typing.values.IValue;
 import ast.typing.types.Type;
 import ast.typing.types.ValueType;
 import compilation.CodeBlock;
+import compilation.CompilerUtils;
 import environment.Environment;
 import environment.Frame;
 
@@ -24,7 +25,10 @@ public class ASTNot implements ASTNode {
 
 	@Override
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
-		throw new RuntimeException("Not implemented"); //TODO implement
+		codeBlock.emit(CompilerUtils.PUSH_TRUE);
+		//bitwise xor of 1 with 1 will give 0, and 0 with 1 will give 1
+		codeBlock.emit(CompilerUtils.XOR);
+		return new ValueType(Type.Bool);
 	}
 
 	@Override

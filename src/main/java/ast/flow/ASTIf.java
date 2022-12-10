@@ -6,6 +6,7 @@ import ast.typing.values.BoolValue;
 import ast.typing.values.IValue;
 import ast.typing.values.VoidValue;
 import compilation.CodeBlock;
+import compilation.CompilerUtils;
 import environment.Environment;
 import environment.Frame;
 
@@ -35,7 +36,16 @@ public class ASTIf implements ASTNode {
 
     @Override
     public ValueType compile(Frame frame, CodeBlock codeBlock) {
-        return null;
+        condition.compile(frame, codeBlock);
+        CodeBlock.DelayedOp gotoIf = codeBlock.delayEmit();
+        ValueType ifType = bodyIf.compile(frame, codeBlock);
+        String label = codeBlock.emitLabel();
+        ValueType elseType = null;
+        if(bodyElse != null) {
+            elseType = bodyElse.compile(frame, codeBlock);
+        }
+        gotoIf.set(CompilerUtils.gotoIfTrue(label));
+        return elseType !=null && elseType.equals(ifType) ? ifType : new ValueType(Type.Void);
     }
 
     @Override
@@ -47,7 +57,7 @@ public class ASTIf implements ASTNode {
             ValueType ifType = bodyIf.typeCheck(environment);
             ValueType elseType = bodyElse.typeCheck(environment);
             elseType.expect(ifType);
-            return ifType;
+            return elseType.equals(ifType) ? ifType : new ValueType(Type.Void);
         }
     }
 }

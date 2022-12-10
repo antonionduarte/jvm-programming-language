@@ -6,6 +6,7 @@ import ast.typing.values.IValue;
 import ast.typing.types.Type;
 import ast.typing.types.ValueType;
 import compilation.CodeBlock;
+import compilation.CompilerUtils;
 import environment.Environment;
 import environment.Frame;
 
@@ -27,7 +28,12 @@ public class ASTNotEqual implements ASTNode {
 
 	@Override
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
-		throw new RuntimeException("Not implemented"); //TODO implement
+		CodeBlock.DelayedOp gotoIf = codeBlock.delayEmit();
+		codeBlock.emit(CompilerUtils.PUSH_TRUE);
+		String label = codeBlock.emitLabel();
+		codeBlock.emit(CompilerUtils.PUSH_FALSE);
+		gotoIf.set(CompilerUtils.gotoIfCompare(CompilerUtils.NOT_EQ, label));
+		return new ValueType(Type.Bool);
 	}
 
 	@Override

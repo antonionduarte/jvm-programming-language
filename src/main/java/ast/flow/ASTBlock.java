@@ -6,6 +6,7 @@ import ast.typing.types.ValueType;
 import ast.typing.values.IValue;
 import ast.typing.values.VoidValue;
 import compilation.CodeBlock;
+import compilation.CompilerUtils;
 import compilation.FrameCompiler;
 import environment.Environment;
 import environment.Frame;
@@ -36,8 +37,10 @@ public class ASTBlock implements ASTNode {
         FrameCompiler.emitBeginScope(codeBlock, inner);
         ValueType returnType = new ValueType(Type.Void);
         for (var instruction : instructions) {
+            //discard result of last instruction to clear the stack
+            if(returnType.getType() != Type.Void) codeBlock.emit(CompilerUtils.DISCARD);
+            codeBlock.emit("\n" + CompilerUtils.comment("instruction"));
             returnType = instruction.compile(frame, codeBlock);
-            //TODO pop value if not void?
         }
         FrameCompiler.emitEndScope(codeBlock, inner);
         return returnType;

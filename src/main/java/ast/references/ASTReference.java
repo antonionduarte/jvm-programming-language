@@ -1,10 +1,12 @@
 package ast.references;
 
 import ast.ASTNode;
+import ast.typing.types.Type;
 import ast.typing.values.CellValue;
 import ast.typing.values.IValue;
 import ast.typing.types.ValueType;
 import compilation.CodeBlock;
+import compilation.CompilerUtils;
 import environment.Environment;
 import environment.Frame;
 
@@ -23,7 +25,16 @@ public class ASTReference implements ASTNode {
 
 	@Override
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
-		return null;
+		codeBlock.emit(CompilerUtils.initClass("Ref"));
+		ValueType type = expression.compile(frame, codeBlock);
+		switch (type.getType()){
+			case Int , Bool ->
+					codeBlock.emit(CompilerUtils.setField("Ref", "vi", Type.Int.getJvmId()));
+			default ->
+					codeBlock.emit(CompilerUtils.setField("Ref", "v",
+							CompilerUtils.toReferenceType(CompilerUtils.OBJECT)));
+		}
+		return type;
 	}
 
 	@Override

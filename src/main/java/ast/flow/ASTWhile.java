@@ -6,6 +6,7 @@ import ast.typing.values.BoolValue;
 import ast.typing.values.IValue;
 import ast.typing.values.VoidValue;
 import compilation.CodeBlock;
+import compilation.CompilerUtils;
 import environment.Environment;
 import environment.Frame;
 
@@ -29,7 +30,16 @@ public class ASTWhile implements ASTNode{
 
     @Override
     public ValueType compile(Frame frame, CodeBlock codeBlock) {
-        return null;
+        String loop = codeBlock.emitLabel();
+        condition.compile(frame, codeBlock);
+        CodeBlock.DelayedOp loopIf = codeBlock.delayEmit();
+        ValueType type = body.compile(frame, codeBlock);
+        //discard iteration result to clear the stack
+        if(type.getType() != Type.Void) codeBlock.emit(CompilerUtils.DISCARD);
+        codeBlock.emit(CompilerUtils.gotoAlways(loop));
+        String breakLoop = codeBlock.emitLabel();
+        loopIf.set(CompilerUtils.gotoIfFalse(breakLoop));
+        return new ValueType(Type.Void);
     }
 
     @Override

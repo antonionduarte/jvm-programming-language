@@ -6,6 +6,7 @@ import ast.typing.values.IValue;
 import ast.typing.types.Type;
 import ast.typing.types.ValueType;
 import compilation.CodeBlock;
+import compilation.CompilerUtils;
 import environment.Environment;
 import environment.Frame;
 
@@ -27,7 +28,8 @@ public class ASTAnd implements ASTNode {
 
 	@Override
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
-		throw new RuntimeException("Not implemented"); //TODO implement
+		codeBlock.emit(CompilerUtils.AND);
+		return new ValueType(Type.Bool);
 	}
 
 	@Override

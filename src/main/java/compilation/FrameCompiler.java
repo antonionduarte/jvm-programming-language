@@ -47,6 +47,7 @@ public class FrameCompiler {
 		String parent = newFrame.getParentFrame() == null ? CompilerUtils.OBJECT : newFrame.getParentFrame().getName();
 		String parentType = CompilerUtils.toReferenceType(parent);
 		String name = newFrame.getName();
+		block.emit("\n\n" + CompilerUtils.comment("start of scope"));
 		block.emit(CompilerUtils.initClass(name));
 		block.emit(CompilerUtils.DUPLICATE);
 		block.emit(CompilerUtils.loadLocalVariable(SCOPE_VARIABLE));
@@ -64,6 +65,7 @@ public class FrameCompiler {
 			String parentType = CompilerUtils.toReferenceType(parent);
 			block.emit(CompilerUtils.loadLocalVariable(SCOPE_VARIABLE));
 			block.emit(CompilerUtils.getField(name, PARENT_FIELD, parentType));
+			block.emit(CompilerUtils.comment("end of scope") + "\n\n");
 		}
 		block.emit(CompilerUtils.storeLocalVariable(SCOPE_VARIABLE));
 	}
@@ -72,6 +74,8 @@ public class FrameCompiler {
 		String name = variable.getFrame().getName();
 		block.emit(CompilerUtils.loadLocalVariable(SCOPE_VARIABLE));
 		ValueType type = expression.compile(variable.getFrame(), block);
+		block.emit(CompilerUtils.DUPLICATE);
+		block.emit(CompilerUtils.SWAP);
 		int varNumber = variable.getId();
 		variable.setType(type);
 		block.emit(CompilerUtils.setField(name, getFieldName(varNumber), type.getJvmId()));

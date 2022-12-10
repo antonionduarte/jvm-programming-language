@@ -6,6 +6,7 @@ import ast.typing.values.IValue;
 import ast.typing.types.Type;
 import ast.typing.types.ValueType;
 import compilation.CodeBlock;
+import compilation.CompilerUtils;
 import environment.Environment;
 import environment.Frame;
 
@@ -23,11 +24,16 @@ public class ASTBool implements ASTNode {
 
 	@Override
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
-		throw new RuntimeException("Not implemented"); //TODO implement
+		if(value){
+			codeBlock.emit(CompilerUtils.PUSH_TRUE);
+		} else {
+			codeBlock.emit(CompilerUtils.PUSH_FALSE);
+		}
+		return new ValueType(Type.Bool);
 	}
 
 	@Override
-	public ValueType typeCheck(Environment environment) {
+	public ValueType typeCheck(Environment<ValueType> environment) {
 		return new ValueType(Type.Bool);
 	}
 }
