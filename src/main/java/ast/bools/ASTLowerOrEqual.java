@@ -29,11 +29,15 @@ public class ASTLowerOrEqual implements ASTNode {
 
 	@Override
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
+		lhs.compile(frame, codeBlock).expect(new ValueType(Type.Int));
+		rhs.compile(frame, codeBlock).expect(new ValueType(Type.Int));
 		CodeBlock.DelayedOp gotoIf = codeBlock.delayEmit();
-		codeBlock.emit(CompilerUtils.PUSH_TRUE);
-		String label = codeBlock.emitLabel();
 		codeBlock.emit(CompilerUtils.PUSH_FALSE);
+		CodeBlock.DelayedOp skipIf = codeBlock.delayEmit();
+		String label = codeBlock.emitLabel();
+		codeBlock.emit(CompilerUtils.PUSH_TRUE);
 		gotoIf.set(CompilerUtils.gotoIfCompare(CompilerUtils.LE, label));
+		skipIf.set(CompilerUtils.gotoAlways(codeBlock.emitLabel()));
 		return new ValueType(Type.Bool);
 	}
 

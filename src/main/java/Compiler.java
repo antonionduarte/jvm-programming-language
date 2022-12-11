@@ -1,5 +1,8 @@
 import ast.ASTNode;
+import ast.typing.types.Type;
+import ast.typing.types.ValueType;
 import compilation.CodeBlock;
+import compilation.CompilerUtils;
 import compilation.FrameCompiler;
 import environment.Frame;
 import parser.ParseException;
@@ -44,7 +47,11 @@ public class Compiler {
 			List<Frame> frames = new ArrayList<>();
 			Frame root = new Frame(0, frames);
 			frames.add(root);
-			exp.compile(root, codeBlock);
+			ValueType left = exp.compile(root, codeBlock);
+			if(left.getType() != Type.Void){
+				//required: jvm will throw an error if the stack is not empty in the end
+				codeBlock.emit(CompilerUtils.DISCARD);
+			}
 			codeBlock.dump(outputFile);
 			FrameCompiler.dumpAll(OUT_DIR, frames);
 			outputFile.write(finalHeaders.toString().getBytes());

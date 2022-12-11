@@ -28,11 +28,14 @@ public class ASTEqual implements ASTNode {
 
 	@Override
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
+		lhs.compile(frame, codeBlock).expect(rhs.compile(frame, codeBlock));
 		CodeBlock.DelayedOp gotoIf = codeBlock.delayEmit();
-		codeBlock.emit(CompilerUtils.PUSH_TRUE);
-		String label = codeBlock.emitLabel();
 		codeBlock.emit(CompilerUtils.PUSH_FALSE);
+		CodeBlock.DelayedOp skipIf = codeBlock.delayEmit();
+		String label = codeBlock.emitLabel();
+		codeBlock.emit(CompilerUtils.PUSH_TRUE);
 		gotoIf.set(CompilerUtils.gotoIfCompare(CompilerUtils.EQ, label));
+		skipIf.set(CompilerUtils.gotoAlways(codeBlock.emitLabel()));
 		return new ValueType(Type.Bool);
 	}
 

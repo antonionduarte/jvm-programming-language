@@ -14,8 +14,8 @@ public class CompilerUtils {
 	public static final String DISCARD = "pop";
 
 	private static final String PUSH_CONST = "ldc";
-	public static final String PUSH_TRUE = PUSH + " 1";
-	public static final String PUSH_FALSE = PUSH + " 0";
+	public static final String PUSH_TRUE = "iconst_1";
+	public static final String PUSH_FALSE = "iconst_0";
 
 	public static final String EQ = "eq";
 	public static final String NOT_EQ = "ne";

@@ -40,7 +40,7 @@ public class ASTBlock implements ASTNode {
             //discard result of last instruction to clear the stack
             if(returnType.getType() != Type.Void) codeBlock.emit(CompilerUtils.DISCARD);
             codeBlock.emit("\n" + CompilerUtils.comment("instruction"));
-            returnType = instruction.compile(frame, codeBlock);
+            returnType = instruction.compile(inner, codeBlock);
         }
         FrameCompiler.emitEndScope(codeBlock, inner);
         return returnType;

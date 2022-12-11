@@ -37,15 +37,34 @@ public class ASTIf implements ASTNode {
     @Override
     public ValueType compile(Frame frame, CodeBlock codeBlock) {
         condition.compile(frame, codeBlock);
-        CodeBlock.DelayedOp gotoIf = codeBlock.delayEmit();
+        CodeBlock.DelayedOp gotoElse = codeBlock.delayEmit();
         ValueType ifType = bodyIf.compile(frame, codeBlock);
+        CodeBlock.DelayedOp popIf = codeBlock.delayEmit();
+        popIf.set(CompilerUtils.comment(CompilerUtils.DISCARD));
+        CodeBlock.DelayedOp skipElse = codeBlock.delayEmit();
+        skipElse.set(CompilerUtils.comment(" ;goto after else"));
         String label = codeBlock.emitLabel();
         ValueType elseType = null;
+        CodeBlock.DelayedOp popElse = null;
         if(bodyElse != null) {
             elseType = bodyElse.compile(frame, codeBlock);
+            popElse = codeBlock.delayEmit();
+            popElse.set(CompilerUtils.comment(CompilerUtils.DISCARD));
+            skipElse.set(CompilerUtils.gotoAlways(codeBlock.emitLabel()));
         }
-        gotoIf.set(CompilerUtils.gotoIfTrue(label));
-        return elseType !=null && elseType.equals(ifType) ? ifType : new ValueType(Type.Void);
+        gotoElse.set(CompilerUtils.gotoIfFalse(label));
+
+        //if this if does not return a value, it is required to discard the values
+        //from the stack
+        boolean isVoid = elseType == null || !elseType.equals(ifType);
+        if(isVoid && ifType.getType() != Type.Void){
+            popIf.set(CompilerUtils.DISCARD);
+        }
+        if(isVoid && elseType != null && elseType.getType() != Type.Void) {
+            popElse.set(CompilerUtils.DISCARD);
+        }
+
+        return  isVoid ? new ValueType(Type.Void) : ifType;
     }
 
     @Override

@@ -28,6 +28,8 @@ public class ASTAnd implements ASTNode {
 
 	@Override
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
+		lhs.compile(frame,codeBlock).expect(new ValueType(Type.Bool));
+		rhs.compile(frame,codeBlock).expect(new ValueType(Type.Bool));
 		codeBlock.emit(CompilerUtils.AND);
 		return new ValueType(Type.Bool);
 	}

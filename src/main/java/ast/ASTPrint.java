@@ -31,11 +31,13 @@ public class ASTPrint implements ASTNode {
         switch (type.getType()){
             case Int -> codeBlock.emit("invokestatic java/lang/String/valueOf(I)Ljava/lang/String;");
             case Bool -> {
-                CodeBlock.DelayedOp gotoIf = codeBlock.delayEmit();
+                CodeBlock.DelayedOp gotoElse = codeBlock.delayEmit();
                 codeBlock.emit(CompilerUtils.pushString("true"));
+                CodeBlock.DelayedOp skipElse = codeBlock.delayEmit();
                 String label = codeBlock.emitLabel();
                 codeBlock.emit(CompilerUtils.pushString("false"));
-                gotoIf.set(CompilerUtils.gotoIfTrue(label));
+                skipElse.set(CompilerUtils.gotoAlways(codeBlock.emitLabel()));
+                gotoElse.set(CompilerUtils.gotoIfFalse(label));
             }
             default -> throw new RuntimeException("Not implemented");
         }
