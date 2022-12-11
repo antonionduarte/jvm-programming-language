@@ -33,6 +33,8 @@ public class ASTAssign implements ASTNode {
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
 		ValueType type = expression.compile(frame, codeBlock);
 		codeBlock.emit(CompilerUtils.DUPLICATE);
+		id.compile(frame, codeBlock);
+		codeBlock.emit(CompilerUtils.SWAP);
 		switch (type.getType()){
 			case Int , Bool ->
 					codeBlock.emit(CompilerUtils.setField("Ref", "vi", Type.Int.getJvmId()));

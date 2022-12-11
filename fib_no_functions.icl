@@ -1,7 +1,7 @@
 {
     let fibMinus2 = new 0;
     let fibMinus1 = new 1;
-    let i = new 0;
+    let i = new 2;
     println !fibMinus2;
     println !fibMinus1;
     while(!i <= 10){

@@ -26,6 +26,7 @@ public class ASTReference implements ASTNode {
 	@Override
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
 		codeBlock.emit(CompilerUtils.initClass("Ref"));
+		codeBlock.emit(CompilerUtils.DUPLICATE);
 		ValueType type = expression.compile(frame, codeBlock);
 		switch (type.getType()){
 			case Int , Bool ->
@@ -34,7 +35,7 @@ public class ASTReference implements ASTNode {
 					codeBlock.emit(CompilerUtils.setField("Ref", "v",
 							CompilerUtils.toReferenceType(CompilerUtils.OBJECT)));
 		}
-		return type;
+		return new ValueType(Type.Ref);
 	}
 
 	@Override

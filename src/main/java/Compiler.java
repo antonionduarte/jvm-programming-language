@@ -9,17 +9,21 @@ import parser.ParseException;
 import parser.Parser;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Compiler {
 	private static final String HEADER_FILE = "header/Header.j";
+	private static final String REF_FILE = "header/Ref.j";
 	private static final String ASSEMBLY_START = "; START";
 	private static final String ASSEMBLY_END = "; END";
 
 	private static final String OUT_DIR = "compiled";
 	private static final String ASSEMBLY_OUT = OUT_DIR + "/out.j";
+	private static final String REF_OUT = OUT_DIR + "/Ref.j";
 
 	public static void main(String[] args) throws IOException {
 		if (args.length < 1) {
@@ -54,6 +58,7 @@ public class Compiler {
 			}
 			codeBlock.dump(outputFile);
 			FrameCompiler.dumpAll(OUT_DIR, frames);
+			Files.copy(Path.of(REF_FILE), Path.of(REF_OUT));
 			outputFile.write(finalHeaders.toString().getBytes());
 		} catch (ParseException e) {
 			System.out.println("Syntax Error!");
