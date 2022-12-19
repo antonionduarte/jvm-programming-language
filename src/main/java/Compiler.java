@@ -52,7 +52,7 @@ public class Compiler {
 			Frame root = new Frame(0, frames);
 			frames.add(root);
 			ValueType left = exp.compile(root, codeBlock);
-			if(left.getType() != Type.Void){
+			if (left.getType() != Type.Void) {
 				//required: jvm will throw an error if the stack is not empty in the end
 				codeBlock.emit(CompilerUtils.DISCARD);
 			}

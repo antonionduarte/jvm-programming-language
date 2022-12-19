@@ -19,10 +19,6 @@ public class ValueType {
 		this.returnType = null;
 	}
 
-	public Type getType() {
-		return type;
-	}
-
 	/**
 	 * Constructor meant to be used for Records and Function types.
 	 *
@@ -34,6 +30,10 @@ public class ValueType {
 		this.type = type;
 		this.parameterTypes = parameterTypes;
 		this.returnType = returnType;
+	}
+
+	public Type getType() {
+		return type;
 	}
 
 	public String getJvmId() {

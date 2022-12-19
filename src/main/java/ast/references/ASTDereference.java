@@ -2,9 +2,9 @@ package ast.references;
 
 import ast.ASTNode;
 import ast.typing.types.Type;
+import ast.typing.types.ValueType;
 import ast.typing.values.CellValue;
 import ast.typing.values.IValue;
-import ast.typing.types.ValueType;
 import compilation.CodeBlock;
 import compilation.CompilerUtils;
 import environment.Environment;

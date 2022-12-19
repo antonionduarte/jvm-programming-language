@@ -30,8 +30,8 @@ public class ParseException extends Exception {
 	 */
 	public int[][] expectedTokenSequences;
 	/**
-	 * This is a reference to the "tokenImage" array of the generated parser within which the parse error occurred.
-	 * This array is defined in the generated ...Constants interface.
+	 * This is a reference to the "tokenImage" array of the generated parser within which the parse error occurred. This
+	 * array is defined in the generated ...Constants interface.
 	 */
 	public String[] tokenImage;
 

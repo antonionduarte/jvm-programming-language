@@ -1,10 +1,10 @@
 package ast.bools;
 
 import ast.ASTNode;
-import ast.typing.values.BoolValue;
-import ast.typing.values.IValue;
 import ast.typing.types.Type;
 import ast.typing.types.ValueType;
+import ast.typing.values.BoolValue;
+import ast.typing.values.IValue;
 import compilation.CodeBlock;
 import compilation.CompilerUtils;
 import environment.Environment;
@@ -25,7 +25,7 @@ public class ASTNot implements ASTNode {
 
 	@Override
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
-		inner.compile(frame,codeBlock).expect(new ValueType(Type.Bool));
+		inner.compile(frame, codeBlock).expect(new ValueType(Type.Bool));
 		codeBlock.emit(CompilerUtils.PUSH_TRUE);
 		//bitwise xor of 1 with 1 will give 0, and 0 with 1 will give 1
 		codeBlock.emit(CompilerUtils.XOR);

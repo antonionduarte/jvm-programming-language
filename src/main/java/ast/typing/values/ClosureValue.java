@@ -1,14 +1,13 @@
 package ast.typing.values;
 
 import ast.ASTNode;
-import ast.typing.utils.Parameter;
 import ast.typing.types.Type;
 import ast.typing.types.ValueType;
+import ast.typing.utils.Parameter;
 import environment.Environment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ClosureValue implements IValue {
 

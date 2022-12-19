@@ -1,9 +1,9 @@
 package ast.functions;
 
 import ast.ASTNode;
+import ast.typing.types.ValueType;
 import ast.typing.values.ClosureValue;
 import ast.typing.values.IValue;
-import ast.typing.types.ValueType;
 import compilation.CodeBlock;
 import environment.Environment;
 import environment.Frame;

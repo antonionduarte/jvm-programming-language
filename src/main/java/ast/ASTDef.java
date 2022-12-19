@@ -1,15 +1,12 @@
 package ast;
 
-import ast.typing.values.IValue;
 import ast.typing.types.ValueType;
+import ast.typing.values.IValue;
 import compilation.CodeBlock;
 import compilation.FrameCompiler;
 import environment.Environment;
 import environment.Frame;
 import environment.FrameVariable;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ASTDef implements ASTNode {
 

@@ -1,10 +1,10 @@
 package ast.bools;
 
 import ast.ASTNode;
-import ast.typing.values.BoolValue;
-import ast.typing.values.IValue;
 import ast.typing.types.Type;
 import ast.typing.types.ValueType;
+import ast.typing.values.BoolValue;
+import ast.typing.values.IValue;
 import compilation.CodeBlock;
 import compilation.CompilerUtils;
 import environment.Environment;
@@ -28,8 +28,8 @@ public class ASTAnd implements ASTNode {
 
 	@Override
 	public ValueType compile(Frame frame, CodeBlock codeBlock) {
-		lhs.compile(frame,codeBlock).expect(new ValueType(Type.Bool));
-		rhs.compile(frame,codeBlock).expect(new ValueType(Type.Bool));
+		lhs.compile(frame, codeBlock).expect(new ValueType(Type.Bool));
+		rhs.compile(frame, codeBlock).expect(new ValueType(Type.Bool));
 		codeBlock.emit(CompilerUtils.AND);
 		return new ValueType(Type.Bool);
 	}

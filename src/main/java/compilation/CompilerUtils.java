@@ -12,22 +12,16 @@ public class CompilerUtils {
 	public static final String PUSH = "sipush";
 
 	public static final String DISCARD = "pop";
-
-	private static final String PUSH_CONST = "ldc";
 	public static final String PUSH_TRUE = "iconst_1";
 	public static final String PUSH_FALSE = "iconst_0";
-
 	public static final String EQ = "eq";
 	public static final String NOT_EQ = "ne";
-
 	public static final String GT = "gt";
 	public static final String GE = "ge";
 	public static final String LT = "lt";
 	public static final String LE = "le";
-
 	public static final String DUPLICATE = "dup";
 	public static final String SWAP = "swap";
-
 	public static final String EMPTY_CONSTRUCTOR =
 			"""
 					.method public <init>()V
@@ -35,11 +29,9 @@ public class CompilerUtils {
 					invokenonvirtual java/lang/Object/<init>()V
 					return
 					.end method""";
-
 	public static final String OBJECT = "java/lang/Object";
 	public static final String PUSH_NULL = "aconst_null";
-
-
+	private static final String PUSH_CONST = "ldc";
 	private static final String CLASS_HEADER =
 			"""
 					.class public %s
@@ -98,35 +90,35 @@ public class CompilerUtils {
 		return String.format(INIT_EMPTY_CLASS, name, name);
 	}
 
-	public static String pushString(String value){
+	public static String pushString(String value) {
 		return PUSH_CONST + " \"" + value + "\"";
 	}
 
-	public static String gotoAlways(String label){
+	public static String gotoAlways(String label) {
 		return String.format(GOTO, label);
 	}
 
-	public static String gotoIfTrue(String label){
+	public static String gotoIfTrue(String label) {
 		return gotoIfNotZero(label);
 	}
 
-	public static String gotoIfFalse(String label){
+	public static String gotoIfFalse(String label) {
 		return gotoIfZero(label);
 	}
 
-	public static String gotoIfZero(String label){
+	public static String gotoIfZero(String label) {
 		return String.format(IF_ZERO, label);
 	}
 
-	public static String gotoIfNotZero(String label){
+	public static String gotoIfNotZero(String label) {
 		return String.format(IF_NOT_ZERO, label);
 	}
 
-	public static String gotoIfCompare(String cmpType, String label){
+	public static String gotoIfCompare(String cmpType, String label) {
 		return String.format(IF_CMP, cmpType, label);
 	}
 
-	public static String comment(String comment){
+	public static String comment(String comment) {
 		return " ;" + comment;
 	}
 }
