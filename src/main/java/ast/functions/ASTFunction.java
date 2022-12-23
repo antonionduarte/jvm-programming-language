@@ -19,19 +19,18 @@ public class ASTFunction implements ASTNode {
 	private final ASTNode body;
 	private final IType returnType;
 
-	public ASTFunction(ASTNode body, ArrayList<Pair<String, String>> parameters, IType returnType) {
+	public ASTFunction(ASTNode body, ArrayList<Pair<String, IType>> parameters, IType returnType) {
 		this.typedParameters = convertParameters(parameters);
 		this.body = body;
 		this.returnType = returnType;
 	}
 
-	// TODO: Well this won't work for parameters where the type is a function type
-	private ArrayList<Parameter> convertParameters(ArrayList<Pair<String, String>> parameters) {
+	private ArrayList<Parameter> convertParameters(ArrayList<Pair<String, IType>> parameters) {
 		ArrayList<Parameter> convertedParameters = new ArrayList<>();
-		for (Pair<String, String> pair : parameters) {
+		for (Pair<String, IType> pair : parameters) {
 			String parameter = pair.a();
-			String type = pair.b();
-			convertedParameters.add(new Parameter(parameter, PrimitiveType.valueOf(type)));
+			IType type = pair.b();
+			convertedParameters.add(new Parameter(parameter, type));
 		}
 		return convertedParameters;
 	}

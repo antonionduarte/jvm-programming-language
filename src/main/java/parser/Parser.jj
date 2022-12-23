@@ -57,6 +57,7 @@ TOKEN:
 	| < FUN : "fn" >
 	| < ARROW: "->" >
 	| < NEW: "new" >
+	| < REF: "Ref" >
 	| < ASSIGN: ":=" >
 	| < DEREFERENCE: "!" >
 	| < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >	
@@ -71,6 +72,29 @@ SKIP:
 	| "\r"
 }
 
+IType Type() :
+{
+    Token id;
+    IType t;
+}
+
+{
+    id = < Id > { return PrimitiveType.valueOf(id.image); }
+    | <REF> <LT> t = Type() <GT> { return new ReferenceType(t); }
+    | <LPAR>
+        {
+            List<IType> params = new ArrayList<>();
+        }
+        (
+            t = Type()
+            { params.add(t); }
+            (<COMMA> t = Type() { params.add(t); })*
+        )?
+        <RPAR> <ARROW> t = Type()
+        {
+            return new FunctionType(params, t);
+        }
+}
 
 ASTNode Start():
 {
@@ -305,27 +329,26 @@ ASTNode Fact():
 		}
 	| <FUN> <LPAR> 
 		{
-			HashMap<String, ASTNode> d = new HashMap<>(); 
-			ArrayList<Pair<String, String>> p = new ArrayList<>(); 
+			ArrayList<Pair<String, IType>> p = new ArrayList<>();
 			ASTNode b;
-			Token type;
-			Token retType = null;
+			IType type;
+			IType retType = null;
 		}
 
 		(
-			id = <Id> <TWODOTS> type = <Id> {
-				p.add(new Pair(id.image, type.image));
+			id = <Id> <TWODOTS> type = Type() {
+				p.add(new Pair(id.image, type));
 			} 
 			
-			(<COMMA> id = <Id> <TWODOTS> type = <Id> {
-				p.add(new Pair(id.image, type.image));
+			(<COMMA> id = <Id> <TWODOTS> type = Type() {
+				p.add(new Pair(id.image, type));
 			}) *
 		) ?
 
-		<RPAR> <ARROW> retType = <Id> b = Block()
+		<RPAR> <ARROW> retType = Type() b = Block()
 
 		{
-			return new ASTFunction(b, p, retType != null ? PrimitiveType.valueOf(retType.image) : null);
+			return new ASTFunction(b, p, retType);
 		}
 		| t = Block(){
             return t;
