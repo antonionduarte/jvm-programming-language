@@ -1,8 +1,8 @@
 package ast.bools;
 
 import ast.ASTNode;
-import ast.typing.types.Type;
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
+import ast.typing.types.PrimitiveType;
 import ast.typing.values.BoolValue;
 import ast.typing.values.IValue;
 import compilation.CodeBlock;
@@ -27,7 +27,7 @@ public class ASTEqual implements ASTNode {
 	}
 
 	@Override
-	public ValueType compile(Frame frame, CodeBlock codeBlock) {
+	public IType compile(Frame frame, CodeBlock codeBlock) {
 		lhs.compile(frame, codeBlock).expect(rhs.compile(frame, codeBlock));
 		CodeBlock.DelayedOp gotoIf = codeBlock.delayEmit();
 		codeBlock.emit(CompilerUtils.PUSH_FALSE);
@@ -36,12 +36,12 @@ public class ASTEqual implements ASTNode {
 		codeBlock.emit(CompilerUtils.PUSH_TRUE);
 		gotoIf.set(CompilerUtils.gotoIfCompare(CompilerUtils.EQ, label));
 		skipIf.set(CompilerUtils.gotoAlways(codeBlock.emitLabel()));
-		return new ValueType(Type.Bool);
+		return PrimitiveType.Bool;
 	}
 
 	@Override
-	public ValueType typeCheck(Environment<ValueType> environment) {
-		return new ValueType(Type.Bool);
+	public IType typeCheck(Environment<IType> environment) {
+		return PrimitiveType.Bool;
 	}
 }
 

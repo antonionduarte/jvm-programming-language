@@ -1,6 +1,6 @@
 package ast;
 
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
 import ast.typing.values.IValue;
 import compilation.CodeBlock;
 import environment.Environment;
@@ -10,7 +10,7 @@ public interface ASTNode {
 
 	IValue eval(Environment<IValue> environment);
 
-	ValueType compile(Frame frame, CodeBlock codeBlock);
+	IType compile(Frame frame, CodeBlock codeBlock);
 
-	ValueType typeCheck(Environment<ValueType> environment);
+	IType typeCheck(Environment<IType> environment);
 }

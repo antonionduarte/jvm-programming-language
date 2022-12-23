@@ -1,8 +1,10 @@
 package ast.references;
 
 import ast.ASTNode;
-import ast.typing.types.Type;
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
+import ast.typing.types.PrimitiveType;
+import ast.typing.types.ReferenceType;
+import ast.typing.types.TypeMismatchException;
 import ast.typing.values.CellValue;
 import ast.typing.values.IValue;
 import compilation.CodeBlock;
@@ -24,16 +26,17 @@ public class ASTDereference implements ASTNode {
 	}
 
 	@Override
-	public ValueType compile(Frame frame, CodeBlock codeBlock) {
-		ValueType type = node.compile(frame, codeBlock);
-		type.expect(new ValueType(Type.Ref));
+	public IType compile(Frame frame, CodeBlock codeBlock) {
+		IType type = node.compile(frame, codeBlock);
+		if(!(type instanceof ReferenceType))
+			throw new TypeMismatchException("Reference", type);
 		//TODO change to support non int refs
-		codeBlock.emit(CompilerUtils.getField("Ref", "vi", Type.Int.getJvmId()));
-		return new ValueType(Type.Int);
+		codeBlock.emit(CompilerUtils.getField("Ref", "vi", PrimitiveType.Int.getJvmId()));
+		return PrimitiveType.Int;
 	}
 
 	@Override
-	public ValueType typeCheck(Environment<ValueType> environment) {
+	public IType typeCheck(Environment<IType> environment) {
 		return null;
 	}
 }

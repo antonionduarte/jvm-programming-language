@@ -2,8 +2,8 @@ package ast.references;
 
 import ast.ASTId;
 import ast.ASTNode;
-import ast.typing.types.Type;
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
+import ast.typing.types.PrimitiveType;
 import ast.typing.values.CellValue;
 import ast.typing.values.IValue;
 import compilation.CodeBlock;
@@ -30,21 +30,20 @@ public class ASTAssign implements ASTNode {
 	}
 
 	@Override
-	public ValueType compile(Frame frame, CodeBlock codeBlock) {
-		ValueType type = expression.compile(frame, codeBlock);
+	public IType compile(Frame frame, CodeBlock codeBlock) {
+		IType type = expression.compile(frame, codeBlock);
 		codeBlock.emit(CompilerUtils.DUPLICATE);
 		id.compile(frame, codeBlock);
 		codeBlock.emit(CompilerUtils.SWAP);
-		switch (type.getType()) {
-			case Int, Bool -> codeBlock.emit(CompilerUtils.setField("Ref", "vi", Type.Int.getJvmId()));
-			default -> codeBlock.emit(CompilerUtils.setField("Ref", "v",
+		if(type.equals(PrimitiveType.Bool) || type.equals(PrimitiveType.Int))
+			codeBlock.emit(CompilerUtils.setField("Ref", "vi", PrimitiveType.Int.getJvmId()));
+		else codeBlock.emit(CompilerUtils.setField("Ref", "v",
 					CompilerUtils.toReferenceType(CompilerUtils.OBJECT)));
-		}
 		return type;
 	}
 
 	@Override
-	public ValueType typeCheck(Environment<ValueType> environment) {
+	public IType typeCheck(Environment<IType> environment) {
 		return null;
 	}
 }

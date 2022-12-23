@@ -1,8 +1,8 @@
 package ast.typing.values;
 
-import ast.typing.types.Type;
+import ast.typing.types.IType;
+import ast.typing.types.ReferenceType;
 import ast.typing.types.TypeMismatchException;
-import ast.typing.types.ValueType;
 
 public class CellValue implements IValue {
 	private IValue value;
@@ -15,7 +15,7 @@ public class CellValue implements IValue {
 		if (value instanceof CellValue) {
 			return ((CellValue) value).getValue();
 		} else {
-			throw new TypeMismatchException(new ValueType(Type.Ref), value.getType());
+			throw new TypeMismatchException("Reference", value.getType());
 		}
 	}
 
@@ -34,8 +34,8 @@ public class CellValue implements IValue {
 
 	// TODO: The Type of a CellValue must be a combination of Type.Ref + the type of the value
 	@Override
-	public ValueType getType() {
-		return new ValueType(Type.Ref);
+	public IType getType() {
+		return new ReferenceType(value.getType());
 	}
 
 	@Override

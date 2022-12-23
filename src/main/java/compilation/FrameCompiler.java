@@ -1,7 +1,7 @@
 package compilation;
 
 import ast.ASTNode;
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
 import environment.Frame;
 import environment.FrameVariable;
 
@@ -72,7 +72,7 @@ public class FrameCompiler {
 
 	public static void emitAssign(CodeBlock block, FrameVariable variable, ASTNode expression) {
 		String name = variable.getFrame().getName();
-		ValueType type = expression.compile(variable.getFrame(), block);
+		IType type = expression.compile(variable.getFrame(), block);
 		block.emit(CompilerUtils.DUPLICATE);
 		block.emit(CompilerUtils.loadLocalVariable(SCOPE_VARIABLE));
 		block.emit(CompilerUtils.SWAP);

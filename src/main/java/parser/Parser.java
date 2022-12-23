@@ -19,8 +19,8 @@ import ast.ints.*;
 import ast.references.ASTAssign;
 import ast.references.ASTDereference;
 import ast.references.ASTReference;
-import ast.typing.types.Type;
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
+import ast.typing.types.PrimitiveType;
 import utils.Pair;
 
 import java.util.ArrayList;
@@ -670,7 +670,7 @@ public class Parser implements ParserConstants {
 				b = Block();
 				{
                     if ("" != null) {
-                        return new ASTFunction(b, p, retType != null ? new ValueType(Type.valueOf(retType.image)) : null);
+                        return new ASTFunction(b, p, retType != null ? PrimitiveType.valueOf(retType.image) : null);
                     }
 				}
 				break;

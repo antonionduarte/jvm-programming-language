@@ -1,8 +1,8 @@
 package ast.typing.values;
 
 import ast.ASTNode;
-import ast.typing.types.Type;
-import ast.typing.types.ValueType;
+import ast.typing.types.FunctionType;
+import ast.typing.types.IType;
 import ast.typing.utils.Parameter;
 import environment.Environment;
 
@@ -13,12 +13,12 @@ public class ClosureValue implements IValue {
 
 	private final List<Parameter> parameters; /* Parameters of the function */
 	private final Environment<IValue> environment; /* Environment at the time of function decl. */
-	private final ValueType returnType;
+	private final IType returnType;
 	private final ASTNode body;
 
 	/* TODO: I think this still needs ASTNode as Body */
 
-	public ClosureValue(Environment<IValue> environment, List<Parameter> parameters, ValueType returnType, ASTNode body) {
+	public ClosureValue(Environment<IValue> environment, List<Parameter> parameters, IType returnType, ASTNode body) {
 		this.parameters = parameters;
 		this.environment = environment;
 		this.returnType = returnType;
@@ -47,11 +47,11 @@ public class ClosureValue implements IValue {
 	}
 
 	@Override
-	public ValueType getType() {
-		var parameterTypes = new ArrayList<ValueType>();
+	public IType getType() {
+		var parameterTypes = new ArrayList<IType>();
 		for (var parameter : parameters) {
 			parameterTypes.add(parameter.type());
 		}
-		return new ValueType(Type.Fun, parameterTypes, returnType);
+		return new FunctionType(parameterTypes, returnType);
 	}
 }

@@ -325,7 +325,7 @@ ASTNode Fact():
 		<RPAR> <ARROW> retType = <Id> b = Block()
 
 		{
-			return new ASTFunction(b, p, retType != null ? new ValueType(Type.valueOf(retType.image)) : null);
+			return new ASTFunction(b, p, retType != null ? PrimitiveType.valueOf(retType.image) : null);
 		}
 		| t = Block(){
             return t;

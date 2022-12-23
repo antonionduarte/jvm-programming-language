@@ -1,8 +1,8 @@
 package ast.ints;
 
 import ast.ASTNode;
-import ast.typing.types.Type;
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
+import ast.typing.types.PrimitiveType;
 import ast.typing.values.IValue;
 import ast.typing.values.IntValue;
 import compilation.CodeBlock;
@@ -24,15 +24,15 @@ public class ASTNeg implements ASTNode {
 	}
 
 	@Override
-	public ValueType compile(Frame frame, CodeBlock codeBlock) {
-		exp.compile(frame, codeBlock).expect(new ValueType(Type.Int));
+	public IType compile(Frame frame, CodeBlock codeBlock) {
+		exp.compile(frame, codeBlock).expect(PrimitiveType.Int);
 		codeBlock.emit(CompilerUtils.NEG);
-		return new ValueType(Type.Int);
+		return PrimitiveType.Int;
 	}
 
 	@Override
-	public ValueType typeCheck(Environment<ValueType> environment) {
-		return new ValueType(Type.Int);
+	public IType typeCheck(Environment<IType> environment) {
+		return PrimitiveType.Int;
 	}
 }
 

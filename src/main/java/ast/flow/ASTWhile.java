@@ -1,8 +1,8 @@
 package ast.flow;
 
 import ast.ASTNode;
-import ast.typing.types.Type;
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
+import ast.typing.types.PrimitiveType;
 import ast.typing.values.BoolValue;
 import ast.typing.values.IValue;
 import ast.typing.values.VoidValue;
@@ -31,25 +31,25 @@ public class ASTWhile implements ASTNode {
 	}
 
 	@Override
-	public ValueType compile(Frame frame, CodeBlock codeBlock) {
+	public IType compile(Frame frame, CodeBlock codeBlock) {
 		String loop = codeBlock.emitLabel();
 		condition.compile(frame, codeBlock);
 		CodeBlock.DelayedOp loopIf = codeBlock.delayEmit();
-		ValueType type = body.compile(frame, codeBlock);
+		IType type = body.compile(frame, codeBlock);
 		//discard iteration result to clear the stack
-		if (type.getType() != Type.Void) {
+		if (type!= PrimitiveType.Void) {
 			codeBlock.emit(CompilerUtils.DISCARD);
 		}
 		codeBlock.emit(CompilerUtils.gotoAlways(loop));
 		String breakLoop = codeBlock.emitLabel();
 		loopIf.set(CompilerUtils.gotoIfFalse(breakLoop));
-		return new ValueType(Type.Void);
+		return PrimitiveType.Void;
 	}
 
 	@Override
-	public ValueType typeCheck(Environment<ValueType> environment) {
-		condition.typeCheck(environment).expect(new ValueType(Type.Bool));
+	public IType typeCheck(Environment<IType> environment) {
+		condition.typeCheck(environment).expect(PrimitiveType.Bool);
 		body.typeCheck(environment);
-		return new ValueType(Type.Void);
+		return PrimitiveType.Void;
 	}
 }

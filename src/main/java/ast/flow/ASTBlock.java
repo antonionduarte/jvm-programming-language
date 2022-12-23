@@ -1,8 +1,8 @@
 package ast.flow;
 
 import ast.ASTNode;
-import ast.typing.types.Type;
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
+import ast.typing.types.PrimitiveType;
 import ast.typing.values.IValue;
 import ast.typing.values.VoidValue;
 import compilation.CodeBlock;
@@ -32,13 +32,13 @@ public class ASTBlock implements ASTNode {
 	}
 
 	@Override
-	public ValueType compile(Frame frame, CodeBlock codeBlock) {
+	public IType compile(Frame frame, CodeBlock codeBlock) {
 		Frame inner = frame.beginScope();
 		FrameCompiler.emitBeginScope(codeBlock, inner);
-		ValueType returnType = new ValueType(Type.Void);
+		IType returnType = PrimitiveType.Void;
 		for (var instruction : instructions) {
 			//discard result of last instruction to clear the stack
-			if (returnType.getType() != Type.Void) {
+			if (returnType!= PrimitiveType.Void) {
 				codeBlock.emit(CompilerUtils.DISCARD);
 			}
 			codeBlock.emit("\n" + CompilerUtils.comment("instruction"));
@@ -49,7 +49,7 @@ public class ASTBlock implements ASTNode {
 	}
 
 	@Override
-	public ValueType typeCheck(Environment<ValueType> environment) {
+	public IType typeCheck(Environment<IType> environment) {
 		return null;
 	}
 }

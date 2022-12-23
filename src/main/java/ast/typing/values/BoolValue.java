@@ -1,8 +1,8 @@
 package ast.typing.values;
 
-import ast.typing.types.Type;
+import ast.typing.types.PrimitiveType;
 import ast.typing.types.TypeMismatchException;
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
 
 public class BoolValue implements IValue {
 	public static final BoolValue TRUE = new BoolValue(true);
@@ -17,7 +17,7 @@ public class BoolValue implements IValue {
 		if (value instanceof BoolValue) {
 			return ((BoolValue) value).getValue();
 		} else {
-			throw new TypeMismatchException(new ValueType(Type.Bool), value.getType());
+			throw new TypeMismatchException(PrimitiveType.Bool, value.getType());
 		}
 	}
 
@@ -31,8 +31,8 @@ public class BoolValue implements IValue {
 	}
 
 	@Override
-	public ValueType getType() {
-		return new ValueType(Type.Bool);
+	public IType getType() {
+		return PrimitiveType.Bool;
 	}
 
 	@Override

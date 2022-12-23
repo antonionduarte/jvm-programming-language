@@ -1,8 +1,8 @@
 package ast.typing.values;
 
-import ast.typing.types.Type;
+import ast.typing.types.IType;
+import ast.typing.types.PrimitiveType;
 import ast.typing.types.TypeMismatchException;
-import ast.typing.types.ValueType;
 
 public class IntValue implements IValue {
 	private final int value;
@@ -15,7 +15,7 @@ public class IntValue implements IValue {
 		if (value instanceof IntValue) {
 			return ((IntValue) value).getValue();
 		} else {
-			throw new TypeMismatchException(new ValueType(Type.Int), value.getType());
+			throw new TypeMismatchException(PrimitiveType.Int, value.getType());
 		}
 	}
 
@@ -29,8 +29,8 @@ public class IntValue implements IValue {
 	}
 
 	@Override
-	public ValueType getType() {
-		return new ValueType(Type.Int);
+	public IType getType() {
+		return PrimitiveType.Int;
 	}
 
 	@Override

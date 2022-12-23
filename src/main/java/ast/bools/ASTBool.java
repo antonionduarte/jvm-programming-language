@@ -1,8 +1,8 @@
 package ast.bools;
 
 import ast.ASTNode;
-import ast.typing.types.Type;
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
+import ast.typing.types.PrimitiveType;
 import ast.typing.values.BoolValue;
 import ast.typing.values.IValue;
 import compilation.CodeBlock;
@@ -23,17 +23,17 @@ public class ASTBool implements ASTNode {
 	}
 
 	@Override
-	public ValueType compile(Frame frame, CodeBlock codeBlock) {
+	public IType compile(Frame frame, CodeBlock codeBlock) {
 		if (value) {
 			codeBlock.emit(CompilerUtils.PUSH_TRUE);
 		} else {
 			codeBlock.emit(CompilerUtils.PUSH_FALSE);
 		}
-		return new ValueType(Type.Bool);
+		return PrimitiveType.Bool;
 	}
 
 	@Override
-	public ValueType typeCheck(Environment<ValueType> environment) {
-		return new ValueType(Type.Bool);
+	public IType typeCheck(Environment<IType> environment) {
+		return PrimitiveType.Bool;
 	}
 }

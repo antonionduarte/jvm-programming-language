@@ -1,7 +1,7 @@
 package ast.typing.values;
 
-import ast.typing.types.Type;
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
+import ast.typing.types.PrimitiveType;
 
 public class VoidValue implements IValue {
 	private static final VoidValue instance = new VoidValue();
@@ -15,7 +15,7 @@ public class VoidValue implements IValue {
 	}
 
 	@Override
-	public ValueType getType() {
-		return new ValueType(Type.Void);
+	public IType getType() {
+		return PrimitiveType.Void;
 	}
 }

@@ -1,8 +1,8 @@
 package ast.bools;
 
 import ast.ASTNode;
-import ast.typing.types.Type;
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
+import ast.typing.types.PrimitiveType;
 import ast.typing.values.BoolValue;
 import ast.typing.values.IValue;
 import ast.typing.values.IntValue;
@@ -28,9 +28,9 @@ public class ASTGreaterThan implements ASTNode {
 	}
 
 	@Override
-	public ValueType compile(Frame frame, CodeBlock codeBlock) {
-		lhs.compile(frame, codeBlock).expect(new ValueType(Type.Int));
-		rhs.compile(frame, codeBlock).expect(new ValueType(Type.Int));
+	public IType compile(Frame frame, CodeBlock codeBlock) {
+		lhs.compile(frame, codeBlock).expect(PrimitiveType.Int);
+		rhs.compile(frame, codeBlock).expect(PrimitiveType.Int);
 		CodeBlock.DelayedOp gotoIf = codeBlock.delayEmit();
 		codeBlock.emit(CompilerUtils.PUSH_FALSE);
 		CodeBlock.DelayedOp skipIf = codeBlock.delayEmit();
@@ -38,11 +38,11 @@ public class ASTGreaterThan implements ASTNode {
 		codeBlock.emit(CompilerUtils.PUSH_TRUE);
 		gotoIf.set(CompilerUtils.gotoIfCompare(CompilerUtils.GT, label));
 		skipIf.set(CompilerUtils.gotoAlways(codeBlock.emitLabel()));
-		return new ValueType(Type.Bool);
+		return PrimitiveType.Bool;
 	}
 
 	@Override
-	public ValueType typeCheck(Environment<ValueType> environment) {
-		return new ValueType(Type.Bool);
+	public IType typeCheck(Environment<IType> environment) {
+		return PrimitiveType.Bool;
 	}
 }

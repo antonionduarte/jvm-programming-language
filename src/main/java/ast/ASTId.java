@@ -1,6 +1,6 @@
 package ast;
 
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
 import ast.typing.values.IValue;
 import compilation.CodeBlock;
 import compilation.FrameCompiler;
@@ -22,14 +22,14 @@ public class ASTId implements ASTNode {
 	}
 
 	@Override
-	public ValueType compile(Frame frame, CodeBlock codeBlock) {
+	public IType compile(Frame frame, CodeBlock codeBlock) {
 		FrameVariable variable = frame.find(id);
 		FrameCompiler.emitGetValue(codeBlock, variable, frame);
 		return variable.getType();
 	}
 
 	@Override
-	public ValueType typeCheck(Environment<ValueType> environment) {
+	public IType typeCheck(Environment<IType> environment) {
 		return environment.find(id);
 	}
 }

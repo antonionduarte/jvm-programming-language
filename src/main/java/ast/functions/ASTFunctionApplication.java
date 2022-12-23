@@ -1,7 +1,7 @@
 package ast.functions;
 
 import ast.ASTNode;
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
 import ast.typing.values.ClosureValue;
 import ast.typing.values.IValue;
 import compilation.CodeBlock;
@@ -37,12 +37,12 @@ public class ASTFunctionApplication implements ASTNode {
 	}
 
 	@Override
-	public ValueType compile(Frame frame, CodeBlock codeBlock) {
+	public IType compile(Frame frame, CodeBlock codeBlock) {
 		return null;
 	}
 
 	@Override
-	public ValueType typeCheck(Environment<ValueType> environment) {
+	public IType typeCheck(Environment<IType> environment) {
 		return null;
 	}
 }

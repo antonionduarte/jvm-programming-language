@@ -1,6 +1,6 @@
 import ast.ASTNode;
-import ast.typing.types.Type;
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
+import ast.typing.types.PrimitiveType;
 import compilation.CodeBlock;
 import compilation.CompilerUtils;
 import compilation.FrameCompiler;
@@ -51,8 +51,8 @@ public class Compiler {
 			List<Frame> frames = new ArrayList<>();
 			Frame root = new Frame(0, frames);
 			frames.add(root);
-			ValueType left = exp.compile(root, codeBlock);
-			if (left.getType() != Type.Void) {
+			IType left = exp.compile(root, codeBlock);
+			if (left!= PrimitiveType.Void) {
 				//required: jvm will throw an error if the stack is not empty in the end
 				codeBlock.emit(CompilerUtils.DISCARD);
 			}

@@ -1,8 +1,8 @@
 package ast.ints;
 
 import ast.ASTNode;
-import ast.typing.types.Type;
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
+import ast.typing.types.PrimitiveType;
 import ast.typing.values.IValue;
 import ast.typing.values.IntValue;
 import compilation.CodeBlock;
@@ -23,13 +23,13 @@ public class ASTNum implements ASTNode {
 	}
 
 	@Override
-	public ValueType compile(Frame frame, CodeBlock codeBlock) {
+	public IType compile(Frame frame, CodeBlock codeBlock) {
 		codeBlock.emit(CompilerUtils.PUSH + " " + val);
-		return new ValueType(Type.Int);
+		return PrimitiveType.Int;
 	}
 
 	@Override
-	public ValueType typeCheck(Environment<ValueType> environment) {
-		return new ValueType(Type.Int);
+	public IType typeCheck(Environment<IType> environment) {
+		return PrimitiveType.Int;
 	}
 }

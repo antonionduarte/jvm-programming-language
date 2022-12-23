@@ -1,8 +1,8 @@
 package ast.flow;
 
 import ast.ASTNode;
-import ast.typing.types.Type;
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
+import ast.typing.types.PrimitiveType;
 import ast.typing.values.BoolValue;
 import ast.typing.values.IValue;
 import ast.typing.values.VoidValue;
@@ -40,16 +40,16 @@ public class ASTIf implements ASTNode {
 	}
 
 	@Override
-	public ValueType compile(Frame frame, CodeBlock codeBlock) {
+	public IType compile(Frame frame, CodeBlock codeBlock) {
 		condition.compile(frame, codeBlock);
 		CodeBlock.DelayedOp gotoElse = codeBlock.delayEmit();
-		ValueType ifType = bodyIf.compile(frame, codeBlock);
+		IType ifType = bodyIf.compile(frame, codeBlock);
 		CodeBlock.DelayedOp popIf = codeBlock.delayEmit();
 		popIf.set(CompilerUtils.comment(CompilerUtils.DISCARD));
 		CodeBlock.DelayedOp skipElse = codeBlock.delayEmit();
 		skipElse.set(CompilerUtils.comment(" ;goto after else"));
 		String label = codeBlock.emitLabel();
-		ValueType elseType = null;
+		IType elseType = null;
 		CodeBlock.DelayedOp popElse = null;
 		if (bodyElse != null) {
 			elseType = bodyElse.compile(frame, codeBlock);
@@ -62,26 +62,26 @@ public class ASTIf implements ASTNode {
 		//if this if does not return a value, it is required to discard the values
 		//from the stack
 		boolean isVoid = elseType == null || !elseType.equals(ifType);
-		if (isVoid && ifType.getType() != Type.Void) {
+		if (isVoid && !ifType.equals(PrimitiveType.Void)) {
 			popIf.set(CompilerUtils.DISCARD);
 		}
-		if (isVoid && elseType != null && elseType.getType() != Type.Void) {
+		if (isVoid && elseType != null && !elseType.equals(PrimitiveType.Void)) {
 			popElse.set(CompilerUtils.DISCARD);
 		}
 
-		return isVoid ? new ValueType(Type.Void) : ifType;
+		return isVoid ? PrimitiveType.Void : ifType;
 	}
 
 	@Override
-	public ValueType typeCheck(Environment<ValueType> environment) {
-		condition.typeCheck(environment).expect(new ValueType(Type.Bool));
+	public IType typeCheck(Environment<IType> environment) {
+		condition.typeCheck(environment).expect(PrimitiveType.Bool);
 		if (bodyElse == null) {
-			return new ValueType(Type.Void);
+			return PrimitiveType.Void;
 		} else {
-			ValueType ifType = bodyIf.typeCheck(environment);
-			ValueType elseType = bodyElse.typeCheck(environment);
+			IType ifType = bodyIf.typeCheck(environment);
+			IType elseType = bodyElse.typeCheck(environment);
 			elseType.expect(ifType);
-			return elseType.equals(ifType) ? ifType : new ValueType(Type.Void);
+			return elseType.equals(ifType) ? ifType : PrimitiveType.Void;
 		}
 	}
 }

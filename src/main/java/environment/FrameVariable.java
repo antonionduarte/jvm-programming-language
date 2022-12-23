@@ -1,11 +1,11 @@
 package environment;
 
-import ast.typing.types.ValueType;
+import ast.typing.types.IType;
 
 public class FrameVariable {
 	private final Frame frame;
 	private final int id;
-	private ValueType type = null;
+	private IType type = null;
 
 	public FrameVariable(Frame frame, int id) {
 		this.frame = frame;
@@ -20,11 +20,11 @@ public class FrameVariable {
 		return id;
 	}
 
-	public ValueType getType() {
+	public IType getType() {
 		return type;
 	}
 
-	public void setType(ValueType type) {
+	public void setType(IType type) {
 		this.type = type;
 	}
 }
