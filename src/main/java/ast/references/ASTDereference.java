@@ -11,6 +11,7 @@ import compilation.CodeBlock;
 import compilation.CompilerUtils;
 import environment.Environment;
 import environment.Frame;
+
 public class ASTDereference implements ASTNode {
 	private final ASTNode node;
 
@@ -27,11 +28,12 @@ public class ASTDereference implements ASTNode {
 	@Override
 	public IType compile(Frame frame, CodeBlock codeBlock) {
 		IType type = node.compile(frame, codeBlock);
-		if(!(type instanceof ReferenceType refType))
+		if (!(type instanceof ReferenceType refType)) {
 			throw new TypeMismatchException("Reference", type);
+		}
 		String className, fieldType;
 		IType inner = refType.getInnerType();
-		if(inner.equals(PrimitiveType.Bool) || inner.equals(PrimitiveType.Int)) {
+		if (inner.equals(PrimitiveType.Bool) || inner.equals(PrimitiveType.Int)) {
 			className = ASTReference.REF_OF_INT;
 			fieldType = PrimitiveType.Int.getJvmId();
 		} else {

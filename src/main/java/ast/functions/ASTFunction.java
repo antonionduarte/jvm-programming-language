@@ -2,7 +2,6 @@ package ast.functions;
 
 import ast.ASTNode;
 import ast.typing.types.IType;
-import ast.typing.types.PrimitiveType;
 import ast.typing.utils.Parameter;
 import ast.typing.values.ClosureValue;
 import ast.typing.values.IValue;

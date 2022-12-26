@@ -38,7 +38,7 @@ public class ASTBlock implements ASTNode {
 		IType returnType = PrimitiveType.Void;
 		for (var instruction : instructions) {
 			//discard result of last instruction to clear the stack
-			if (returnType!= PrimitiveType.Void) {
+			if (returnType != PrimitiveType.Void) {
 				codeBlock.emit(CompilerUtils.DISCARD);
 			}
 			codeBlock.emit("\n" + CompilerUtils.comment("instruction"));

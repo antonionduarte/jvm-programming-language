@@ -37,7 +37,7 @@ public class ASTWhile implements ASTNode {
 		CodeBlock.DelayedOp loopIf = codeBlock.delayEmit();
 		IType type = body.compile(frame, codeBlock);
 		//discard iteration result to clear the stack
-		if (type!= PrimitiveType.Void) {
+		if (type != PrimitiveType.Void) {
 			codeBlock.emit(CompilerUtils.DISCARD);
 		}
 		codeBlock.emit(CompilerUtils.gotoAlways(loop));

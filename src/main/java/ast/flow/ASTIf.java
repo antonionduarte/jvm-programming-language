@@ -59,8 +59,8 @@ public class ASTIf implements ASTNode {
 		}
 		gotoElse.set(CompilerUtils.gotoIfFalse(label));
 
-		//if this if does not return a value, it is required to discard the values
-		//from the stack
+		// if this does not return a value, it is required to discard the values
+		// from the stack
 		boolean isVoid = elseType == null || !elseType.equals(ifType);
 		if (isVoid && !ifType.equals(PrimitiveType.Void)) {
 			popIf.set(CompilerUtils.DISCARD);

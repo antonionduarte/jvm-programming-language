@@ -36,14 +36,14 @@ public class ASTAssign implements ASTNode {
 		IType type = expression.compile(frame, codeBlock);
 		codeBlock.emit(CompilerUtils.DUPLICATE);
 		IType refType = ref.compile(frame, codeBlock);
-		if(!(refType instanceof ReferenceType referenceType)) {
+		if (!(refType instanceof ReferenceType referenceType)) {
 			throw new TypeMismatchException("Reference", refType);
 		} else {
 			type.expect(referenceType.getInnerType());
 		}
 		codeBlock.emit(CompilerUtils.SWAP);
 		String className, fieldType;
-		if(type.equals(PrimitiveType.Bool) || type.equals(PrimitiveType.Int)) {
+		if (type.equals(PrimitiveType.Bool) || type.equals(PrimitiveType.Int)) {
 			className = ASTReference.REF_OF_INT;
 			fieldType = PrimitiveType.Int.getJvmId();
 		} else {

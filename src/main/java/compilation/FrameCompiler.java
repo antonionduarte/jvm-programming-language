@@ -58,7 +58,7 @@ public class FrameCompiler {
 	public static void emitEndScope(CodeBlock block, Frame current) {
 		if (current.getParentFrame() == null) {
 			block.emit(CompilerUtils.PUSH_NULL);
-			//skip parent referencing for root frames
+			// skip parent referencing for root frames
 		} else {
 			String name = current.getName();
 			String parent = current.getParentFrame().getName();
@@ -87,7 +87,7 @@ public class FrameCompiler {
 		while (frame != variable.getFrame()) {
 			String name = frame.getName();
 			Frame parentFrame = frame.getParentFrame();
-			assert parentFrame != null; //variable would've been null
+			assert parentFrame != null; // variable would've been null
 			String parent = parentFrame.getName();
 			String parentType = CompilerUtils.toReferenceType(parent);
 			block.emit(CompilerUtils.getField(name, PARENT_FIELD, parentType));

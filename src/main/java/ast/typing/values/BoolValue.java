@@ -1,8 +1,8 @@
 package ast.typing.values;
 
+import ast.typing.types.IType;
 import ast.typing.types.PrimitiveType;
 import ast.typing.types.TypeMismatchException;
-import ast.typing.types.IType;
 
 public class BoolValue implements IValue {
 	public static final BoolValue TRUE = new BoolValue(true);

@@ -33,7 +33,7 @@ public class ASTReference implements ASTNode {
 		codeBlock.emit(CompilerUtils.DUPLICATE);
 		IType type = expression.compile(frame, codeBlock);
 		String className, fieldType;
-		if(type.equals(PrimitiveType.Bool) || type.equals(PrimitiveType.Int)) {
+		if (type.equals(PrimitiveType.Bool) || type.equals(PrimitiveType.Int)) {
 			className = REF_OF_INT;
 			fieldType = PrimitiveType.Int.getJvmId();
 		} else {

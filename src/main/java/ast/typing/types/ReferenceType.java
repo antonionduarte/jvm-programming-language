@@ -4,7 +4,8 @@ import ast.references.ASTReference;
 import compilation.CompilerUtils;
 
 public class ReferenceType implements IType {
-	private IType inner;
+	private final IType inner;
+
 	public ReferenceType(IType type) {
 		this.inner = type;
 	}
@@ -15,7 +16,7 @@ public class ReferenceType implements IType {
 
 	@Override
 	public void expect(IType other) {
-		if(!this.equals(other)) {
+		if (!this.equals(other)) {
 			throw new TypeMismatchException(other, this);
 		}
 	}
@@ -27,7 +28,7 @@ public class ReferenceType implements IType {
 
 	@Override
 	public String getJvmId() {
-		if(inner.equals(PrimitiveType.Int) || inner.equals(PrimitiveType.Bool)) {
+		if (inner.equals(PrimitiveType.Int) || inner.equals(PrimitiveType.Bool)) {
 			return CompilerUtils.toReferenceType(ASTReference.REF_OF_INT);
 		} else {
 			return CompilerUtils.toReferenceType(ASTReference.REF_OF_REF);

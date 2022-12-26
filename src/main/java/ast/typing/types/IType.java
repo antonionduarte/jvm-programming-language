@@ -11,8 +11,8 @@ public interface IType {
 	void expect(IType other);
 
 	/**
-	 * Returns the value of the type parameter for a field of this type.
-	 * Used for records.
+	 * Returns the value of the type parameter for a field of this type. Used for records.
+	 *
 	 * @return The value of the type parameter for a field of this type.
 	 */
 	String getJvmId();
