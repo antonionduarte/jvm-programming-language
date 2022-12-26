@@ -11,7 +11,6 @@ import compilation.CodeBlock;
 import compilation.CompilerUtils;
 import environment.Environment;
 import environment.Frame;
-
 public class ASTDereference implements ASTNode {
 	private final ASTNode node;
 
@@ -28,10 +27,18 @@ public class ASTDereference implements ASTNode {
 	@Override
 	public IType compile(Frame frame, CodeBlock codeBlock) {
 		IType type = node.compile(frame, codeBlock);
-		if(!(type instanceof ReferenceType))
+		if(!(type instanceof ReferenceType refType))
 			throw new TypeMismatchException("Reference", type);
-		//TODO change to support non int refs
-		codeBlock.emit(CompilerUtils.getField("Ref", "vi", PrimitiveType.Int.getJvmId()));
+		String className, fieldType;
+		IType inner = refType.getInnerType();
+		if(inner.equals(PrimitiveType.Bool) || inner.equals(PrimitiveType.Int)) {
+			className = ASTReference.REF_OF_INT;
+			fieldType = PrimitiveType.Int.getJvmId();
+		} else {
+			className = ASTReference.REF_OF_REF;
+			fieldType = CompilerUtils.toReferenceType(CompilerUtils.OBJECT);
+		}
+		codeBlock.emit(CompilerUtils.getField(className, ASTReference.FIELD_NAME, fieldType));
 		return PrimitiveType.Int;
 	}
 

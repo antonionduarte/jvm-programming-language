@@ -12,6 +12,9 @@ import environment.Environment;
 import environment.Frame;
 
 public class ASTReference implements ASTNode {
+	public static final String REF_OF_INT = "ref_of_int";
+	public static final String REF_OF_REF = "ref_of_ref";
+	public static final String FIELD_NAME = "v";
 	private final ASTNode expression;
 
 	public ASTReference(ASTNode expression) {
@@ -26,13 +29,19 @@ public class ASTReference implements ASTNode {
 
 	@Override
 	public IType compile(Frame frame, CodeBlock codeBlock) {
-		codeBlock.emit(CompilerUtils.initClass("Ref"));
+		CodeBlock.DelayedOp classInit = codeBlock.delayEmit();
 		codeBlock.emit(CompilerUtils.DUPLICATE);
 		IType type = expression.compile(frame, codeBlock);
-		if(type.equals(PrimitiveType.Bool) || type.equals(PrimitiveType.Int))
-			codeBlock.emit(CompilerUtils.setField("Ref", "vi", PrimitiveType.Int.getJvmId()));
-		else codeBlock.emit(CompilerUtils.setField("Ref", "v",
-					CompilerUtils.toReferenceType(CompilerUtils.OBJECT)));
+		String className, fieldType;
+		if(type.equals(PrimitiveType.Bool) || type.equals(PrimitiveType.Int)) {
+			className = REF_OF_INT;
+			fieldType = PrimitiveType.Int.getJvmId();
+		} else {
+			className = REF_OF_REF;
+			fieldType = CompilerUtils.toReferenceType(CompilerUtils.OBJECT);
+		}
+		classInit.set(CompilerUtils.initClass(className));
+		codeBlock.emit(CompilerUtils.setField(className, FIELD_NAME, fieldType));
 		return new ReferenceType(type);
 	}
 

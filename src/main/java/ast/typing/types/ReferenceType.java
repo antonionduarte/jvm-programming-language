@@ -1,6 +1,7 @@
 package ast.typing.types;
 
-import java.sql.Ref;
+import ast.references.ASTReference;
+import compilation.CompilerUtils;
 
 public class ReferenceType implements IType {
 	private IType inner;
@@ -26,7 +27,11 @@ public class ReferenceType implements IType {
 
 	@Override
 	public String getJvmId() {
-		return null;
+		if(inner.equals(PrimitiveType.Int) || inner.equals(PrimitiveType.Bool)) {
+			return CompilerUtils.toReferenceType(ASTReference.REF_OF_INT);
+		} else {
+			return CompilerUtils.toReferenceType(ASTReference.REF_OF_REF);
+		}
 	}
 
 	@Override
