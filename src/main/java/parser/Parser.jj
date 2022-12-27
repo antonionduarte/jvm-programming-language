@@ -11,8 +11,9 @@ import ast.bools.*;
 import java.util.*;
 import ast.functions.*;
 import ast.references.*;
-import utils.*;
+import ast.typing.utils.Parameter;import utils.*;
 import ast.typing.types.*;
+import ast.records.*;
 
 
 public class Parser {
@@ -36,6 +37,7 @@ TOKEN:
 	| < PLUS : "+" >
 	| < MINUS : "-">
 	| < TIMES : "*">
+	| < DOT : ".">
 	| < DIV : "/">
 	| < OR : "||">
 	| < AND : "&&">
@@ -57,10 +59,11 @@ TOKEN:
 	| < FUN : "fn" >
 	| < ARROW: "->" >
 	| < NEW: "new" >
+	| < STRUCT: "struct" >
 	| < REF: "Ref" >
 	| < ASSIGN: ":=" >
 	| < DEREFERENCE: "!" >
-	| < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >	
+	| < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
 }
 
 
@@ -272,7 +275,7 @@ ASTNode Term():
 	ASTNode t1, t2;
 }
 {
-  t1 = Fact() (( op = <TIMES> | op = <DIV> ) t2 = Term() 
+  t1 = FactOrField() (( op = <TIMES> | op = <DIV> ) t2 = Term()
   {
 		if (op.kind == TIMES) {
 			t1 = new ASTTimes(t1, t2);
@@ -282,7 +285,20 @@ ASTNode Term():
   { return t1; }
 }
 
-
+ASTNode FactOrField():
+{
+    ASTNode t;
+    Token id;
+}
+{
+    t = Fact()
+    (
+        <DOT> id = <Id> { t = new ASTGetField(t, id.image); }
+    )*
+    {
+        return t;
+    }
+}
 
 ASTNode Fact():
 { 
@@ -293,7 +309,7 @@ ASTNode Fact():
 {
 	<TRUE> { return new ASTBool(true); }
 	| <FALSE> { return new ASTBool(false); }
-	| <MINUS> t = Fact()
+	| <MINUS> t = FactOrField()
 		{
 			t = new ASTNeg(t);
 			return t;
@@ -304,6 +320,23 @@ ASTNode Fact():
 			t = new ASTNum(Integer.parseInt(n.image));
 			return t;
 		}
+	| <STRUCT> <LCURLY>
+	    {
+            List<Pair<String, ASTNode>> values = new ArrayList<>();
+            IType type;
+        }
+        id = <Id> <EQUALS> t = Exp() <DOTCOMMA>
+        {
+            values.add(new Pair<>(id.image, t));
+        }
+        (id = <Id> <EQUALS> t = Exp() <DOTCOMMA>
+        {
+            values.add(new Pair<>(id.image, t));
+        })*
+	 <RCURLY>
+        {
+            return new ASTRecord(values);
+        }
 	| <PRINTLN> t = Exp()
         {
             return new ASTPrint(t);
@@ -313,7 +346,7 @@ ASTNode Fact():
 		{
 			return t;
 		}
-	| <DEREFERENCE> t = Fact()
+	| <DEREFERENCE> t = FactOrField()
 		{
 			return new ASTDereference(t);
 		}
