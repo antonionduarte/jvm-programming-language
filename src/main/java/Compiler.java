@@ -5,6 +5,7 @@ import compilation.CodeBlock;
 import compilation.CompilerUtils;
 import compilation.FrameCompiler;
 import environment.Frame;
+import environment.FrameManager;
 import parser.ParseException;
 import parser.Parser;
 
@@ -51,6 +52,7 @@ public class Compiler {
 			ASTNode exp = Parser.Start();
 			outputFile.write(initialHeaders.toString().getBytes());
 			List<Frame> frames = new ArrayList<>();
+			FrameManager frameManager = FrameManager.getInstance();
 			Frame root = new Frame(0, frames);
 			frames.add(root);
 			IType left = exp.compile(root, codeBlock);

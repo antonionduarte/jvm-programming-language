@@ -24,18 +24,27 @@ public class CompilerUtils {
 	public static final String SWAP = "swap";
 	public static final String EMPTY_CONSTRUCTOR =
 			"""
-					.method public <init>()V
-					aload_0
-					invokenonvirtual java/lang/Object/<init>()V
-					return
-					.end method""";
+				.method public <init>()V
+				aload_0
+				invokenonvirtual java/lang/Object/<init>()V
+				return
+				.end method
+			""";
 	public static final String OBJECT = "java/lang/Object";
 	public static final String PUSH_NULL = "aconst_null";
 	private static final String PUSH_CONST = "ldc";
 	private static final String CLASS_HEADER =
 			"""
-					.class public %s
-					.super java/lang/Object""";
+				.class public %s
+				.super java/lang/Object
+			""";
+	public static final String INTERFACE_HEADER =
+			"""
+				.interface public closure_interface_%s
+				.super java/lang/Object
+				.method public abstract apply(%s)%s
+				.end method
+			""";
 
 	private static final String CLASS_TYPE = "L%s;";
 
@@ -54,9 +63,14 @@ public class CompilerUtils {
 	private static final String IF_CMP = "if_icmp%s %s";
 	private static final String INIT_EMPTY_CLASS =
 			"""
-					new %s
-					dup
-					invokespecial %s/<init>()V""";
+				new %s
+				dup
+				invokespecial %s/<init>()V
+			""";
+
+	private static final String LIMIT_LOCALS = ".limit locals %d";
+	private static final String LIMIT_STACK = ".limit stack %d";
+
 
 	public static String toReferenceType(String className) {
 		return String.format(CLASS_TYPE, className);

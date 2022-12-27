@@ -13,7 +13,6 @@ public class ASTDef implements ASTNode {
 	private final String id;
 	private final ASTNode node;
 
-
 	public ASTDef(String id, ASTNode node) {
 		this.id = id;
 		this.node = node;

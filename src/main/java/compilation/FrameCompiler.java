@@ -24,15 +24,15 @@ public class FrameCompiler {
 
 	public static void dumpAll(String path, List<Frame> frames) throws FileNotFoundException {
 		for (Frame frame : frames) {
-			PrintStream out = new PrintStream(path + "/" + frame.getName() + ".j");
+			PrintStream out = new PrintStream(path + "/" + frame.getFrameName() + ".j");
 			dump(frame, out);
 		}
 	}
 
 	public static void dump(Frame frame, PrintStream stream) {
-		String name = frame.getName();
+		String name = frame.getFrameName();
 		stream.println(CompilerUtils.classHeader(name));
-		String parent = frame.getParentFrame() == null ? CompilerUtils.OBJECT : frame.getParentFrame().getName();
+		String parent = frame.getParentFrame() == null ? CompilerUtils.OBJECT : frame.getParentFrame().getFrameName();
 		String parentType = CompilerUtils.toReferenceType(parent);
 		stream.println(CompilerUtils.defineField(PARENT_FIELD, parentType));
 		for (FrameVariable variable : frame.getVars()) {
@@ -43,10 +43,30 @@ public class FrameCompiler {
 		stream.println(CompilerUtils.EMPTY_CONSTRUCTOR);
 	}
 
-	public static void emitBeginScope(CodeBlock block, Frame newFrame) {
-		String parent = newFrame.getParentFrame() == null ? CompilerUtils.OBJECT : newFrame.getParentFrame().getName();
+	public static void emitFrameClass(CodeBlock block, Frame frame) {
+		String name = frame.getFrameName();
+		block.emit(CompilerUtils.classHeader(name));
+		String parent = frame.getParentFrame() == null ? CompilerUtils.OBJECT : frame.getParentFrame().getFrameName();
 		String parentType = CompilerUtils.toReferenceType(parent);
-		String name = newFrame.getName();
+		block.emit(CompilerUtils.defineField(PARENT_FIELD, parentType));
+		for (FrameVariable variable: frame.getVars()) {
+			String fieldName = getFieldName(variable.getId());
+			String type = variable.getType().getJvmId();
+			block.emit(CompilerUtils.defineField(fieldName, type));
+		}
+		block.emit(CompilerUtils.EMPTY_CONSTRUCTOR);
+	}
+
+	public static void emitClosureInterface(CodeBlock block, String interfaceIdentifier) {
+		block.emit(String.format(CompilerUtils.INTERFACE_HEADER, interfaceIdentifier));
+		// TODO: I also need to format the apply(%s)%s, because I think it should be something like:
+		//       apply(I)I for a function that takes an int and returns an int
+	}
+
+	public static void emitBeginScope(CodeBlock block, Frame newFrame) {
+		String parent = newFrame.getParentFrame() == null ? CompilerUtils.OBJECT : newFrame.getParentFrame().getFrameName();
+		String parentType = CompilerUtils.toReferenceType(parent);
+		String name = newFrame.getFrameName();
 		block.emit("\n\n" + CompilerUtils.comment("start of scope"));
 		block.emit(CompilerUtils.initClass(name));
 		block.emit(CompilerUtils.DUPLICATE);
@@ -60,8 +80,8 @@ public class FrameCompiler {
 			block.emit(CompilerUtils.PUSH_NULL);
 			// skip parent referencing for root frames
 		} else {
-			String name = current.getName();
-			String parent = current.getParentFrame().getName();
+			String name = current.getFrameName();
+			String parent = current.getParentFrame().getFrameName();
 			String parentType = CompilerUtils.toReferenceType(parent);
 			block.emit(CompilerUtils.loadLocalVariable(SCOPE_VARIABLE));
 			block.emit(CompilerUtils.getField(name, PARENT_FIELD, parentType));
@@ -71,7 +91,7 @@ public class FrameCompiler {
 	}
 
 	public static void emitAssign(CodeBlock block, FrameVariable variable, ASTNode expression) {
-		String name = variable.getFrame().getName();
+		String name = variable.getFrame().getFrameName();
 		IType type = expression.compile(variable.getFrame(), block);
 		block.emit(CompilerUtils.DUPLICATE);
 		block.emit(CompilerUtils.loadLocalVariable(SCOPE_VARIABLE));
@@ -85,15 +105,15 @@ public class FrameCompiler {
 		block.emit(CompilerUtils.loadLocalVariable(SCOPE_VARIABLE));
 		Frame frame = current;
 		while (frame != variable.getFrame()) {
-			String name = frame.getName();
+			String name = frame.getFrameName();
 			Frame parentFrame = frame.getParentFrame();
 			assert parentFrame != null; // variable would've been null
-			String parent = parentFrame.getName();
+			String parent = parentFrame.getFrameName();
 			String parentType = CompilerUtils.toReferenceType(parent);
 			block.emit(CompilerUtils.getField(name, PARENT_FIELD, parentType));
 			frame = parentFrame;
 		}
-		String name = frame.getName();
+		String name = frame.getFrameName();
 		String fieldName = getFieldName(variable.getId());
 		String type = variable.getType().getJvmId();
 		block.emit(CompilerUtils.getField(name, fieldName, type));

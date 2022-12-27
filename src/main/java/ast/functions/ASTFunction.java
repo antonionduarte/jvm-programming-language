@@ -6,8 +6,8 @@ import ast.typing.utils.Parameter;
 import ast.typing.values.ClosureValue;
 import ast.typing.values.IValue;
 import compilation.CodeBlock;
-import environment.Environment;
-import environment.Frame;
+import compilation.FrameCompiler;
+import environment.*;
 import utils.Pair;
 
 import java.util.ArrayList;
@@ -41,6 +41,24 @@ public class ASTFunction implements ASTNode {
 
 	@Override
 	public IType compile(Frame frame, CodeBlock codeBlock) {
+		// TODO: closure compilation here!
+		// create the frame class associated with the parameters
+		Frame closureFrame = FrameManager.getInstance().closureFrame(frame);
+		for (Parameter parameter : typedParameters) {
+			var varNumber = closureFrame.getVars().size();
+			FrameVariable variable = new FrameVariable(closureFrame, closureFrame.getVars().size());
+			closureFrame.associate(parameter.name(), variable);
+		}
+		FrameCompiler.emitFrameClass(codeBlock, closureFrame);
+
+		// create the interface if needed
+		// TODO: Where do I get the FunctionType from? right now it's set to null
+		var interfaceIdentifier = ClosureManager.getInstance().getClosureInterface(null);
+		if (interfaceIdentifier == null) {
+			interfaceIdentifier = ClosureManager.getInstance().setClosureInterface(null);
+			FrameCompiler.emitClosureInterface(codeBlock, interfaceIdentifier);
+		}
+
 		return null;
 	}
 
