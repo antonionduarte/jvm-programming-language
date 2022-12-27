@@ -43,6 +43,8 @@ public class ASTLowerOrEqual implements ASTNode {
 
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
+		lhs.typeCheck(environment).expect(PrimitiveType.Int);
+		rhs.typeCheck(environment).expect(PrimitiveType.Int);
 		return PrimitiveType.Bool;
 	}
 }

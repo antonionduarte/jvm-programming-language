@@ -36,6 +36,8 @@ public class ASTAnd implements ASTNode {
 
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
+		lhs.typeCheck(environment).expect(PrimitiveType.Bool);
+		rhs.typeCheck(environment).expect(PrimitiveType.Bool);
 		return PrimitiveType.Bool;
 	}
 }

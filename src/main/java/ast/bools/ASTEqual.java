@@ -41,6 +41,11 @@ public class ASTEqual implements ASTNode {
 
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
+		IType type = lhs.typeCheck(environment);
+		if(!(type.equals(PrimitiveType.Int) || type.equals(PrimitiveType.Bool) || type.equals(PrimitiveType.String))) {
+			throw new RuntimeException("Invalid type " + type + " for equals");
+		}
+		rhs.typeCheck(environment).expect(type);
 		return PrimitiveType.Bool;
 	}
 }
