@@ -4,12 +4,14 @@ import ast.typing.types.PrimitiveType;
 import compilation.CodeBlock;
 import compilation.CompilerUtils;
 import compilation.FrameCompiler;
+import compilation.RecordManager;
 import environment.Frame;
 import environment.FrameManager;
 import parser.ParseException;
 import parser.Parser;
 
 import java.io.*;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -62,8 +64,13 @@ public class Compiler {
 			}
 			codeBlock.dump(outputFile);
 			FrameCompiler.dumpAll(OUT_DIR, frames);
-			Files.copy(Path.of(REF_INT_FILE), Path.of(REF_INT_OUT));
-			Files.copy(Path.of(REF_REF_FILE), Path.of(REF_REF_OUT));
+			RecordManager.getInstance().dumpAll(OUT_DIR);
+			try {
+				Files.copy(Path.of(REF_INT_FILE), Path.of(REF_INT_OUT));
+			} catch (FileAlreadyExistsException ignore) {}
+			try {
+				Files.copy(Path.of(REF_REF_FILE), Path.of(REF_REF_OUT));
+			} catch (FileAlreadyExistsException ignore) {}
 			outputFile.write(finalHeaders.toString().getBytes());
 		} catch (ParseException e) {
 			System.out.println("Syntax Error!");

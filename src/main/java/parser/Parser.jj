@@ -11,8 +11,9 @@ import ast.bools.*;
 import java.util.*;
 import ast.functions.*;
 import ast.references.*;
-import utils.*;
+import ast.typing.utils.Parameter;import utils.*;
 import ast.typing.types.*;
+import ast.records.*;
 
 
 public class Parser {
@@ -36,6 +37,7 @@ TOKEN:
 	| < PLUS : "+" >
 	| < MINUS : "-">
 	| < TIMES : "*">
+	| < DOT : ".">
 	| < DIV : "/">
 	| < OR : "||">
 	| < AND : "&&">
@@ -57,10 +59,11 @@ TOKEN:
 	| < FUN : "fn" >
 	| < ARROW: "->" >
 	| < NEW: "new" >
+	| < STRUCT: "struct" >
 	| < REF: "Ref" >
 	| < ASSIGN: ":=" >
 	| < DEREFERENCE: "!" >
-	| < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >	
+	| < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
 }
 
 
@@ -93,6 +96,19 @@ IType Type() :
         <RPAR> <ARROW> t = Type()
         {
             return new FunctionType(params, t);
+        }
+     | <STRUCT> <LCURLY>
+        {
+            List<Parameter> params = new ArrayList<>();
+        }
+        (
+            id = <Id> <TWODOTS> t = Type()
+            { params.add(new Parameter(id.image, t)); }
+            (<COMMA> id = <Id> <TWODOTS> t = Type() { params.add(new Parameter(id.image, t)); })*
+        )?
+        <RCURLY>
+        {
+            return new RecordType(params);
         }
 }
 
@@ -272,7 +288,7 @@ ASTNode Term():
 	ASTNode t1, t2;
 }
 {
-  t1 = Fact() (( op = <TIMES> | op = <DIV> ) t2 = Term() 
+  t1 = Fact() (( op = <TIMES> | op = <DIV> ) t2 = Term()
   {
 		if (op.kind == TIMES) {
 			t1 = new ASTTimes(t1, t2);
@@ -281,8 +297,6 @@ ASTNode Term():
 }) ?
   { return t1; }
 }
-
-
 
 ASTNode Fact():
 { 
@@ -304,15 +318,27 @@ ASTNode Fact():
 			t = new ASTNum(Integer.parseInt(n.image));
 			return t;
 		}
+	| <STRUCT> <LCURLY>
+	    {
+            List<Pair<String, ASTNode>> values = new ArrayList<>();
+            IType type;
+        }
+        id = <Id> <EQUALS> t = Exp()
+        {
+            values.add(new Pair<>(id.image, t));
+        }
+        ( <DOTCOMMA> id = <Id> <EQUALS> t = Exp()
+        {
+            values.add(new Pair<>(id.image, t));
+        })*
+	 <RCURLY>
+        {
+            return new ASTRecord(values);
+        }
 	| <PRINTLN> t = Exp()
         {
             return new ASTPrint(t);
         }
-
-	| <LPAR> t = Exp() <RPAR>
-		{
-			return t;
-		}
 	| <DEREFERENCE> t = Fact()
 		{
 			return new ASTDereference(t);
@@ -356,20 +382,26 @@ ASTNode Fact():
         | <IF> <LPAR> t = Exp() <RPAR> bodyIf = Exp() <ELSE> bodyElse = Exp() {
             return new ASTIf(t, bodyIf, bodyElse);
         }
-		| t = IdNode(){
+		| t = RefNode(){
             return t;
         }
+
 }
 
-ASTNode IdNode():{
+ASTNode RefNode():{
    ASTNode t;
+   ASTNode l;
    Token id;
  }
  {
-    id = <Id>(
+    l = IdOrExp()
+      (
+          <DOT> id = <Id> { l = new ASTGetField(l, id.image); }
+      )*
+    (
         <ASSIGN> t = Exp()
             {
-                return new ASTAssign(new ASTId(id.image), t);
+                return new ASTAssign(l, t);
             }
         |
         <LPAR>
@@ -382,10 +414,20 @@ ASTNode IdNode():{
         		    ( <COMMA> param = Exp() { params.add(param); } ) *
                 ) ?
         <RPAR>
-            { return new ASTFunctionApplication(id.image, params); }
+            { return new ASTFunctionApplication(l, params); }
     )?
     {
-        return new ASTId(id.image);
+        return l;
     }
+ }
+
+ ASTNode IdOrExp():
+ {
+    ASTNode t;
+    Token id;
+ }
+ {
+    id = <Id> { return new ASTId(id.image); }
+    | <LPAR> t = Exp() <RPAR> { return t; }
  }
 
