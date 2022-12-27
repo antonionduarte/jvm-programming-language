@@ -15,9 +15,9 @@ import environment.Frame;
 
 public class ASTAssign implements ASTNode {
 	private final ASTNode expression;
-	private final ASTId ref;
+	private final ASTNode ref;
 
-	public ASTAssign(ASTId ref, ASTNode expression) {
+	public ASTAssign(ASTNode ref, ASTNode expression) {
 		this.expression = expression;
 		this.ref = ref;
 	}

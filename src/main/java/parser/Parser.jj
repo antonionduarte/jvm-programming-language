@@ -97,6 +97,19 @@ IType Type() :
         {
             return new FunctionType(params, t);
         }
+     | <STRUCT> <LCURLY>
+        {
+            List<Parameter> params = new ArrayList<>();
+        }
+        (
+            id = <Id> <TWODOTS> t = Type()
+            { params.add(new Parameter(id.image, t)); }
+            (<COMMA> id = <Id> <TWODOTS> t = Type() { params.add(new Parameter(id.image, t)); })*
+        )?
+        <RCURLY>
+        {
+            return new RecordType(params);
+        }
 }
 
 ASTNode Start():
@@ -275,7 +288,7 @@ ASTNode Term():
 	ASTNode t1, t2;
 }
 {
-  t1 = FactOrField() (( op = <TIMES> | op = <DIV> ) t2 = Term()
+  t1 = Fact() (( op = <TIMES> | op = <DIV> ) t2 = Term()
   {
 		if (op.kind == TIMES) {
 			t1 = new ASTTimes(t1, t2);
@@ -283,21 +296,6 @@ ASTNode Term():
 		else t1 = new ASTDiv(t1, t2);
 }) ?
   { return t1; }
-}
-
-ASTNode FactOrField():
-{
-    ASTNode t;
-    Token id;
-}
-{
-    t = Fact()
-    (
-        <DOT> id = <Id> { t = new ASTGetField(t, id.image); }
-    )*
-    {
-        return t;
-    }
 }
 
 ASTNode Fact():
@@ -309,7 +307,7 @@ ASTNode Fact():
 {
 	<TRUE> { return new ASTBool(true); }
 	| <FALSE> { return new ASTBool(false); }
-	| <MINUS> t = FactOrField()
+	| <MINUS> t = Fact()
 		{
 			t = new ASTNeg(t);
 			return t;
@@ -325,11 +323,11 @@ ASTNode Fact():
             List<Pair<String, ASTNode>> values = new ArrayList<>();
             IType type;
         }
-        id = <Id> <EQUALS> t = Exp() <DOTCOMMA>
+        id = <Id> <EQUALS> t = Exp()
         {
             values.add(new Pair<>(id.image, t));
         }
-        (id = <Id> <EQUALS> t = Exp() <DOTCOMMA>
+        ( <DOTCOMMA> id = <Id> <EQUALS> t = Exp()
         {
             values.add(new Pair<>(id.image, t));
         })*
@@ -341,12 +339,7 @@ ASTNode Fact():
         {
             return new ASTPrint(t);
         }
-
-	| <LPAR> t = Exp() <RPAR>
-		{
-			return t;
-		}
-	| <DEREFERENCE> t = FactOrField()
+	| <DEREFERENCE> t = Fact()
 		{
 			return new ASTDereference(t);
 		}
@@ -389,20 +382,26 @@ ASTNode Fact():
         | <IF> <LPAR> t = Exp() <RPAR> bodyIf = Exp() <ELSE> bodyElse = Exp() {
             return new ASTIf(t, bodyIf, bodyElse);
         }
-		| t = IdNode(){
+		| t = RefNode(){
             return t;
         }
+
 }
 
-ASTNode IdNode():{
+ASTNode RefNode():{
    ASTNode t;
+   ASTNode l;
    Token id;
  }
  {
-    id = <Id>(
+    l = IdOrExp()
+      (
+          <DOT> id = <Id> { l = new ASTGetField(l, id.image); }
+      )*
+    (
         <ASSIGN> t = Exp()
             {
-                return new ASTAssign(new ASTId(id.image), t);
+                return new ASTAssign(l, t);
             }
         |
         <LPAR>
@@ -415,10 +414,20 @@ ASTNode IdNode():{
         		    ( <COMMA> param = Exp() { params.add(param); } ) *
                 ) ?
         <RPAR>
-            { return new ASTFunctionApplication(id.image, params); }
+            { return new ASTFunctionApplication(l, params); }
     )?
     {
-        return new ASTId(id.image);
+        return l;
     }
+ }
+
+ ASTNode IdOrExp():
+ {
+    ASTNode t;
+    Token id;
+ }
+ {
+    id = <Id> { return new ASTId(id.image); }
+    | <LPAR> t = Exp() <RPAR> { return t; }
  }
 
