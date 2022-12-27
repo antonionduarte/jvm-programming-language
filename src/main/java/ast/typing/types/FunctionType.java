@@ -27,18 +27,12 @@ public class FunctionType implements IType {
 		if (!(o instanceof FunctionType that)) {
 			return false;
 		}
-		if (!Objects.equals(returnType, that.returnType)) {
-			return false;
-		}
-		if (this.parameters.size() != that.parameters.size()) {
-			return false;
-		}
-		for (int i = 0; i < this.parameters.size(); i++) {
-			if (!this.parameters.get(i).equals(that.parameters.get(i))) {
-				return false;
-			}
-		}
-		return true;
+		return this.parameters.equals(that.parameters) && this.returnType.equals(that.returnType);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(parameters, returnType);
 	}
 
 	@Override
