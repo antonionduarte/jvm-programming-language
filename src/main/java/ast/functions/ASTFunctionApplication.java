@@ -7,6 +7,8 @@ import ast.typing.types.TypeMismatchException;
 import ast.typing.values.ClosureValue;
 import ast.typing.values.IValue;
 import compilation.CodeBlock;
+import compilation.FrameCompiler;
+import environment.ClosureManager;
 import environment.Environment;
 import environment.Frame;
 
@@ -40,7 +42,13 @@ public class ASTFunctionApplication implements ASTNode {
 
 	@Override
 	public IType compile(Frame frame, CodeBlock codeBlock) {
-		return null;
+		var closureType = closure.compile(frame, codeBlock);
+		FrameCompiler.beginFunctionCall(codeBlock, ClosureManager.getInstance().getClosureInterface((FunctionType) closureType));
+		for (var argument : arguments) {
+			argument.compile(frame, codeBlock);
+		}
+		FrameCompiler.emitFunctionCall(codeBlock, ClosureManager.getInstance().getClosureInterface((FunctionType) closureType));
+		return ((FunctionType) closureType).getReturnType();
 	}
 
 	@Override

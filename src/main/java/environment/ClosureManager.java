@@ -3,8 +3,6 @@ package environment;
 import ast.ASTNode;
 import ast.typing.types.FunctionType;
 import ast.typing.types.IType;
-import ast.typing.types.PrimitiveType;
-import ast.typing.types.ReferenceType;
 
 import java.util.*;
 
@@ -84,10 +82,6 @@ public class ClosureManager {
 
 	public Map<FunctionType, ClosureInterface> getClosureInterfaces() {
 		return closureInterfaces;
-	}
-
-	public int getCurrentId() {
-		return currentId;
 	}
 
 	public List<Closure> getAllClosures() {

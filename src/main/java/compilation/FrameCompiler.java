@@ -110,6 +110,17 @@ public class FrameCompiler {
 		}
 	}
 
+	public static void beginFunctionCall(CodeBlock block, ClosureInterface closureInterface) {
+		block.emit(String.format(CompilerUtils.INTERFACE_CHECK_CAST, closureInterface.identifier()));
+	}
+
+	public static void emitFunctionCall(CodeBlock block, ClosureInterface closureInterface) {
+		block.emit(String.format(CompilerUtils.INVOKE_INTERFACE,
+				closureInterface.identifier(),
+				closureInterface.jvmParameterTypes(),
+				closureInterface.jvmReturnType()));
+	}
+
 	public static void emitBeginScope(CodeBlock block, Frame newFrame) {
 		String parent = newFrame.getParentFrame() == null ? CompilerUtils.OBJECT : newFrame.getParentFrame().getFrameName();
 		String parentType = CompilerUtils.toReferenceType(parent);

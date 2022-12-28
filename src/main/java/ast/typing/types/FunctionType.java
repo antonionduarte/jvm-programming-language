@@ -1,9 +1,11 @@
 package ast.typing.types;
 
+import environment.ClosureManager;
+
 import java.util.List;
 import java.util.Objects;
 
-public class FunctionType implements IType {
+public class FunctionType extends ObjectType {
 	private final List<IType> parameters;
 	private final IType returnType;
 
@@ -44,7 +46,8 @@ public class FunctionType implements IType {
 	}
 
 	@Override
-	public String getJvmId() {
-		return null;
+	public String getClassName() {
+		var interfaceId = ClosureManager.getInstance().getClosureInterface(this).identifier();
+		return "closure_interface_" + interfaceId;
 	}
 }

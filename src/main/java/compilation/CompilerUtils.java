@@ -72,7 +72,7 @@ public class CompilerUtils {
 			        
 			        %s
 					%s
-				
+				return
 				.end method
 			""";
 
@@ -98,8 +98,8 @@ public class CompilerUtils {
 				invokespecial %s/<init>()V
 			""";
 
-	private static final String LIMIT_LOCALS = ".limit locals %d";
-	private static final String LIMIT_STACK = ".limit stack %d";
+	public static final String INTERFACE_CHECK_CAST = "checkcast closure_interface_%s";
+	public static final String INVOKE_INTERFACE = "invokeinterface closure_interface_%s/apply(%s)%s";
 
 	public static String toReferenceType(String className) {
 		return String.format(CLASS_TYPE, className);
