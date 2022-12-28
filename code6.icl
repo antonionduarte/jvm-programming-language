@@ -14,12 +14,12 @@
 		 if (!light.color > colors.red) {
 			light.color := colors.green;
 		}
-		light.color;
+		!light.color;
 	};
 
 	let toggle = fn(light : struct{on:Ref<Bool>, color:Ref<Int>}) -> Bool {
 		light.on := !light.on;
-		light.on;
+		!light.on;
 	};
 
 	let light = newLight(true, colors.green);
