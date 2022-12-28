@@ -1,9 +1,5 @@
 package compilation;
 
-import ast.typing.types.IType;
-import ast.typing.types.PrimitiveType;
-import ast.typing.types.StringType;
-
 public class CompilerUtils {
 	public static final String ADD = "iadd";
 	public static final String MINUS = "isub";
@@ -143,9 +139,9 @@ public class CompilerUtils {
 
 	public static String pushString(String value, boolean insertQuotes) {
 		if(insertQuotes) {
-			return PUSH_CONST + " " + value;
-		} else {
 			return PUSH_CONST + " \"" + value + "\"";
+		} else {
+			return PUSH_CONST + " " + value;
 		}
 	}
 
@@ -177,19 +173,4 @@ public class CompilerUtils {
 		return " ;" + comment;
 	}
 
-    public static void emitToString(CodeBlock codeBlock, IType type) {
-		if (type.equals(PrimitiveType.Int)) {
-			codeBlock.emit("invokestatic java/lang/String/valueOf(I)Ljava/lang/String;");
-		} else if (type.equals(PrimitiveType.Bool)) {
-			CodeBlock.DelayedOp gotoElse = codeBlock.delayEmit();
-			codeBlock.emit(CompilerUtils.pushString("true"));
-			CodeBlock.DelayedOp skipElse = codeBlock.delayEmit();
-			String label = codeBlock.emitLabel();
-			codeBlock.emit(CompilerUtils.pushString("false"));
-			skipElse.set(CompilerUtils.gotoAlways(codeBlock.emitLabel()));
-			gotoElse.set(CompilerUtils.gotoIfFalse(label));
-		} else if (!type.equals(StringType.Instance)) {
-			throw new RuntimeException("Can't convert " + type + " to String");
-		}
-    }
 }

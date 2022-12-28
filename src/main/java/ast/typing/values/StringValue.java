@@ -20,4 +20,8 @@ public class StringValue implements IValue {
         return StringType.Instance;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof StringValue str && str.value.equals(this.value);
+    }
 }
