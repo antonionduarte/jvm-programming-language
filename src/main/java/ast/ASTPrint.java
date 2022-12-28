@@ -2,6 +2,7 @@ package ast;
 
 import ast.typing.types.IType;
 import ast.typing.types.PrimitiveType;
+import ast.typing.types.StringType;
 import ast.typing.values.IValue;
 import compilation.CodeBlock;
 import compilation.CompilerUtils;
@@ -29,20 +30,7 @@ public class ASTPrint implements ASTNode {
 		codeBlock.emit(CompilerUtils.DUPLICATE);
 		codeBlock.emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
 		codeBlock.emit(CompilerUtils.SWAP);
-		if (type.equals(PrimitiveType.Int)) {
-			codeBlock.emit("invokestatic java/lang/String/valueOf(I)Ljava/lang/String;");
-		} else if (type.equals(PrimitiveType.Bool)) {
-			CodeBlock.DelayedOp gotoElse = codeBlock.delayEmit();
-			codeBlock.emit(CompilerUtils.pushString("true"));
-			CodeBlock.DelayedOp skipElse = codeBlock.delayEmit();
-			String label = codeBlock.emitLabel();
-			codeBlock.emit(CompilerUtils.pushString("false"));
-			skipElse.set(CompilerUtils.gotoAlways(codeBlock.emitLabel()));
-			gotoElse.set(CompilerUtils.gotoIfFalse(label));
-		} else {
-			throw new RuntimeException("Not implemented");
-		}
-
+		CompilerUtils.emitToString(codeBlock, type);
 		codeBlock.emit("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
 		return type;
 	}
@@ -50,7 +38,7 @@ public class ASTPrint implements ASTNode {
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
 		IType type = node.typeCheck(environment);
-		if(!(type.equals(PrimitiveType.Int) || type.equals(PrimitiveType.Bool) || type.equals(PrimitiveType.String))) {
+		if(!(type.equals(PrimitiveType.Int) || type.equals(PrimitiveType.Bool) || type.equals(StringType.Instance))) {
 			throw new RuntimeException("Invalid type " + type + " for Println");
 		}
 		return type;

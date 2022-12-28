@@ -8,6 +8,7 @@ import ast.*;
 import ast.flow.*;
 import ast.ints.*;
 import ast.bools.*;
+import ast.strings.*;
 import java.util.*;
 import ast.functions.*;
 import ast.references.*;
@@ -64,6 +65,7 @@ TOKEN:
 	| < ASSIGN: ":=" >
 	| < DEREFERENCE: "!" >
 	| < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
+	| < String : "\"" ("\\\"" | ~["\""])* "\"" >
 }
 
 
@@ -82,7 +84,7 @@ IType Type() :
 }
 
 {
-    id = < Id > { return PrimitiveType.valueOf(id.image); }
+    id = < Id > { return PrimitiveType.primitiveOrString(id.image); }
     | <REF> <LT> t = Type() <GT> { return new ReferenceType(t); }
     | <LPAR>
         {
@@ -318,6 +320,11 @@ ASTNode Fact():
 			t = new ASTNum(Integer.parseInt(n.image));
 			return t;
 		}
+	| n = <String>
+        {
+            t = new ASTString(n.image);
+            return t;
+        }
 	| <STRUCT> <LCURLY>
 	    {
             List<Pair<String, ASTNode>> values = new ArrayList<>();

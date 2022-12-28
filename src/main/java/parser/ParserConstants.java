@@ -87,6 +87,8 @@ public interface ParserConstants {
   int DEREFERENCE = 37;
   /** RegularExpression Id. */
   int Id = 38;
+  /** RegularExpression Id. */
+  int String = 39;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -132,6 +134,7 @@ public interface ParserConstants {
     "\":=\"",
     "\"!\"",
     "<Id>",
+    "<String>",
     "\" \"",
     "\"\\t\"",
     "\"\\n\"",

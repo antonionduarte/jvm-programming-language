@@ -3,7 +3,7 @@ package ast.typing.types;
 public enum PrimitiveType implements IType {
 	Int("I", "int"),
 	Bool("I", "bool"),
-	String("Ljava/lang/String;", "string"), /* TODO: Check if this is right */
+	//String("Ljava/lang/String;", "string"), /* TODO: Check if this is right */
 	Void("V", "void");
 
 	private final String jvmId;
@@ -27,6 +27,14 @@ public enum PrimitiveType implements IType {
 	public void expect(IType other) {
 		if (!this.equals(other)) {
 			throw new TypeMismatchException(other, this);
+		}
+	}
+
+	public static IType primitiveOrString(String type) {
+		if(type.equals(StringType.Instance.toString())){
+			return StringType.Instance;
+		} else{
+			return PrimitiveType.valueOf(type);
 		}
 	}
 }

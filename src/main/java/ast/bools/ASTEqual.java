@@ -3,6 +3,7 @@ package ast.bools;
 import ast.ASTNode;
 import ast.typing.types.IType;
 import ast.typing.types.PrimitiveType;
+import ast.typing.types.StringType;
 import ast.typing.values.BoolValue;
 import ast.typing.values.IValue;
 import compilation.CodeBlock;
@@ -42,7 +43,7 @@ public class ASTEqual implements ASTNode {
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
 		IType type = lhs.typeCheck(environment);
-		if(!(type.equals(PrimitiveType.Int) || type.equals(PrimitiveType.Bool) || type.equals(PrimitiveType.String))) {
+		if(!(type.equals(PrimitiveType.Int) || type.equals(PrimitiveType.Bool) || type.equals(StringType.Instance))) {
 			throw new RuntimeException("Invalid type " + type + " for equals");
 		}
 		rhs.typeCheck(environment).expect(type);
