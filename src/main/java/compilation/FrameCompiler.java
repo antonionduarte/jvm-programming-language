@@ -11,6 +11,7 @@ import environment.FrameVariable;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Objects;
 
 public class FrameCompiler {
 
@@ -101,7 +102,8 @@ public class FrameCompiler {
 				activationFrameName,
 				parentFrameName,
 				applyLoadParameters,
-				applyBody
+				applyBody,
+				Objects.equals(closureInterface.jvmReturnType(), "I") ? "ireturn" : "areturn"
 		);
 	}
 

@@ -63,7 +63,7 @@ public class CompilerUtils {
 			""";
 	public static final String APPLY_METHOD_HEADER =
 			"""
-				.method apply(%s)%s
+				.method public apply(%s)%s
 				.limit locals %d
 				.limit stack 256
 				
@@ -80,7 +80,7 @@ public class CompilerUtils {
 			        
 			        %s
 					%s
-				return
+					%s
 				.end method
 			""";
 
