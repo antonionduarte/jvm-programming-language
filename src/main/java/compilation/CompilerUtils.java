@@ -50,12 +50,13 @@ public class CompilerUtils {
 				.class public closure_%d
 				.super java/lang/Object
 				.implements closure_interface_%s
-				.field public sl %s;
+				.field public sl L%s;
 			""";
 	public static final String NEW_CLOSURE_OBJECT =
 			"""
 				new closure_%s
 				dup
+				invokespecial closure_%s/<init>()V
 				aload_%d
 				putfield closure_%s/sl L%s;
 			""";
