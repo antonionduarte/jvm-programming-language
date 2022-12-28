@@ -57,7 +57,7 @@ public class CompilerUtils {
 				new closure_%s
 				dup
 				aload_%d
-				putfield closure_%s/sl %s;
+				putfield closure_%s/sl L%s;
 			""";
 	public static final String APPLY_METHOD_HEADER =
 			"""
@@ -70,8 +70,8 @@ public class CompilerUtils {
 				invokespecial %s/<init>()V
 				dup
 				aload_0
-				getfield closure_%d/sl %s;
-				putfield %s/sl %s;
+				getfield closure_%d/sl L%s;
+				putfield %s/sl L%s;
 				dup
 				
 					; load variables and stuff
