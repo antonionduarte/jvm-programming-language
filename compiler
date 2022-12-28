@@ -1,0 +1,9 @@
+#!/bin/bash
+export CLASSPATH="$CLASSPATH:$(pwd)/target/classes"
+cd compiled
+rm *.j *.class
+cd ..
+java Compiler $1
+cd compiled
+java jasmin.Main *.j
+cd ..
