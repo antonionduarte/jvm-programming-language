@@ -57,6 +57,7 @@ public class CompilerUtils {
 				new closure_%s
 				dup
 				invokespecial closure_%s/<init>()V
+				dup
 				aload_%d
 				putfield closure_%s/sl L%s;
 			""";
