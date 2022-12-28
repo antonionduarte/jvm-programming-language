@@ -34,6 +34,7 @@ public class ASTNot implements ASTNode {
 
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
+		inner.typeCheck(environment).expect(PrimitiveType.Bool);
 		return PrimitiveType.Bool;
 	}
 }

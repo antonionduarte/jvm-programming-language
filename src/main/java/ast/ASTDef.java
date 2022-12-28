@@ -36,6 +36,8 @@ public class ASTDef implements ASTNode {
 
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
-		return node.typeCheck(environment);
+		IType type = node.typeCheck(environment);
+		environment.associate(id, type);
+		return type;
 	}
 }

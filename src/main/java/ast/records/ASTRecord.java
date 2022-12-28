@@ -2,9 +2,14 @@ package ast.records;
 
 import ast.ASTNode;
 import ast.typing.types.IType;
+import ast.typing.types.RecordType;
+import ast.typing.types.ReferenceType;
+import ast.typing.utils.Parameter;
 import ast.typing.values.IValue;
 import ast.typing.values.RecordValue;
 import compilation.CodeBlock;
+import compilation.CompilerUtils;
+import compilation.RecordManager;
 import environment.Environment;
 import environment.Frame;
 import utils.Pair;
@@ -31,12 +36,31 @@ public class ASTRecord implements ASTNode {
 
     @Override
     public IType compile(Frame frame, CodeBlock codeBlock) {
-        //TODO implement
-        return null;
+        CodeBlock.DelayedOp init = codeBlock.delayEmit();
+        codeBlock.emit(CompilerUtils.DUPLICATE);
+        List<Parameter> parameters = new ArrayList<>(fields.size());
+        for(var field : fields){
+            String name = field.a();
+            ASTNode node = field.b();
+            IType type = node.compile(frame, codeBlock);
+            parameters.add(new Parameter(name, type));
+        }
+        RecordType recordType = new RecordType(parameters);
+        String className = RecordManager.getInstance().register(recordType);
+        init.set("new " + className);
+        codeBlock.emit(" invokespecial " + className + "/"
+                + RecordManager.initSignature(recordType));
+        return recordType;
     }
 
     @Override
     public IType typeCheck(Environment<IType> environment) {
-        return null;
+        List<Parameter> parameters = new ArrayList<>(fields.size());
+        for(var field : fields){
+            String name = field.a();
+            ASTNode node = field.b();
+            parameters.add(new Parameter(name, node.typeCheck(environment)));
+        }
+        return new RecordType(parameters);
     }
 }

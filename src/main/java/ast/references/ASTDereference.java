@@ -1,10 +1,7 @@
 package ast.references;
 
 import ast.ASTNode;
-import ast.typing.types.IType;
-import ast.typing.types.PrimitiveType;
-import ast.typing.types.ReferenceType;
-import ast.typing.types.TypeMismatchException;
+import ast.typing.types.*;
 import ast.typing.values.CellValue;
 import ast.typing.values.IValue;
 import compilation.CodeBlock;
@@ -22,7 +19,11 @@ public class ASTDereference implements ASTNode {
 	/* TODO: Typecheck this */
 	@Override
 	public IValue eval(Environment<IValue> environment) {
-		return ((CellValue) this.node.eval(environment)).getValue();
+		IValue val = this.node.eval(environment);
+		if(!(val instanceof CellValue cellValue)){
+			throw new TypeMismatchException("Reference", val.getType());
+		}
+		return cellValue.getValue();
 	}
 
 	@Override
@@ -33,19 +34,26 @@ public class ASTDereference implements ASTNode {
 		}
 		String className, fieldType;
 		IType inner = refType.getInnerType();
+		//TODO rework this
 		if (inner.equals(PrimitiveType.Bool) || inner.equals(PrimitiveType.Int)) {
 			className = ASTReference.REF_OF_INT;
 			fieldType = PrimitiveType.Int.getJvmId();
-		} else {
+			codeBlock.emit(CompilerUtils.getField(className, ASTReference.FIELD_NAME, fieldType));
+		} else if (inner instanceof ObjectType objType) {
 			className = ASTReference.REF_OF_REF;
 			fieldType = CompilerUtils.toReferenceType(CompilerUtils.OBJECT);
+			codeBlock.emit(CompilerUtils.getField(className, ASTReference.FIELD_NAME, fieldType));
+			codeBlock.emit("checkcast " + objType.getClassName());
 		}
-		codeBlock.emit(CompilerUtils.getField(className, ASTReference.FIELD_NAME, fieldType));
-		return PrimitiveType.Int;
+		return inner;
 	}
 
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
-		return null;
+		IType refType = node.typeCheck(environment);
+		if (!(refType instanceof ReferenceType referenceType)) {
+			throw new TypeMismatchException("Reference", refType);
+		}
+		return referenceType.getInnerType();
 	}
 }

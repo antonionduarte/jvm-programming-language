@@ -25,7 +25,10 @@ public class ASTAssign implements ASTNode {
 	/* TODO: Typecheck stuff */
 	@Override
 	public IValue eval(Environment<IValue> environment) {
-		var cell = (CellValue) ref.eval(environment);
+		IValue val = ref.eval(environment);
+		if(!(val instanceof CellValue cell)){
+			throw new TypeMismatchException("Reference", val.getType());
+		}
 		var value = this.expression.eval(environment);
 		cell.setValue(value);
 		return value; // TODO: Is this correct? does it need to return anything?
@@ -56,6 +59,13 @@ public class ASTAssign implements ASTNode {
 
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
-		return null;
+		IType type = expression.typeCheck(environment);
+		IType refType = ref.typeCheck(environment);
+		if (!(refType instanceof ReferenceType referenceType)) {
+			throw new TypeMismatchException("Reference", refType);
+		} else {
+			type.expect(referenceType.getInnerType());
+		}
+		return type;
 	}
 }

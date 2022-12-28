@@ -3,7 +3,9 @@ package ast.typing.types;
 import ast.references.ASTReference;
 import compilation.CompilerUtils;
 
-public class ReferenceType implements IType {
+import java.util.Objects;
+
+public class ReferenceType extends ObjectType {
 	private final IType inner;
 
 	public ReferenceType(IType type) {
@@ -27,11 +29,16 @@ public class ReferenceType implements IType {
 	}
 
 	@Override
-	public String getJvmId() {
+	public int hashCode() {
+		return Objects.hash(inner);
+	}
+
+	@Override
+	public String getClassName() {
 		if (inner.equals(PrimitiveType.Int) || inner.equals(PrimitiveType.Bool)) {
-			return CompilerUtils.toReferenceType(ASTReference.REF_OF_INT);
+			return ASTReference.REF_OF_INT;
 		} else {
-			return CompilerUtils.toReferenceType(ASTReference.REF_OF_REF);
+			return ASTReference.REF_OF_REF;
 		}
 	}
 

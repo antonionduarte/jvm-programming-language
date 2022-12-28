@@ -2,9 +2,12 @@ package ast.records;
 
 import ast.ASTNode;
 import ast.typing.types.IType;
+import ast.typing.types.RecordType;
 import ast.typing.types.TypeMismatchException;
 import ast.typing.values.IValue;
 import compilation.CodeBlock;
+import compilation.CompilerUtils;
+import compilation.RecordManager;
 import environment.Environment;
 import environment.Frame;
 import environment.InvalidIdentifierException;
@@ -34,12 +37,31 @@ public class ASTGetField implements ASTNode {
 
     @Override
     public IType compile(Frame frame, CodeBlock codeBlock) {
-        //TODO implement
-        return null;
+        IType type = record.compile(frame, codeBlock);
+        if(!(type instanceof RecordType recordType)){
+            throw new TypeMismatchException("struct", type);
+        }
+        int fieldId = recordType.getId(field);
+        IType fieldType = recordType.getFieldType(fieldId);
+        String className = RecordManager.getInstance().register(recordType);
+        if(fieldId == -1){
+            throw new InvalidIdentifierException("struct has no field " + field);
+        }
+        codeBlock.emit(CompilerUtils.getField(className,
+                RecordManager.getFieldName(fieldId), fieldType.getJvmId()));
+        return fieldType;
     }
 
     @Override
     public IType typeCheck(Environment<IType> environment) {
-        return null;
+        IType type = record.typeCheck(environment);
+        if(!(type instanceof RecordType recordType)){
+            throw new TypeMismatchException("struct", type);
+        }
+        int id = recordType.getId(field);
+        if(id < 0){
+            throw new InvalidIdentifierException("struct has no field " + field);
+        }
+        return recordType.getFieldType(id);
     }
 }

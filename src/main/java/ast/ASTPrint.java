@@ -49,6 +49,10 @@ public class ASTPrint implements ASTNode {
 
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
-		return node.typeCheck(environment);
+		IType type = node.typeCheck(environment);
+		if(!(type.equals(PrimitiveType.Int) || type.equals(PrimitiveType.Bool) || type.equals(PrimitiveType.String))) {
+			throw new RuntimeException("Invalid type " + type + " for Println");
+		}
+		return type;
 	}
 }

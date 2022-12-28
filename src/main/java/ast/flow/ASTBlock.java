@@ -50,6 +50,12 @@ public class ASTBlock implements ASTNode {
 
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
-		return null;
+		IType last = PrimitiveType.Void;
+		Environment<IType> inner = environment.beginScope();
+		for (ASTNode instruction : instructions) {
+			last = instruction.typeCheck(inner);
+		}
+		inner.endScope();
+		return last;
 	}
 }
