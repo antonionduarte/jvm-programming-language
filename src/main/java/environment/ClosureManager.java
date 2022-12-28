@@ -5,7 +5,6 @@ import ast.typing.types.FunctionType;
 import ast.typing.types.IType;
 import ast.typing.types.PrimitiveType;
 import ast.typing.types.ReferenceType;
-import ast.typing.values.ClosureValue;
 
 import java.util.*;
 
@@ -36,24 +35,20 @@ public class ClosureManager {
 	}
 
 	public ClosureInterface getClosureInterface(FunctionType type) {
-		return closureInterfaces.get(type);
-	}
+		return closureInterfaces.computeIfAbsent(type, k -> {
+			String closureInterfaceString = String.valueOf(currentInterfaceId++);
+			String closureParameterTypes = buildClosureParameters(type.getParameters());
+			String closureReturnType = getJvmId(type.getReturnType());
 
-	public ClosureInterface addClosureInterface(FunctionType type) {
-		String closureInterfaceString = String.valueOf(currentInterfaceId++);
-		String closureParameterTypes = buildClosureParameters(type.getParameters());
-		String closureReturnType = getJvmId(type.getReturnType());
+			List<String> parameterJvmIdentifiers = parameterJvmIdentifiers(type.getParameters());
 
-		List<String> parameterJvmIdentifiers = parameterJvmIdentifiers(type.getParameters());
-
-		var closureInterface = new ClosureInterface(
-				closureInterfaceString,
-				closureParameterTypes,
-				closureReturnType,
-				parameterJvmIdentifiers
-		);
-
-		return closureInterfaces.put(type, closureInterface);
+			return new ClosureInterface(
+					closureInterfaceString,
+					closureParameterTypes,
+					closureReturnType,
+					parameterJvmIdentifiers
+			);
+		});
 	}
 
 	/**
@@ -62,15 +57,10 @@ public class ClosureManager {
 	 */
 	private String buildClosureParameters(List<IType> parameters) {
 		StringBuilder parametersString = new StringBuilder();
-		Iterator<IType> iterator = parameters.iterator();
 
-		while (iterator.hasNext()) {
-			var parameter = iterator.next();
-			var jvmType = getJvmType(parameter);
+		for (IType parameter : parameters) {
+			var jvmType = getJvmId(parameter);
 			parametersString.append(jvmType);
-			if (iterator.hasNext()) {
-				parametersString.append(";");
-			}
 		}
 
 		return parametersString.toString();

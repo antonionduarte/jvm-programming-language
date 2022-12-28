@@ -55,9 +55,9 @@ public class FrameCompiler {
 	}
 
 	public static void dumpAllClosuresInterfaces(String path) throws FileNotFoundException {
-		for (var interfaceIdentifier : ClosureManager.getInstance().getClosureInterfaces().values()) {
-			PrintStream out = new PrintStream(path + "/" + "closure_interface_" + interfaceIdentifier + ".j");
-			dumpClosureInterface(interfaceIdentifier, out);
+		for (var closureInterface : ClosureManager.getInstance().getClosureInterfaces().values()) {
+			PrintStream out = new PrintStream(path + "/" + "closure_interface_" + closureInterface.identifier() + ".j");
+			dumpClosureInterface(closureInterface, out);
 		}
 	}
 

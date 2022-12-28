@@ -7,7 +7,10 @@ import ast.typing.utils.Parameter;
 import ast.typing.values.ClosureValue;
 import ast.typing.values.IValue;
 import compilation.CodeBlock;
-import environment.*;
+import environment.ClosureManager;
+import environment.Environment;
+import environment.Frame;
+import environment.FrameVariable;
 import utils.Pair;
 
 import java.util.ArrayList;
@@ -42,8 +45,6 @@ public class ASTFunction implements ASTNode {
 
 	@Override
 	public IType compile(Frame frame, CodeBlock codeBlock) {
-		// TODO: closure compilation here!
-
 		List<IType> typeParameters = new ArrayList<>();
 		for (var parameter : this.typedParameters) {
 			typeParameters.add(parameter.type());
@@ -54,15 +55,15 @@ public class ASTFunction implements ASTNode {
 		for (Parameter parameter : typedParameters) {
 			FrameVariable variable = new FrameVariable(closureFrame, closureFrame.getVars().size());
 			closureFrame.associate(parameter.name(), variable);
+			variable.setType(parameter.type());
 		}
 		frame.endScope();
 
 		var closureInterface = ClosureManager.getInstance().getClosureInterface(functionType);
-		if (closureInterface == null) closureInterface = ClosureManager.getInstance().addClosureInterface(functionType);
 
 		ClosureManager.getInstance().addClosure(closureInterface, frame, closureFrame, body);
 
-		return null; // TODO: What do I return here? the closure?
+		return functionType;
 	}
 
 	@Override
