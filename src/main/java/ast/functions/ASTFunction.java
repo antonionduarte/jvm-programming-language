@@ -70,8 +70,16 @@ public class ASTFunction implements ASTNode {
 
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
-		body.typeCheck(environment).expect(returnType);
-		return null; // TODO: (???)
+		List<IType> typeParameters = new ArrayList<>();
+		Environment<IType> inner = environment.beginScope();
+		for (var parameter : this.typedParameters) {
+			typeParameters.add(parameter.type());
+			inner.associate(parameter.name(), parameter.type());
+		}
+		body.typeCheck(inner).expect(returnType);
+		inner.endScope();
+		FunctionType functionType = new FunctionType(typeParameters, returnType);
+		return functionType;
 	}
 
 }
