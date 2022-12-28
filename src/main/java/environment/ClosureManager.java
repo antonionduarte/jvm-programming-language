@@ -1,5 +1,6 @@
 package environment;
 
+import ast.ASTNode;
 import ast.typing.types.FunctionType;
 import ast.typing.types.IType;
 import ast.typing.types.PrimitiveType;
@@ -10,13 +11,14 @@ import java.util.*;
 
 public class ClosureManager {
 	public record ClosureInterface(String identifier, String jvmParameterTypes, String jvmReturnType, List<String> jvmParameterIdentifiers) {}
-	public record Closure(int identifier, Frame parentFrame, Frame activationFrame, ClosureInterface closureInterface) {}
+	public record Closure(int identifier, Frame parentFrame, Frame activationFrame, ClosureInterface closureInterface, ASTNode body) {}
 
 	private static ClosureManager instance;
 
 	private final List<Closure> allClosures; // honestly no idea if this is needed
 	private final Map<FunctionType, ClosureInterface> closureInterfaces;
 
+	private int currentInterfaceId;
 	private int currentId;
 
 	public static ClosureManager getInstance() {
@@ -30,6 +32,7 @@ public class ClosureManager {
 		this.allClosures = new LinkedList<>();
 		this.closureInterfaces = new HashMap<>();
 		this.currentId = 0;
+		this.currentInterfaceId = 0;
 	}
 
 	public ClosureInterface getClosureInterface(FunctionType type) {
@@ -37,7 +40,7 @@ public class ClosureManager {
 	}
 
 	public ClosureInterface addClosureInterface(FunctionType type) {
-		String closureInterfaceString = buildClosureIdentifier(type);
+		String closureInterfaceString = String.valueOf(currentInterfaceId++);
 		String closureParameterTypes = buildClosureParameters(type.getParameters());
 		String closureReturnType = getJvmId(type.getReturnType());
 
@@ -51,29 +54,6 @@ public class ClosureManager {
 		);
 
 		return closureInterfaces.put(type, closureInterface);
-	}
-
-	/**
-	 * Builds the closure identifier, e.g. (int, int) -> int right now would be: int_int_int
-	 * TODO: Maybe needs to be different because... functions as parameters(?) and return types(?)
-	 */
-	private String buildClosureIdentifier(FunctionType type) {
-		var parameters = type.getParameters();
-		var returnType = type.getReturnType();
-
-		StringBuilder closureInterface = new StringBuilder();
-		Iterator<IType> iterator = parameters.iterator();
-
-		while (iterator.hasNext()) {
-			var parameter = iterator.next();
-			this.getJvmType(parameter);
-			if (iterator.hasNext()) {
-				closureInterface.append("_");
-			}
-		}
-
-		closureInterface.append("_").append(((PrimitiveType) returnType).getJvmType());
-		return closureInterface.toString();
 	}
 
 	/**
@@ -148,8 +128,8 @@ public class ClosureManager {
 		return allClosures;
 	}
 
-	public void addClosure(ClosureInterface closureInterface, Frame parentFrame, Frame activationFrame) {
-		allClosures.add(new Closure(currentId, parentFrame, activationFrame, closureInterface));
+	public void addClosure(ClosureInterface closureInterface, Frame parentFrame, Frame activationFrame, ASTNode body) {
+		allClosures.add(new Closure(currentId, parentFrame, activationFrame, closureInterface, body));
 		this.currentId++;
 	}
 }

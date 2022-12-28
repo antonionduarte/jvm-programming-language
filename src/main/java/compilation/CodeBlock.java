@@ -33,6 +33,14 @@ public class CodeBlock {
 		}
 	}
 
+	public String dumpString() {
+		StringBuilder stringBuilder = new StringBuilder();
+		for (var elem : this.code) {
+			stringBuilder.append(elem).append("\n");
+		}
+		return stringBuilder.toString();
+	}
+
 	public class DelayedOp {
 		private final int i;
 

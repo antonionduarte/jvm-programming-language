@@ -69,34 +69,37 @@ public class FrameCompiler {
 		);
 		stream.println(CompilerUtils.EMPTY_CONSTRUCTOR);
 
-		StringBuilder applyLoadParameters = new StringBuilder();
-		StringBuilder applyBody = new StringBuilder(); // TODO: need to generate code for the body using the now correctly configured activation frame
+		ClosureInterface closureInterface = closure.closureInterface();
 
-		for (var identifier : closure.closureInterface().jvmParameterIdentifiers()) {
-			// TODO: i have to load into the frame each of the identifiers god fuck kill me please
-		}
+		StringBuilder applyLoadParameters = new StringBuilder();
 
 		var parentFrameName = closure.parentFrame().getFrameName();
 		var activationFrameName = closure.activationFrame().getFrameName();
 		var closureIdentifier = closure.identifier();
 
-		ClosureInterface closureInterface = closure.closureInterface();
+		for (var i = 0; i < closure.closureInterface().jvmParameterIdentifiers().size(); i++) {
+			var identifier = closureInterface.jvmParameterIdentifiers().get(i);
+			applyLoadParameters
+					.append(String.format("iload %d\n", i + 1))
+					.append(String.format("putfield %s/v%d %s\n", activationFrameName, i, identifier));
+		}
 
-		// TODO: I'm sorry if this is unreadable, but I'm tired and I need to sleep
+		CodeBlock codeBlock = new CodeBlock();
+		closure.body().compile(closure.activationFrame(), codeBlock);
+		var applyBody = codeBlock.dumpString();
+
 		stream.printf((CompilerUtils.APPLY_METHOD_HEADER),
 				closureInterface.jvmParameterTypes(),
 				closureInterface.jvmReturnType(),
-
-				3, // TODO: limit locals here to a value that makes sense, dunno if really needed
-
+				closureInterface.jvmParameterIdentifiers().size(),
 				activationFrameName,
 				activationFrameName,
 				closureIdentifier,
 				parentFrameName,
 				activationFrameName,
 				parentFrameName,
-				applyLoadParameters.toString(),
-				applyBody.toString()
+				applyLoadParameters,
+				applyBody
 		);
 	}
 
