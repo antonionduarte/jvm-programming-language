@@ -60,7 +60,7 @@ public class ASTFunction implements ASTNode {
 		var closureInterface = ClosureManager.getInstance().getClosureInterface(functionType);
 		if (closureInterface == null) closureInterface = ClosureManager.getInstance().addClosureInterface(functionType);
 
-		ClosureManager.getInstance().addClosure(closureInterface, frame, closureFrame);
+		ClosureManager.getInstance().addClosure(closureInterface, frame, closureFrame, body);
 
 		return null; // TODO: What do I return here? the closure?
 	}
