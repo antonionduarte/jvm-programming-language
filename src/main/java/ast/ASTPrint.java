@@ -1,5 +1,6 @@
 package ast;
 
+import ast.strings.ASTToString;
 import ast.typing.types.IType;
 import ast.typing.types.PrimitiveType;
 import ast.typing.types.StringType;
@@ -30,7 +31,7 @@ public class ASTPrint implements ASTNode {
 		codeBlock.emit(CompilerUtils.DUPLICATE);
 		codeBlock.emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
 		codeBlock.emit(CompilerUtils.SWAP);
-		CompilerUtils.emitToString(codeBlock, type);
+		ASTToString.emitToString(codeBlock, type);
 		codeBlock.emit("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
 		return type;
 	}
@@ -38,9 +39,7 @@ public class ASTPrint implements ASTNode {
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
 		IType type = node.typeCheck(environment);
-		if(!(type.equals(PrimitiveType.Int) || type.equals(PrimitiveType.Bool) || type.equals(StringType.Instance))) {
-			throw new RuntimeException("Invalid type " + type + " for Println");
-		}
+		ASTToString.checkValidTarget(type);
 		return type;
 	}
 }

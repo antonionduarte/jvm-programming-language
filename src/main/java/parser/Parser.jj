@@ -32,11 +32,13 @@ TOKEN:
 	| < ELSE : "else">
 	| < WHILE : "while">
 	| <PRINTLN : "println">
+	| <TOSTRING : "toString">
 	| < TRUE : "true" >
 	| < FALSE: "false" >
 	| < Num: (["0"-"9"]) + >
 	| < PLUS : "+" >
 	| < MINUS : "-">
+	| < AT : "@" >
 	| < TIMES : "*">
 	| < DOT : ".">
 	| < DIV : "/">
@@ -180,8 +182,24 @@ ASTNode Flow():
     }
 }
 
-
 ASTNode Exp() :
+{
+    ASTNode t1, t2;
+}
+{
+    (
+        t1 = AndChain()
+        (
+            <AT> t2 = Exp() { t1 = new ASTConcat(t1, t2); }
+        )?
+        | <TOSTRING> t1 = Exp() { t1 = new ASTToString(t1); }
+    )
+    {
+        return t1;
+    }
+}
+
+ASTNode AndChain() :
 {
 	ASTNode t1, t2;
 }

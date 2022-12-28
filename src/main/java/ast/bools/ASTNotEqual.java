@@ -29,14 +29,23 @@ public class ASTNotEqual implements ASTNode {
 
 	@Override
 	public IType compile(Frame frame, CodeBlock codeBlock) {
-		lhs.compile(frame, codeBlock).expect(rhs.compile(frame, codeBlock));
-		CodeBlock.DelayedOp gotoIf = codeBlock.delayEmit();
-		codeBlock.emit(CompilerUtils.PUSH_FALSE);
-		CodeBlock.DelayedOp skipIf = codeBlock.delayEmit();
-		String label = codeBlock.emitLabel();
-		codeBlock.emit(CompilerUtils.PUSH_TRUE);
-		gotoIf.set(CompilerUtils.gotoIfCompare(CompilerUtils.NOT_EQ, label));
-		skipIf.set(CompilerUtils.gotoAlways(codeBlock.emitLabel()));
+		IType leftType = lhs.compile(frame, codeBlock);
+		IType rightType = rhs.compile(frame, codeBlock);
+		leftType.expect(rightType);
+		if(leftType.equals(StringType.Instance)) {
+			codeBlock.emit("invokevirtual java/lang/String/equals(Ljava/lang/Object;)Z");
+		} else  if (leftType.equals(PrimitiveType.Int) || leftType.equals(PrimitiveType.Bool)){
+			CodeBlock.DelayedOp gotoIf = codeBlock.delayEmit();
+			codeBlock.emit(CompilerUtils.PUSH_FALSE);
+			CodeBlock.DelayedOp skipIf = codeBlock.delayEmit();
+			String label = codeBlock.emitLabel();
+			codeBlock.emit(CompilerUtils.PUSH_TRUE);
+			gotoIf.set(CompilerUtils.gotoIfCompare(CompilerUtils.NOT_EQ, label));
+			skipIf.set(CompilerUtils.gotoAlways(codeBlock.emitLabel()));
+		}
+		else {
+			throw new RuntimeException("Invalid type " + lhs + " for equals");
+		}
 		return PrimitiveType.Bool;
 	}
 
