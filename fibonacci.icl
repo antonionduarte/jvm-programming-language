@@ -1,5 +1,5 @@
 {
-	let fibRec = new fn() -> Int { 0; };
+	let fibRec = new fn(n : Int) -> Int { 0; };
 	let fib = fn(n : Int) -> Int {
 		let fibRec = !fibRec;
 		if (n == 0) {
