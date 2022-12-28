@@ -45,6 +45,13 @@ public class CompilerUtils {
 				.method public abstract apply(%s)%s
 				.end method
 			""";
+	public static final String CLOSURE_HEADER =
+			"""
+				.class public closure_%d
+				.super java/lang/Object
+				.implements closure_interface_%s
+				.field public sl Ljava/lang/Object;
+			""";
 
 	private static final String CLASS_TYPE = "L%s;";
 

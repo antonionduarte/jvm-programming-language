@@ -1,16 +1,17 @@
 package ast.functions;
 
 import ast.ASTNode;
+import ast.typing.types.FunctionType;
 import ast.typing.types.IType;
 import ast.typing.utils.Parameter;
 import ast.typing.values.ClosureValue;
 import ast.typing.values.IValue;
 import compilation.CodeBlock;
-import compilation.FrameCompiler;
 import environment.*;
 import utils.Pair;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ASTFunction implements ASTNode {
 
@@ -42,22 +43,24 @@ public class ASTFunction implements ASTNode {
 	@Override
 	public IType compile(Frame frame, CodeBlock codeBlock) {
 		// TODO: closure compilation here!
-		// create the frame class associated with the parameters
-		Frame closureFrame = FrameManager.getInstance().closureFrame(frame);
+
+		List<IType> typeParameters = new ArrayList<>();
+		for (var parameter : this.typedParameters) {
+			typeParameters.add(parameter.type());
+		}
+		FunctionType functionType = new FunctionType(typeParameters, returnType);
+
+		var closureFrame = frame.beginScope();
 		for (Parameter parameter : typedParameters) {
-			var varNumber = closureFrame.getVars().size();
 			FrameVariable variable = new FrameVariable(closureFrame, closureFrame.getVars().size());
 			closureFrame.associate(parameter.name(), variable);
 		}
-		FrameCompiler.emitFrameClass(codeBlock, closureFrame);
+		frame.endScope();
 
 		// create the interface if needed
 		// TODO: Where do I get the FunctionType from? right now it's set to null
-		var interfaceIdentifier = ClosureManager.getInstance().getClosureInterface(null);
-		if (interfaceIdentifier == null) {
-			interfaceIdentifier = ClosureManager.getInstance().setClosureInterface(null);
-			FrameCompiler.emitClosureInterface(codeBlock, interfaceIdentifier);
-		}
+		var interfaceIdentifier = ClosureManager.getInstance().getClosureInterface(functionType);
+		if (interfaceIdentifier == null) ClosureManager.getInstance().addClosureInterface(functionType);
 
 		return null;
 	}

@@ -19,6 +19,14 @@ public class FunctionType implements IType {
 		}
 	}
 
+	public List<IType> getParameters() {
+		return parameters;
+	}
+
+	public IType getReturnType() {
+		return returnType;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {

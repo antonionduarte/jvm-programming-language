@@ -35,10 +35,8 @@ public class Frame extends Environment<FrameVariable> {
 
 	@Override
 	public Frame beginScope() {
-		var frameId = FrameManager.getInstance().getMaxFrameId();
 		Frame newFrame = new Frame(allFrames.size(), this);
 		allFrames.add(newFrame);
-		FrameManager.getInstance().setMaxFrameId(frameId + 1);
 		return newFrame;
 	}
 

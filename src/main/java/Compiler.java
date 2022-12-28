@@ -5,7 +5,6 @@ import compilation.CodeBlock;
 import compilation.CompilerUtils;
 import compilation.FrameCompiler;
 import environment.Frame;
-import environment.FrameManager;
 import parser.ParseException;
 import parser.Parser;
 
@@ -52,18 +51,23 @@ public class Compiler {
 			ASTNode exp = Parser.Start();
 			outputFile.write(initialHeaders.toString().getBytes());
 			List<Frame> frames = new ArrayList<>();
-			FrameManager frameManager = FrameManager.getInstance();
 			Frame root = new Frame(0, frames);
 			frames.add(root);
 			IType left = exp.compile(root, codeBlock);
+
 			if (left != PrimitiveType.Void) {
-				//required: jvm will throw an error if the stack is not empty in the end
+				// required: jvm will throw an error if the stack is not empty in the end
 				codeBlock.emit(CompilerUtils.DISCARD);
 			}
+
 			codeBlock.dump(outputFile);
+
 			FrameCompiler.dumpAll(OUT_DIR, frames);
+			FrameCompiler.dumpAllClosuresInterfaces(OUT_DIR);
+
 			Files.copy(Path.of(REF_INT_FILE), Path.of(REF_INT_OUT));
 			Files.copy(Path.of(REF_REF_FILE), Path.of(REF_REF_OUT));
+
 			outputFile.write(finalHeaders.toString().getBytes());
 		} catch (ParseException e) {
 			System.out.println("Syntax Error!");

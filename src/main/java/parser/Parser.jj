@@ -97,7 +97,7 @@ IType Type() :
         {
             return new FunctionType(params, t);
         }
-     | <STRUCT> <LCURLY>
+    | <STRUCT> <LCURLY>
         {
             List<Parameter> params = new ArrayList<>();
         }
@@ -105,7 +105,7 @@ IType Type() :
             id = <Id> <TWODOTS> t = Type()
             { params.add(new Parameter(id.image, t)); }
             (<COMMA> id = <Id> <TWODOTS> t = Type() { params.add(new Parameter(id.image, t)); })*
-        )?
+        ) ?
         <RCURLY>
         {
             return new RecordType(params);
@@ -121,9 +121,9 @@ ASTNode Start():
 	{ return t; }
 }
 
-ASTNode Instruction():{
+ASTNode Instruction() : {
     ASTNode t = null;
-}{
+} {
     (LOOKAHEAD(3) t = Flow() | t = Exp() <DOTCOMMA>)
     {
         return t;
@@ -155,7 +155,7 @@ ASTNode ElseIfChain():
 }
 {
     <IF> <LPAR> cond = Exp() <RPAR> bodyIf = Block()
-        (<ELSE> (bodyElse = ElseIfChain() | bodyElse = Block()) )?
+        ( <ELSE> (bodyElse = ElseIfChain() | bodyElse = Block()) ) ?
             {
                 return new ASTIf(cond, bodyIf, bodyElse);
             }
@@ -397,7 +397,7 @@ ASTNode RefNode():{
     l = IdOrExp()
       (
           <DOT> id = <Id> { l = new ASTGetField(l, id.image); }
-      )*
+      ) *
     (
         <ASSIGN> t = Exp()
             {

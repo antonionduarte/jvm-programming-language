@@ -2,6 +2,9 @@ package compilation;
 
 import ast.ASTNode;
 import ast.typing.types.IType;
+import environment.ClosureManager;
+import environment.ClosureManager.ClosureInterface;
+import environment.ClosureManager.Closure;
 import environment.Frame;
 import environment.FrameVariable;
 
@@ -43,24 +46,48 @@ public class FrameCompiler {
 		stream.println(CompilerUtils.EMPTY_CONSTRUCTOR);
 	}
 
+	public static void dumpClosureInterface(ClosureInterface closureInterface, PrintStream stream) {
+		stream.printf((CompilerUtils.INTERFACE_HEADER),
+				closureInterface.identifier(),
+				closureInterface.jvmParameterTypes(),
+				closureInterface.jvmReturnType()
+		);
+	}
+
+	public static void dumpAllClosuresInterfaces(String path) throws FileNotFoundException {
+		for (var interfaceIdentifier : ClosureManager.getInstance().getClosureInterfaces().values()) {
+			PrintStream out = new PrintStream(path + "/" + "closure_interface_" + interfaceIdentifier + ".j");
+			dumpClosureInterface(interfaceIdentifier, out);
+		}
+	}
+
+	public static void dumpClosure(Closure closure, PrintStream stream) {
+		stream.printf((CompilerUtils.CLOSURE_HEADER),
+				closure.identifier(),
+				closure.closureInterface().identifier()
+		);
+		stream.println(CompilerUtils.EMPTY_CONSTRUCTOR);
+	}
+
+	public static void dumpAllClosures(String path) throws FileNotFoundException {
+		for (var closure : ClosureManager.getInstance().getAllClosures()) {
+			PrintStream out = new PrintStream(path + "/" + "closure_" + closure.identifier() + ".j");
+			dumpClosure(closure, out);
+		}
+	}
+
 	public static void emitFrameClass(CodeBlock block, Frame frame) {
 		String name = frame.getFrameName();
 		block.emit(CompilerUtils.classHeader(name));
 		String parent = frame.getParentFrame() == null ? CompilerUtils.OBJECT : frame.getParentFrame().getFrameName();
 		String parentType = CompilerUtils.toReferenceType(parent);
 		block.emit(CompilerUtils.defineField(PARENT_FIELD, parentType));
-		for (FrameVariable variable: frame.getVars()) {
+		for (FrameVariable variable : frame.getVars()) {
 			String fieldName = getFieldName(variable.getId());
 			String type = variable.getType().getJvmId();
 			block.emit(CompilerUtils.defineField(fieldName, type));
 		}
 		block.emit(CompilerUtils.EMPTY_CONSTRUCTOR);
-	}
-
-	public static void emitClosureInterface(CodeBlock block, String interfaceIdentifier) {
-		block.emit(String.format(CompilerUtils.INTERFACE_HEADER, interfaceIdentifier));
-		// TODO: I also need to format the apply(%s)%s, because I think it should be something like:
-		//       apply(I)I for a function that takes an int and returns an int
 	}
 
 	public static void emitBeginScope(CodeBlock block, Frame newFrame) {
