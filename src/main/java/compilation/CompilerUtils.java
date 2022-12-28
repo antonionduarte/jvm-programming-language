@@ -99,7 +99,7 @@ public class CompilerUtils {
 			""";
 
 	public static final String INTERFACE_CHECK_CAST = "checkcast closure_interface_%s";
-	public static final String INVOKE_INTERFACE = "invokeinterface closure_interface_%s/apply(%s)%s";
+	public static final String INVOKE_INTERFACE = "invokeinterface closure_interface_%s/apply(%s)%s %d";
 
 	public static String toReferenceType(String className) {
 		return String.format(CLASS_TYPE, className);

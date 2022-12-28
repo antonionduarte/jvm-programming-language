@@ -118,7 +118,8 @@ public class FrameCompiler {
 		block.emit(String.format(CompilerUtils.INVOKE_INTERFACE,
 				closureInterface.identifier(),
 				closureInterface.jvmParameterTypes(),
-				closureInterface.jvmReturnType()));
+				closureInterface.jvmReturnType(),
+				closureInterface.jvmParameterIdentifiers().size()));
 	}
 
 	public static void emitBeginScope(CodeBlock block, Frame newFrame) {
