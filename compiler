@@ -1,5 +1,6 @@
 #!/bin/bash
 export CLASSPATH="$CLASSPATH:$(pwd)/target/classes"
+mkdir -p compiled
 cd compiled
 rm *.j *.class
 cd ..
