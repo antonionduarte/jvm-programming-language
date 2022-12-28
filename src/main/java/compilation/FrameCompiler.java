@@ -107,20 +107,6 @@ public class FrameCompiler {
 		}
 	}
 
-	public static void emitFrameClass(CodeBlock block, Frame frame) {
-		String name = frame.getFrameName();
-		block.emit(CompilerUtils.classHeader(name));
-		String parent = frame.getParentFrame() == null ? CompilerUtils.OBJECT : frame.getParentFrame().getFrameName();
-		String parentType = CompilerUtils.toReferenceType(parent);
-		block.emit(CompilerUtils.defineField(PARENT_FIELD, parentType));
-		for (FrameVariable variable : frame.getVars()) {
-			String fieldName = getFieldName(variable.getId());
-			String type = variable.getType().getJvmId();
-			block.emit(CompilerUtils.defineField(fieldName, type));
-		}
-		block.emit(CompilerUtils.EMPTY_CONSTRUCTOR);
-	}
-
 	public static void emitBeginScope(CodeBlock block, Frame newFrame) {
 		String parent = newFrame.getParentFrame() == null ? CompilerUtils.OBJECT : newFrame.getParentFrame().getFrameName();
 		String parentType = CompilerUtils.toReferenceType(parent);
