@@ -52,6 +52,13 @@ public class CompilerUtils {
 				.implements closure_interface_%s
 				.field public sl %s;
 			""";
+	public static final String NEW_CLOSURE_OBJECT =
+			"""
+				new closure_%s
+				dup
+				aload_%d
+				putfield closure_%s/sl %s;
+			""";
 	public static final String APPLY_METHOD_HEADER =
 			"""
 				.method apply(%s)%s

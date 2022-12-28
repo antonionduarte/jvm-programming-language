@@ -7,6 +7,7 @@ import ast.typing.utils.Parameter;
 import ast.typing.values.ClosureValue;
 import ast.typing.values.IValue;
 import compilation.CodeBlock;
+import compilation.FrameCompiler;
 import environment.ClosureManager;
 import environment.Environment;
 import environment.Frame;
@@ -60,8 +61,9 @@ public class ASTFunction implements ASTNode {
 		frame.endScope();
 
 		var closureInterface = ClosureManager.getInstance().getClosureInterface(functionType);
+		var closure = ClosureManager.getInstance().addClosure(closureInterface, frame, closureFrame, body);
 
-		ClosureManager.getInstance().addClosure(closureInterface, frame, closureFrame, body);
+		FrameCompiler.emitDefineClosureObject(codeBlock, closure);
 
 		return functionType;
 	}

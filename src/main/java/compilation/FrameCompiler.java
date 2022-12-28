@@ -91,7 +91,7 @@ public class FrameCompiler {
 		stream.printf((CompilerUtils.APPLY_METHOD_HEADER),
 				closureInterface.jvmParameterTypes(),
 				closureInterface.jvmReturnType(),
-				closureInterface.jvmParameterIdentifiers().size(),
+				Math.min(closureInterface.jvmParameterIdentifiers().size() + 1, 4),
 				activationFrameName,
 				activationFrameName,
 				closureIdentifier,
@@ -120,6 +120,14 @@ public class FrameCompiler {
 				closureInterface.jvmParameterTypes(),
 				closureInterface.jvmReturnType(),
 				closureInterface.jvmParameterIdentifiers().size()));
+	}
+
+	public static void emitDefineClosureObject(CodeBlock block, Closure closure) {
+		block.emit(String.format(CompilerUtils.NEW_CLOSURE_OBJECT,
+				closure.identifier(),
+				SCOPE_VARIABLE,
+				closure.identifier(),
+				closure.parentFrame().getFrameName()));
 	}
 
 	public static void emitBeginScope(CodeBlock block, Frame newFrame) {

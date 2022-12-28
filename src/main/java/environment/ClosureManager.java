@@ -88,8 +88,10 @@ public class ClosureManager {
 		return allClosures;
 	}
 
-	public void addClosure(ClosureInterface closureInterface, Frame parentFrame, Frame activationFrame, ASTNode body) {
-		allClosures.add(new Closure(currentId, parentFrame, activationFrame, closureInterface, body));
+	public Closure addClosure(ClosureInterface closureInterface, Frame parentFrame, Frame activationFrame, ASTNode body) {
+		var closure = new Closure(currentId, parentFrame, activationFrame, closureInterface, body);
+		allClosures.add(closure);
 		this.currentId++;
+		return closure;
 	}
 }
