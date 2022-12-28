@@ -65,8 +65,8 @@ public class Compiler {
 			codeBlock.dump(outputFile);
 
 			FrameCompiler.dumpAll(OUT_DIR, frames);
-			//FrameCompiler.dumpAllClosures(OUT_DIR);
-			//FrameCompiler.dumpAllClosuresInterfaces(OUT_DIR);
+			FrameCompiler.dumpAllClosures(OUT_DIR);
+			FrameCompiler.dumpAllClosuresInterfaces(OUT_DIR);
 
 			RecordManager.getInstance().dumpAll(OUT_DIR);
 			try {
