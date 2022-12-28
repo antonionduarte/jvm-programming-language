@@ -80,10 +80,10 @@ public class FrameCompiler {
 
 		for (var i = 0; i < closure.closureInterface().jvmParameterIdentifiers().size(); i++) {
 			var identifier = closureInterface.jvmParameterIdentifiers().get(i);
-			applyLoadParameters
-					.append("dup\n")
-					.append(String.format("iload %d\n", i + 1))
-					.append(String.format("putfield %s/v%d %s\n", activationFrameName, i, identifier));
+			applyLoadParameters.append("dup\n");
+			if (Objects.equals(identifier, "I")) applyLoadParameters.append(String.format("iload %d\n", i + 1));
+			else applyLoadParameters.append(String.format("aload %d\n", i + 1);
+			applyLoadParameters.append(String.format("putfield %s/v%d %s\n", activationFrameName, i, identifier));
 		}
 		applyLoadParameters.append(String.format("astore_%d", SCOPE_VARIABLE));
 

@@ -146,7 +146,7 @@ public class CompilerUtils {
 	}
 
 	public static String pushString(String value, boolean insertQuotes) {
-		if(insertQuotes) {
+		if (insertQuotes) {
 			return PUSH_CONST + " \"" + value + "\"";
 		} else {
 			return PUSH_CONST + " " + value;
