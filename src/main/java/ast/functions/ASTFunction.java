@@ -57,18 +57,18 @@ public class ASTFunction implements ASTNode {
 		}
 		frame.endScope();
 
-		// create the interface if needed
-		// TODO: Where do I get the FunctionType from? right now it's set to null
-		var interfaceIdentifier = ClosureManager.getInstance().getClosureInterface(functionType);
-		if (interfaceIdentifier == null) ClosureManager.getInstance().addClosureInterface(functionType);
+		var closureInterface = ClosureManager.getInstance().getClosureInterface(functionType);
+		if (closureInterface == null) closureInterface = ClosureManager.getInstance().addClosureInterface(functionType);
 
-		return null;
+		ClosureManager.getInstance().addClosure(closureInterface, frame, closureFrame);
+
+		return null; // TODO: What do I return here? the closure?
 	}
 
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
 		body.typeCheck(environment).expect(returnType);
-		return null; //TODO ??
+		return null; // TODO: (???)
 	}
 
 }

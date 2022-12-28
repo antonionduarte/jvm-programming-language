@@ -50,7 +50,30 @@ public class CompilerUtils {
 				.class public closure_%d
 				.super java/lang/Object
 				.implements closure_interface_%s
-				.field public sl Ljava/lang/Object;
+				.field public sl %s;
+			""";
+	public static final String APPLY_METHOD_HEADER =
+			"""
+				.method apply(%s)%s
+				.limit locals %d
+				.limit stack 256
+				
+				new %s
+				dup
+				invokespecial %s/<init>()V
+				dup
+				aload_0
+				getfield closure_%d/sl %s;
+				putfield %s/sl %s;
+				dup
+				
+					; load variables and stuff
+					; method body
+			        
+			        %s
+					%s
+				
+				.end method
 			""";
 
 	private static final String CLASS_TYPE = "L%s;";
@@ -77,7 +100,6 @@ public class CompilerUtils {
 
 	private static final String LIMIT_LOCALS = ".limit locals %d";
 	private static final String LIMIT_STACK = ".limit stack %d";
-
 
 	public static String toReferenceType(String className) {
 		return String.format(CLASS_TYPE, className);

@@ -64,9 +64,40 @@ public class FrameCompiler {
 	public static void dumpClosure(Closure closure, PrintStream stream) {
 		stream.printf((CompilerUtils.CLOSURE_HEADER),
 				closure.identifier(),
-				closure.closureInterface().identifier()
+				closure.closureInterface().identifier(),
+				closure.parentFrame().getFrameName()
 		);
 		stream.println(CompilerUtils.EMPTY_CONSTRUCTOR);
+
+		StringBuilder applyLoadParameters = new StringBuilder();
+		StringBuilder applyBody = new StringBuilder(); // TODO: need to generate code for the body using the now correctly configured activation frame
+
+		for (var identifier : closure.closureInterface().jvmParameterIdentifiers()) {
+			// TODO: i have to load into the frame each of the identifiers god fuck kill me please
+		}
+
+		var parentFrameName = closure.parentFrame().getFrameName();
+		var activationFrameName = closure.activationFrame().getFrameName();
+		var closureIdentifier = closure.identifier();
+
+		ClosureInterface closureInterface = closure.closureInterface();
+
+		// TODO: I'm sorry if this is unreadable, but I'm tired and I need to sleep
+		stream.printf((CompilerUtils.APPLY_METHOD_HEADER),
+				closureInterface.jvmParameterTypes(),
+				closureInterface.jvmReturnType(),
+
+				3, // TODO: limit locals here to a value that makes sense, dunno if really needed
+
+				activationFrameName,
+				activationFrameName,
+				closureIdentifier,
+				parentFrameName,
+				activationFrameName,
+				parentFrameName,
+				applyLoadParameters.toString(),
+				applyBody.toString()
+		);
 	}
 
 	public static void dumpAllClosures(String path) throws FileNotFoundException {

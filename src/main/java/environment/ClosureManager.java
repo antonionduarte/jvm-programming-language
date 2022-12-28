@@ -9,8 +9,8 @@ import ast.typing.values.ClosureValue;
 import java.util.*;
 
 public class ClosureManager {
-	public record ClosureInterface(String identifier, String jvmParameterTypes, String jvmReturnType) {}
-	public record Closure(int identifier, ClosureInterface closureInterface) {}
+	public record ClosureInterface(String identifier, String jvmParameterTypes, String jvmReturnType, List<String> jvmParameterIdentifiers) {}
+	public record Closure(int identifier, Frame parentFrame, Frame activationFrame, ClosureInterface closureInterface) {}
 
 	private static ClosureManager instance;
 
@@ -36,16 +36,21 @@ public class ClosureManager {
 		return closureInterfaces.get(type);
 	}
 
-	public void addClosureInterface(FunctionType type) {
+	public ClosureInterface addClosureInterface(FunctionType type) {
 		String closureInterfaceString = buildClosureIdentifier(type);
 		String closureParameterTypes = buildClosureParameters(type.getParameters());
 		String closureReturnType = getJvmId(type.getReturnType());
 
+		List<String> parameterJvmIdentifiers = parameterJvmIdentifiers(type.getParameters());
+
 		var closureInterface = new ClosureInterface(
 				closureInterfaceString,
 				closureParameterTypes,
-				closureReturnType
+				closureReturnType,
+				parameterJvmIdentifiers
 		);
+
+		return closureInterfaces.put(type, closureInterface);
 	}
 
 	/**
@@ -61,7 +66,7 @@ public class ClosureManager {
 
 		while (iterator.hasNext()) {
 			var parameter = iterator.next();
-			getJvmType(parameter);
+			this.getJvmType(parameter);
 			if (iterator.hasNext()) {
 				closureInterface.append("_");
 			}
@@ -84,11 +89,23 @@ public class ClosureManager {
 			var jvmType = getJvmType(parameter);
 			parametersString.append(jvmType);
 			if (iterator.hasNext()) {
-				parametersString.append(",");
+				parametersString.append(";");
 			}
 		}
 
 		return parametersString.toString();
+	}
+
+	/**
+	 * TODO: Probably doesn't work for the same reason as the others: complex
+	 *       identifiers for function types and reference types.
+	 */
+	private List<String> parameterJvmIdentifiers(List<IType> parameters) {
+		List<String> parameterJvmIdentifiers = new ArrayList<>();
+		for (IType parameter : parameters) {
+			parameterJvmIdentifiers.add(getJvmId(parameter));
+		}
+		return parameterJvmIdentifiers;
 	}
 
 	/**
@@ -131,12 +148,8 @@ public class ClosureManager {
 		return allClosures;
 	}
 
-	public void addClosure(Closure closure) {
-		allClosures.add(closure);
-		this.currentId++;
-	}
-
-	public void addClosure() {
+	public void addClosure(ClosureInterface closureInterface, Frame parentFrame, Frame activationFrame) {
+		allClosures.add(new Closure(currentId, parentFrame, activationFrame, closureInterface));
 		this.currentId++;
 	}
 }
