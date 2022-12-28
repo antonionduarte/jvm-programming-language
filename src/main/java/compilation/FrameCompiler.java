@@ -80,9 +80,11 @@ public class FrameCompiler {
 		for (var i = 0; i < closure.closureInterface().jvmParameterIdentifiers().size(); i++) {
 			var identifier = closureInterface.jvmParameterIdentifiers().get(i);
 			applyLoadParameters
+					.append("dup\n")
 					.append(String.format("iload %d\n", i + 1))
 					.append(String.format("putfield %s/v%d %s\n", activationFrameName, i, identifier));
 		}
+		applyLoadParameters.append(String.format("astore_%d", SCOPE_VARIABLE));
 
 		CodeBlock codeBlock = new CodeBlock();
 		closure.body().compile(closure.activationFrame(), codeBlock);

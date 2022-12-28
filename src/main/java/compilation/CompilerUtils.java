@@ -74,7 +74,6 @@ public class CompilerUtils {
 				aload_0
 				getfield closure_%d/sl L%s;
 				putfield %s/sl L%s;
-				dup
 				
 					; load variables and stuff
 					; method body
