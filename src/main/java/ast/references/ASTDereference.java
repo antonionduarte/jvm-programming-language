@@ -50,6 +50,10 @@ public class ASTDereference implements ASTNode {
 
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
-		return null;
+		IType refType = node.typeCheck(environment);
+		if (!(refType instanceof ReferenceType referenceType)) {
+			throw new TypeMismatchException("Reference", refType);
+		}
+		return referenceType.getInnerType();
 	}
 }

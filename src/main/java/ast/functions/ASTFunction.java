@@ -64,7 +64,8 @@ public class ASTFunction implements ASTNode {
 
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
-		return null;
+		body.typeCheck(environment).expect(returnType);
+		return null; //TODO ??
 	}
 
 }

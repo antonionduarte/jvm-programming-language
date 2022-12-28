@@ -55,6 +55,12 @@ public class ASTRecord implements ASTNode {
 
     @Override
     public IType typeCheck(Environment<IType> environment) {
-        return null;
+        List<Parameter> parameters = new ArrayList<>(fields.size());
+        for(var field : fields){
+            String name = field.a();
+            ASTNode node = field.b();
+            parameters.add(new Parameter(name, node.typeCheck(environment)));
+        }
+        return new RecordType(parameters);
     }
 }

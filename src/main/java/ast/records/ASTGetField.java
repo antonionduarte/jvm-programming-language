@@ -54,6 +54,14 @@ public class ASTGetField implements ASTNode {
 
     @Override
     public IType typeCheck(Environment<IType> environment) {
-        return null;
+        IType type = record.typeCheck(environment);
+        if(!(type instanceof RecordType recordType)){
+            throw new TypeMismatchException("struct", type);
+        }
+        int id = recordType.getId(field);
+        if(id < 0){
+            throw new InvalidIdentifierException("struct has no field " + field);
+        }
+        return recordType.getFieldType(id);
     }
 }

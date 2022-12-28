@@ -80,7 +80,6 @@ public class ASTIf implements ASTNode {
 		} else {
 			IType ifType = bodyIf.typeCheck(environment);
 			IType elseType = bodyElse.typeCheck(environment);
-			elseType.expect(ifType);
 			return elseType.equals(ifType) ? ifType : PrimitiveType.Void;
 		}
 	}

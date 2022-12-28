@@ -59,6 +59,13 @@ public class ASTAssign implements ASTNode {
 
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
-		return null;
+		IType type = expression.typeCheck(environment);
+		IType refType = ref.typeCheck(environment);
+		if (!(refType instanceof ReferenceType referenceType)) {
+			throw new TypeMismatchException("Reference", refType);
+		} else {
+			type.expect(referenceType.getInnerType());
+		}
+		return type;
 	}
 }

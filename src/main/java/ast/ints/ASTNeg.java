@@ -32,6 +32,7 @@ public class ASTNeg implements ASTNode {
 
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
+		exp.typeCheck(environment).expect(PrimitiveType.Int);
 		return PrimitiveType.Int;
 	}
 }

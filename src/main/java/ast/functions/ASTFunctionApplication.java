@@ -1,7 +1,9 @@
 package ast.functions;
 
 import ast.ASTNode;
+import ast.typing.types.FunctionType;
 import ast.typing.types.IType;
+import ast.typing.types.TypeMismatchException;
 import ast.typing.values.ClosureValue;
 import ast.typing.values.IValue;
 import compilation.CodeBlock;
@@ -43,6 +45,19 @@ public class ASTFunctionApplication implements ASTNode {
 
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
+
+		IType type = closure.typeCheck(environment);
+		if(!(type instanceof FunctionType functionType)){
+			throw new TypeMismatchException("Function", type);
+		}
+		/* TODO
+		for (var i = 0; i < arguments.size(); i++) {
+			var argumentType = arguments.get(i).typeCheck(environment);
+			var parameterType = functionType.getParameters().get(i).type();
+			if(!argumentType.equals(parameterType)){
+				throw new TypeMismatchException(parameterType, argumentType);
+			}
+		}*/
 		return null;
 	}
 }

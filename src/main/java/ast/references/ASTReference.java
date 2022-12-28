@@ -47,6 +47,6 @@ public class ASTReference implements ASTNode {
 
 	@Override
 	public IType typeCheck(Environment<IType> environment) {
-		return null;
+		return new ReferenceType(expression.typeCheck(environment));
 	}
 }
