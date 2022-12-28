@@ -78,32 +78,8 @@ public class ClosureManager {
 		return parameterJvmIdentifiers;
 	}
 
-	/**
-	 * Returns the JVM type string for a given type.
-	 * TODO: I think this is needed because the JVM type string may be different for function and reference parameters?
-	 *       honestly I'm still not sure how to deal with that.
-	 */
-	private String getJvmType(IType type) {
-		String typeString;
-		switch (type) {
-			case PrimitiveType primitiveType -> typeString = primitiveType.getJvmType();
-			case FunctionType functionType -> typeString = String.valueOf(functionType.getReturnType()); // TODO: Obviously this doesn't work
-			case ReferenceType referenceType -> typeString = String.valueOf(referenceType.getJvmId()); // TODO: Obviously this doesn't work
-			default -> throw new IllegalStateException("Unexpected value: " + type);
-		}
-		return typeString;
-	}
-
-	// TODO: FunctionType, RecordType and ReferenceType
 	private String getJvmId(IType type) {
-		String jvmId;
-		switch (type) {
-			case PrimitiveType primitiveType -> jvmId = primitiveType.getJvmId();
-			case FunctionType functionType -> jvmId = functionType.getJvmId(); // TODO: Obviously this doesn't work
-			case ReferenceType referenceType -> jvmId = referenceType.getJvmId(); // TODO: Obviously this doesn't work
-			default -> throw new IllegalStateException("Unexpected value: " + type);
-		}
-		return jvmId;
+		return type.getJvmId();
 	}
 
 	public Map<FunctionType, ClosureInterface> getClosureInterfaces() {

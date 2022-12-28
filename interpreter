@@ -1,0 +1,3 @@
+#!/bin/bash
+export CLASSPATH="$CLASSPATH:$(pwd)/target/classes"
+java Interpreter $1

@@ -1,0 +1,5 @@
+#!/bin/bash
+cd src/main/java/parser
+javacc Parser.jj
+cd ../../../..
+mvn clean compile package
