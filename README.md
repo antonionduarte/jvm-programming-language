@@ -5,7 +5,7 @@ There are several code examples in the `./examples/` page.
 
 ## test expressions
 
-```
+```rust
 {
  let x = 3;
  x + 1
