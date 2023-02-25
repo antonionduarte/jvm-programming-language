@@ -33,20 +33,23 @@ public class ClosureManager {
 	}
 
 	public ClosureInterface getClosureInterface(FunctionType type) {
-		return closureInterfaces.computeIfAbsent(type, k -> {
+		ClosureInterface closureInterface = closureInterfaces.get(type);
+		if(closureInterface == null){
 			String closureInterfaceString = String.valueOf(currentInterfaceId++);
 			String closureParameterTypes = buildClosureParameters(type.getParameters());
 			String closureReturnType = getJvmId(type.getReturnType());
 
 			List<String> parameterJvmIdentifiers = parameterJvmIdentifiers(type.getParameters());
 
-			return new ClosureInterface(
+			closureInterface = new ClosureInterface(
 					closureInterfaceString,
 					closureParameterTypes,
 					closureReturnType,
 					parameterJvmIdentifiers
 			);
-		});
+			closureInterfaces.put(type, closureInterface);
+		}
+		return closureInterface;
 	}
 
 	/**

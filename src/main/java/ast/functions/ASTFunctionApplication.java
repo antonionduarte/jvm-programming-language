@@ -58,14 +58,13 @@ public class ASTFunctionApplication implements ASTNode {
 		if(!(type instanceof FunctionType functionType)){
 			throw new TypeMismatchException("Function", type);
 		}
-		/* TODO
 		for (var i = 0; i < arguments.size(); i++) {
 			var argumentType = arguments.get(i).typeCheck(environment);
-			var parameterType = functionType.getParameters().get(i).type();
+			var parameterType = functionType.getParameters().get(i);
 			if(!argumentType.equals(parameterType)){
 				throw new TypeMismatchException(parameterType, argumentType);
 			}
-		}*/
-		return null;
+		}
+		return functionType.getReturnType();
 	}
 }
